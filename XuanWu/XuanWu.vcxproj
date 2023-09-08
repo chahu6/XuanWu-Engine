@@ -171,6 +171,7 @@
     <ClInclude Include="src\XuanWu\Events\Event.h" />
     <ClInclude Include="src\XuanWu\Events\KeyEvent.h" />
     <ClInclude Include="src\XuanWu\Events\MouseEvent.h" />
+    <ClInclude Include="src\XuanWu\ImGui\font.h" />
     <ClInclude Include="src\XuanWu\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\XuanWu\Render\Buffer.h" />
     <ClInclude Include="src\XuanWu\Render\GraphicsContext.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="src\XuanWu\Render\Renderer2D.h" />
     <ClInclude Include="src\XuanWu\Render\RendererAPI.h" />
     <ClInclude Include="src\XuanWu\Render\Shader.h" />
+    <ClInclude Include="src\XuanWu\Render\SubTexture2D.h" />
     <ClInclude Include="src\XuanWu\Render\Texture.h" />
     <ClInclude Include="src\XuanWu\Render\VertexArray.h" />
     <ClInclude Include="src\xwpch.h" />
@@ -619,6 +621,7 @@
     <ClCompile Include="src\XuanWu\Render\Renderer2D.cpp" />
     <ClCompile Include="src\XuanWu\Render\RendererAPI.cpp" />
     <ClCompile Include="src\XuanWu\Render\Shader.cpp" />
+    <ClCompile Include="src\XuanWu\Render\SubTexture2D.cpp" />
     <ClCompile Include="src\XuanWu\Render\Texture.cpp" />
     <ClCompile Include="src\XuanWu\Render\VertexArray.cpp" />
     <ClCompile Include="src\xwpch.cpp">

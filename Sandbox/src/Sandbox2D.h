@@ -1,5 +1,6 @@
 #pragma once
 #include <XuanWu.h>
+#include "ParticleSystem.h"
 
 class Sandbox2D : public XuanWu::Layer
 {
@@ -16,8 +17,15 @@ public:
 private:
 	//XuanWu::Ref<XuanWu::Shader> m_Shader;
 	XuanWu::Ref<XuanWu::Texture2D> m_Texture;
+	XuanWu::Ref<XuanWu::Texture2D> m_SpriteTexture;
+	XuanWu::Ref<XuanWu::SubTexture2D> m_TextureTree;
+	XuanWu::Ref<XuanWu::SubTexture2D> m_TextureRoof;
+
 	XuanWu::OrthographicCameraController m_CameraController;
 	//XuanWu::Ref<XuanWu::VertexArray> m_SquareVA;
 
 	glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
+
+	ParticleProps m_Particle;
+	ParticleSystem m_ParticleSystem;
 };

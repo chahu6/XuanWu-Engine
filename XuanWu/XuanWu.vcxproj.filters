@@ -1403,6 +1403,8 @@
     </ClInclude>
     <ClInclude Include="src\XuanWu\Render\Renderer2D.h" />
     <ClInclude Include="src\XuanWu\Debug\Instrumentor.h" />
+    <ClInclude Include="src\XuanWu\ImGui\font.h" />
+    <ClInclude Include="src\XuanWu\Render\SubTexture2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1487,5 +1489,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\XuanWu\Render\Renderer2D.cpp" />
+    <ClCompile Include="src\XuanWu\Render\SubTexture2D.cpp" />
   </ItemGroup>
 </Project>

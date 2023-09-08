@@ -9,6 +9,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "font.h"
 
 
 namespace XuanWu {
@@ -37,6 +38,9 @@ namespace XuanWu {
         //io.ConfigViewportsNoAutoMerge = true;
         //io.ConfigViewportsNoTaskBarIcon = true;
 
+		io.ConfigFlags |= ImGuiViewportFlags_NoDecoration;
+		io.ConfigFlags |= ImGuiCol_DockingEmptyBg;
+
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsLight();
@@ -54,6 +58,11 @@ namespace XuanWu {
 
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		// 字体
+		ImFontConfig f_cfg;
+		f_cfg.FontDataOwnedByAtlas = false;
+		ImFont* font = io.Fonts->AddFontFromMemoryTTF((void*)fonts_data, fonts_size, 18.0f, &f_cfg, io.Fonts->GetGlyphRangesChineseFull());
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -66,6 +75,12 @@ namespace XuanWu {
 		ImGui::DestroyContext();
 	}
 
+	void ImGuiLayer::OnImGuiRender()
+	{
+		static bool show = true;
+		ImGui::ShowDemoWindow(&show);// 当前OnImGuiRender层显示DemoUI窗口
+	}
+
 	void ImGuiLayer::Begin()
 	{
 		XW_PROFILE_FUNCTION();
@@ -74,6 +89,8 @@ namespace XuanWu {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		//可停靠的窗口
+		//ImGui::DockSpaceOverViewport();
 	}
 
 	void ImGuiLayer::End()

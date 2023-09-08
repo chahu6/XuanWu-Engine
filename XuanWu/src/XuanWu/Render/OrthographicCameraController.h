@@ -8,6 +8,15 @@
 
 namespace XuanWu {
 
+	struct OrthographicCameraBounds
+	{
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() { return Right - Left; }
+		float GetHeight() { return Top - Bottom; }
+	};
+
 	class OrthographicCameraController
 	{
 	public:
@@ -18,6 +27,7 @@ namespace XuanWu {
 
 		OrthographicCamera& GetCamera() { return m_Camera; }
 		const OrthographicCamera& GetCamera() const { return m_Camera; }
+		const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& event);
 		bool OnWindowResized(WindowResizeEvent& event);
@@ -31,6 +41,7 @@ namespace XuanWu {
 		float m_CameraTranslationSpeed = 5.0f, m_CameraRotationSpeed = 20.0f;
 		float m_CameraRotation = 0.0f;
 
+		OrthographicCameraBounds m_Bounds;
 		OrthographicCamera m_Camera;
 	};
 }

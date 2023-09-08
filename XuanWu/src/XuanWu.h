@@ -18,6 +18,8 @@
 
 //-------------Render---------------------------
 #include "XuanWu/Render/Renderer.h"
+#include "XuanWu/Render/Renderer2D.h"
+#include "XuanWu/Render/SubTexture2D.h"
 #include "XuanWu/Render/RenderCommand.h"
 #include "XuanWu/Render/Shader.h"
 #include "XuanWu/Render/Buffer.h"
