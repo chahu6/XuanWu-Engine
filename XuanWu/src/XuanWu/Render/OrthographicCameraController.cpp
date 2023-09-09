@@ -46,15 +46,20 @@ namespace XuanWu {
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 	}
 
+	void OrthographicCameraController::CalculateView()
+	{
+		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
+		m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
+	}
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& event)
 	{
 		XW_PROFILE_FUNCTION();
 
 		m_ZoomLevel -= event.GetYOffset() * 0.5f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.15f);
-		m_ZoomLevel = std::min(m_ZoomLevel, 5.5f);
-		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-		m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
+		m_ZoomLevel = std::min(m_ZoomLevel, 10.0f);
+		CalculateView();
 		return false;
 	}
 
@@ -63,8 +68,7 @@ namespace XuanWu {
 		XW_PROFILE_FUNCTION();
 
 		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-		m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
+		CalculateView();
 		return false;
 	}
 }

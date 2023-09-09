@@ -1405,6 +1405,8 @@
     <ClInclude Include="src\XuanWu\Debug\Instrumentor.h" />
     <ClInclude Include="src\XuanWu\ImGui\font.h" />
     <ClInclude Include="src\XuanWu\Render\SubTexture2D.h" />
+    <ClInclude Include="src\XuanWu\Render\Framebuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1490,5 +1492,7 @@
     </ClCompile>
     <ClCompile Include="src\XuanWu\Render\Renderer2D.cpp" />
     <ClCompile Include="src\XuanWu\Render\SubTexture2D.cpp" />
+    <ClCompile Include="src\XuanWu\Render\Framebuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
   </ItemGroup>
 </Project>

@@ -107,9 +107,14 @@ namespace XuanWu {
 		overlay->OnAttach();
 	}
 
-	bool Application::OnWindowClose(WindowCloseEvent& event)
+	void Application::Close()
 	{
 		m_Running = false;
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& event)
+	{
+		Close();
 		return true;
 	}
 

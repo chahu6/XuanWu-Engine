@@ -24,6 +24,7 @@
 #include "XuanWu/Render/Shader.h"
 #include "XuanWu/Render/Buffer.h"
 #include "XuanWu/Render/Texture.h"
+#include "XuanWu/Render/Framebuffer.h"
 #include "XuanWu/Render/VertexArray.h"
 #include "XuanWu/Camera/PerspectiveCamera.h"
 // --------------------------------------------

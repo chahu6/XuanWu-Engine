@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="src\XuanWu\ImGui\font.h" />
     <ClInclude Include="src\XuanWu\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\XuanWu\Render\Buffer.h" />
+    <ClInclude Include="src\XuanWu\Render\Framebuffer.h" />
     <ClInclude Include="src\XuanWu\Render\GraphicsContext.h" />
     <ClInclude Include="src\XuanWu\Render\OrthographicCamera.h" />
     <ClInclude Include="src\XuanWu\Render\OrthographicCameraController.h" />
@@ -599,6 +601,7 @@
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
@@ -614,6 +617,7 @@
     <ClCompile Include="src\XuanWu\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\XuanWu\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\XuanWu\Render\Buffer.cpp" />
+    <ClCompile Include="src\XuanWu\Render\Framebuffer.cpp" />
     <ClCompile Include="src\XuanWu\Render\OrthographicCamera.cpp" />
     <ClCompile Include="src\XuanWu\Render\OrthographicCameraController.cpp" />
     <ClCompile Include="src\XuanWu\Render\RenderCommand.cpp" />

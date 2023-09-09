@@ -4,6 +4,24 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "XuanWu/Render/Renderer2D.h"
 
+
+static const uint32_t s_MapWidth = 24;
+static const char* s_MapTiles =
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWDDDWWWWWW"
+"WWWWWWWWDDDDDWWWWWWWWWWW"
+"WWWDDDDWWWWWWWWDDDDWWWWW"
+"WWWDDDDWWWWWWWWDDDDWWWWW"
+"WWWDDDDWssssWWWDDDDWWWWW"
+"WWWDDDDWWWWWWWWDDDDWWWWW"
+"WWWDDDDWWWWWWWWDDDDWWWWW"
+"WWWDDDDWWWWWWWWDDDDWWWWW"
+"WWWDDDDWWWWWWWWDDDDWWWWW"
+"WWWWWWWWDDDDDWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWDD"
+"WWWWWWWWWWWWWWWWWWWWWWDD"
+;
+
 Sandbox2D::Sandbox2D()
 	:Layer("Sandbox2D"), m_CameraController(1280.0f / 720.0f, false)
 {
@@ -14,11 +32,21 @@ void Sandbox2D::OnAttach()
 {
 	XW_PROFILE_FUNCTION();
 
+	m_MapWidth = s_MapWidth;
+	m_MapHeight = strlen(s_MapTiles) / m_MapWidth;
+
 	m_Texture = XuanWu::Texture2D::Create("assets/textures/Checkerboard.png");
 	m_SpriteTexture = XuanWu::Texture2D::Create("assets/games/RPGpack_sheet_2X.png");
 
-	m_TextureTree = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, {0, 1}, { 128, 128 }, {1, 2});
-	m_TextureRoof = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, { 0, 4 }, { 128, 128 }, { 2, 3 });
+	m_TextureGrass = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, { 2, 3 }, { 128, 128 });
+
+	s_TextureMap['W'] = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, { 11, 11 }, { 128, 128 });
+	s_TextureMap['D'] = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, { 1, 11 }, { 128, 128 });
+
+	XuanWu::FramebufferSpecification spec;
+	spec.Width = 1280;
+	spec.Height = 720;
+	m_Framebuffer = XuanWu::Framebuffer::Create(spec);
 
 	// Init Particle
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
@@ -28,6 +56,8 @@ void Sandbox2D::OnAttach()
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
 	m_Particle.Position = { 0.0f, 0.0f };
+
+	m_CameraController.SetZoomLevel(6.5f);
 }
 
 void Sandbox2D::OnDetach()
@@ -43,8 +73,13 @@ void Sandbox2D::OnUpdate(XuanWu::Timestep ts)
 	m_CameraController.OnUpdate(ts);
 
 	XuanWu::Renderer2D::ResetStats();
+
+	// 绑定帧缓冲
+	m_Framebuffer->Bind();
+
 	{
 		XW_PROFILE_SCOPE("Renderer Prep");
+
 		XuanWu::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
 		XuanWu::RenderCommand::Clear();
 	}
@@ -92,9 +127,27 @@ void Sandbox2D::OnUpdate(XuanWu::Timestep ts)
 	m_ParticleSystem.OnRender(m_CameraController.GetCamera());
 
 	XuanWu::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	XuanWu::Renderer2D::DrawQuad({ -1.f, 0.f, 0.5f }, {1.f, 2.f}, m_TextureTree);
-	XuanWu::Renderer2D::DrawQuad({ 1.f, 0.f, 0.5f }, {2.f, 3.f}, m_TextureRoof);
+	for (uint32_t y = 0; y < m_MapHeight; y++)
+	{
+		for (uint32_t x = 0; x < m_MapWidth; x++)
+		{
+			char titleType = s_MapTiles[x + y * m_MapWidth];
+			XuanWu::Ref<XuanWu::SubTexture2D> texture;
+			if (s_TextureMap.find(titleType) != s_TextureMap.end())
+			{
+				texture = s_TextureMap[titleType];
+			}
+			else
+			{
+				texture = m_TextureGrass;
+			}
+			XuanWu::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, m_MapHeight / 2.0f - y, 0.5f }, { 1.0f, 1.0f }, texture);
+		}
+	}
 	XuanWu::Renderer2D::EndScene();
+
+	// 解除帧缓冲绑定
+	m_Framebuffer->Unbind();
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -111,8 +164,29 @@ void Sandbox2D::OnImGuiRender()
 		ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
 
 		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+
+		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+		ImGui::Image((void*)textureID, ImVec2{ 1280, 720 }, ImVec2(0, 1), ImVec2(1, 0));
 	}
 	ImGui::End();
+
+
+	if (ImGui::BeginMainMenuBar())
+	{
+		// 添加一个菜单
+		if (ImGui::BeginMenu("Options"))
+		{
+			// 添加菜单项
+			if (ImGui::MenuItem("Exit"))
+			{
+				XuanWu::Application::Get().Close();
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
 }
 
 void Sandbox2D::OnEvent(XuanWu::Event& event)

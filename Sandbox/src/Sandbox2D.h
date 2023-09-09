@@ -18,8 +18,7 @@ private:
 	//XuanWu::Ref<XuanWu::Shader> m_Shader;
 	XuanWu::Ref<XuanWu::Texture2D> m_Texture;
 	XuanWu::Ref<XuanWu::Texture2D> m_SpriteTexture;
-	XuanWu::Ref<XuanWu::SubTexture2D> m_TextureTree;
-	XuanWu::Ref<XuanWu::SubTexture2D> m_TextureRoof;
+	XuanWu::Ref<XuanWu::SubTexture2D> m_TextureGrass;
 
 	XuanWu::OrthographicCameraController m_CameraController;
 	//XuanWu::Ref<XuanWu::VertexArray> m_SquareVA;
@@ -28,4 +27,9 @@ private:
 
 	ParticleProps m_Particle;
 	ParticleSystem m_ParticleSystem;
+
+	uint32_t m_MapWidth, m_MapHeight;
+	std::unordered_map<char, XuanWu::Ref<XuanWu::SubTexture2D>>s_TextureMap;
+
+	XuanWu::Ref<XuanWu::Framebuffer> m_Framebuffer;
 };

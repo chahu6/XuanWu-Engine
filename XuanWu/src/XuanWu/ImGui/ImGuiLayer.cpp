@@ -90,7 +90,7 @@ namespace XuanWu {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		//¿ÉÍ£¿¿µÄ´°¿Ú
-		//ImGui::DockSpaceOverViewport();
+		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	}
 
 	void ImGuiLayer::End()
