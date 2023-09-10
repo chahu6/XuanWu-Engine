@@ -43,11 +43,6 @@ void Sandbox2D::OnAttach()
 	s_TextureMap['W'] = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, { 11, 11 }, { 128, 128 });
 	s_TextureMap['D'] = XuanWu::SubTexture2D::CreateFromCoords(m_SpriteTexture, { 1, 11 }, { 128, 128 });
 
-	XuanWu::FramebufferSpecification spec;
-	spec.Width = 1280;
-	spec.Height = 720;
-	m_Framebuffer = XuanWu::Framebuffer::Create(spec);
-
 	// Init Particle
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
 	m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
@@ -73,9 +68,6 @@ void Sandbox2D::OnUpdate(XuanWu::Timestep ts)
 	m_CameraController.OnUpdate(ts);
 
 	XuanWu::Renderer2D::ResetStats();
-
-	// 绑定帧缓冲
-	m_Framebuffer->Bind();
 
 	{
 		XW_PROFILE_SCOPE("Renderer Prep");
@@ -145,9 +137,6 @@ void Sandbox2D::OnUpdate(XuanWu::Timestep ts)
 		}
 	}
 	XuanWu::Renderer2D::EndScene();
-
-	// 解除帧缓冲绑定
-	m_Framebuffer->Unbind();
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -156,7 +145,7 @@ void Sandbox2D::OnImGuiRender()
 
 	ImGui::Begin("Settings");
 	{
-		auto&stats = XuanWu::Renderer2D::GetStats();
+		auto stats = XuanWu::Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats: ");
 		ImGui::Text(u8"绘制次数：%d", stats.DrawCalls);
 		ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
@@ -164,9 +153,6 @@ void Sandbox2D::OnImGuiRender()
 		ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
 
 		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-
-		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 1280, 720 }, ImVec2(0, 1), ImVec2(1, 0));
 	}
 	ImGui::End();
 
@@ -186,7 +172,6 @@ void Sandbox2D::OnImGuiRender()
 
 		ImGui::EndMainMenuBar();
 	}
-
 }
 
 void Sandbox2D::OnEvent(XuanWu::Event& event)

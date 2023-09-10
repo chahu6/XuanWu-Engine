@@ -30,6 +30,4 @@ private:
 
 	uint32_t m_MapWidth, m_MapHeight;
 	std::unordered_map<char, XuanWu::Ref<XuanWu::SubTexture2D>>s_TextureMap;
-
-	XuanWu::Ref<XuanWu::Framebuffer> m_Framebuffer;
 };

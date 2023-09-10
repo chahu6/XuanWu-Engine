@@ -16,7 +16,7 @@ namespace XuanWu {
 	class Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "XuanWu App");
 
 		virtual ~Application();
 

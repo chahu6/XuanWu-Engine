@@ -172,8 +172,8 @@
     <ClInclude Include="src\XuanWu\Events\Event.h" />
     <ClInclude Include="src\XuanWu\Events\KeyEvent.h" />
     <ClInclude Include="src\XuanWu\Events\MouseEvent.h" />
-    <ClInclude Include="src\XuanWu\ImGui\font.h" />
     <ClInclude Include="src\XuanWu\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\XuanWu\ImGui\font.h" />
     <ClInclude Include="src\XuanWu\Render\Buffer.h" />
     <ClInclude Include="src\XuanWu\Render\Framebuffer.h" />
     <ClInclude Include="src\XuanWu\Render\GraphicsContext.h" />

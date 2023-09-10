@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "XuanWu\vendor\imgu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XuanWu", "XuanWu\XuanWu.vcxproj", "{6D3FA1DD-59E1-CBB3-429C-DF072EDD5204}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XuanWu-Editor", "XuanWu-Editor\XuanWu-Editor.vcxproj", "{81C6291A-ED86-A550-B6C1-EECD2241EA2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -50,6 +52,12 @@ Global
 		{6D3FA1DD-59E1-CBB3-429C-DF072EDD5204}.Dist|x64.Build.0 = Dist|x64
 		{6D3FA1DD-59E1-CBB3-429C-DF072EDD5204}.Release|x64.ActiveCfg = Release|x64
 		{6D3FA1DD-59E1-CBB3-429C-DF072EDD5204}.Release|x64.Build.0 = Release|x64
+		{81C6291A-ED86-A550-B6C1-EECD2241EA2C}.Debug|x64.ActiveCfg = Debug|x64
+		{81C6291A-ED86-A550-B6C1-EECD2241EA2C}.Debug|x64.Build.0 = Debug|x64
+		{81C6291A-ED86-A550-B6C1-EECD2241EA2C}.Dist|x64.ActiveCfg = Dist|x64
+		{81C6291A-ED86-A550-B6C1-EECD2241EA2C}.Dist|x64.Build.0 = Dist|x64
+		{81C6291A-ED86-A550-B6C1-EECD2241EA2C}.Release|x64.ActiveCfg = Release|x64
+		{81C6291A-ED86-A550-B6C1-EECD2241EA2C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
