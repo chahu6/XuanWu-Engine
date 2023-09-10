@@ -11,7 +11,7 @@ namespace XuanWu {
 	class PerspectiveCamera
 	{
 	public:
-		PerspectiveCamera(float field, float radio, float near, float far, glm::vec3& position = glm::vec3(0.f), glm::vec3& up = glm::vec3(0.f, 1.0f, 0.f), float yaw = -90.0f, float pitch = 0.0f);
+		PerspectiveCamera(float field, float radio, float near, float far, const glm::vec3& position = glm::vec3(0.f), const glm::vec3& up = glm::vec3(0.f, 1.0f, 0.f), float yaw = -90.0f, float pitch = 0.0f);
 
 		inline const glm::vec3& GetPosition() const { return Position; }
 		void SetPosition(const glm::vec3& position) { Position = position; RecalculateViewMatrix(); }
