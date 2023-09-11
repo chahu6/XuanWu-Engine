@@ -127,7 +127,8 @@ namespace XuanWu
 #define XW_PROFILE_BEGIN_SESSION(name, filepath) ::XuanWu::Instrumentor::Get().BeginSession(name, filepath)
 #define XW_PROFILE_END_SESSION() ::XuanWu::Instrumentor::Get().EndSession()
 #define XW_PROFILE_SCOPE(name) ::XuanWu::InstrumentationTimer timer##__LINE__(name);
-#define XW_PROFILE_FUNCTION() XW_PROFILE_SCOPE(__FUNCSIG__)
+//#define XW_PROFILE_FUNCTION() XW_PROFILE_SCOPE(__FUNCSIG__)
+#define XW_PROFILE_FUNCTION() 
 #else
 #define XW_PROFILE_BEGIN_SESSION(name, filepath)
 #define XW_PROFILE_END_SESSION()

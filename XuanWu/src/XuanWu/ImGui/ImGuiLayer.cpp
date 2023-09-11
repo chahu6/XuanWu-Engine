@@ -77,8 +77,18 @@ namespace XuanWu {
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);// 当前OnImGuiRender层显示DemoUI窗口
+		//static bool show = true;
+		//ImGui::ShowDemoWindow(&show);// 当前OnImGuiRender层显示DemoUI窗口
+	}
+
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if (m_BlockEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.Handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.Handled |= event.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		}
 	}
 
 	void ImGuiLayer::Begin()

@@ -36,7 +36,8 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
-		m_CameraController.OnUpdate(ts);
+		if(m_ViewportFocused && m_ViewportHovered)
+			m_CameraController.OnUpdate(ts);
 		Renderer2D::ResetStats();
 
 		// 绑定帧缓冲
@@ -81,20 +82,6 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
-		ImGui::Begin("Settings");
-		{
-			auto stats = Renderer2D::GetStats();
-			ImGui::Text("Renderer2D Stats: ");
-			ImGui::Text(u8"绘制次数：%d", stats.DrawCalls);
-			ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
-			ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
-			ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
-
-			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image((void*)textureID, ImVec2{ 1280, 720 }, ImVec2(0, 1), ImVec2(1, 0));
-		}
-		ImGui::End();
-
 		if (ImGui::BeginMainMenuBar())
 		{
 			// 添加一个菜单
@@ -107,13 +94,59 @@ namespace XuanWu
 				}
 				ImGui::EndMenu();
 			}
-
 			ImGui::EndMainMenuBar();
 		}
+
+		ImGui::Begin("Settings");
+		{
+			auto stats = Renderer2D::GetStats();
+			ImGui::Text("Renderer2D Stats: ");
+			ImGui::Text(u8"绘制次数：%d", stats.DrawCalls);
+			ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
+			ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
+			ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
+
+			char text[100] = "sdffddsff";
+			ImGui::InputText("test", text, IM_ARRAYSIZE(text));
+		}
+		ImGui::End();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::Begin("Viewport");
+		{
+			m_ViewportFocused = ImGui::IsWindowFocused();
+			m_ViewportHovered = ImGui::IsWindowHovered();
+			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
+			//XW_CORE_WARN("Focused: {0}", m_ViewportFocused);
+			//XW_CORE_WARN("Hovered: {0}", m_ViewportHovered);
+
+			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+			if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+			{
+				m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+				m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+				m_CameraController.OnResize(viewportPanelSize.x, viewportPanelSize.y);
+			}
+			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+			ImGui::Image((void*)textureID, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+		}
+		ImGui::End();
+		ImGui::PopStyleVar();
 	}
 
 	void EditorLayer::OnEvent(Event& event)
 	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
+
 		m_CameraController.OnEvent(event);
+	}
+
+	bool EditorLayer::OnWindowResized(WindowResizeEvent& event)
+	{
+		m_ViewportSize = { event.GetWidth(), event.GetHeight() };
+
+		return false;
 	}
 }

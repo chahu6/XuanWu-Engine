@@ -28,6 +28,7 @@ namespace XuanWu {
 		void PushOverlay(Layer* overlay);
 		void Close();
 		
+		inline ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 	private:

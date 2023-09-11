@@ -15,6 +15,8 @@ namespace XuanWu
 		virtual void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& event) override;
+	protected:
+		bool OnWindowResized(WindowResizeEvent& event);
 	private:
 		Ref<Texture2D> m_Texture;
 		Ref<Texture2D> m_SpriteTexture;
@@ -23,6 +25,10 @@ namespace XuanWu
 		glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 
 		uint32_t m_MapWidth, m_MapHeight;
+
+		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+
+		bool m_ViewportFocused = false, m_ViewportHovered = false;
 
 		Ref<XuanWu::Framebuffer> m_Framebuffer;
 		OrthographicCameraController m_CameraController;

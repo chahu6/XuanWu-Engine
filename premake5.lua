@@ -1,6 +1,6 @@
 workspace "XuanWu"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "XuanWu-Editor"
 
 	configurations
 	{
@@ -77,7 +77,6 @@ project "XuanWu"
 
 		defines
 		{
-			"XW_PLATFORM_WINDOWS",
 			"XW_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
@@ -130,11 +129,6 @@ project "Sandbox"
 
 	filter "system:windows"
 		systemversion "latest"
-
-		defines
-		{
-			"XW_PLATFORM_WINDOWS"
-		}
 	
 	filter "configurations:Debug"
 		defines "XW_DEBUG"
@@ -185,11 +179,6 @@ project "XuanWu-Editor"
 
 	filter "system:windows"
 		systemversion "latest"
-
-		defines
-		{
-			"XW_PLATFORM_WINDOWS"
-		}
 	
 	filter "configurations:Debug"
 		defines "XW_DEBUG"

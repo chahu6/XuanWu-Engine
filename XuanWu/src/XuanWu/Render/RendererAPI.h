@@ -14,6 +14,7 @@ namespace XuanWu {
 			None = 0, OpenGL = 1
 		};
 
+		virtual ~RendererAPI() = default;
 	public:
 		virtual void Init() = 0;
 		virtual void SetClearColor(const glm::vec4& color) = 0;

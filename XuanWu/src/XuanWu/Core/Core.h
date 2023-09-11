@@ -1,4 +1,5 @@
 #pragma once
+#include "XuanWu/Core/PlatformDetection.h"
 
 #include <memory>
 

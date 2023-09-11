@@ -46,6 +46,14 @@ namespace XuanWu {
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+		if (height == 0.0f) return;
+
+		m_AspectRatio = width / height;
+		CalculateView();
+	}
+
 	void OrthographicCameraController::CalculateView()
 	{
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
@@ -67,8 +75,7 @@ namespace XuanWu {
 	{
 		XW_PROFILE_FUNCTION();
 
-		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-		CalculateView();
+		OnResize((float)event.GetWidth(), (float)event.GetHeight());
 		return false;
 	}
 }

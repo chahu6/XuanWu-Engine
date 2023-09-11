@@ -77,8 +77,10 @@ namespace XuanWu {
 				data.EventCallback(event);
 			});
 
+		// 因为不是渲染到窗口屏幕上，而是渲染到帧缓冲中，在用图片的方式展示，窗口的大小是不一样的
 		//glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 		//	{
+		//		//XW_INFO("Width: {0} Height: {1}", width, height);
 		//		glViewport(0, 0, width, height);
 		//	});
 
