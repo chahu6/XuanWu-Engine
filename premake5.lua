@@ -17,6 +17,7 @@ IncludeDir["Glad"] = "XuanWu/vendor/Glad/include"
 IncludeDir["ImGui"] = "XuanWu/vendor/imgui"
 IncludeDir["glm"] = "XuanWu/vendor/glm"
 IncludeDir["stb_image"] = "XuanWu/vendor/stb_image"
+IncludeDir["entt"] = "XuanWu/vendor/entt/include"
 
 group "Dependencies"
 	include "XuanWu/vendor/GLFW"
@@ -61,7 +62,8 @@ project "XuanWu"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -119,7 +121,8 @@ project "Sandbox"
 		"XuanWu/vendor/spdlog/include",
 		"XuanWu/src",
 		"XuanWu/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -169,7 +172,8 @@ project "XuanWu-Editor"
 		"XuanWu/vendor/spdlog/include",
 		"XuanWu/src",
 		"XuanWu/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links

@@ -24,7 +24,13 @@ namespace XuanWu
 		spec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(spec);
 
-		m_CameraController.SetZoomLevel(6.5f);
+		m_CameraController.SetZoomLevel(4.5f);
+
+		m_ActiveScene = CreateRef<Scene>();
+		auto square = m_ActiveScene->CreateEntity();
+		m_ActiveScene->Reg().emplace<TransformComponent>(square);
+		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square);
+		m_SquareEntity = square;
 	}
 
 	void EditorLayer::OnDetach()
@@ -36,44 +42,24 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
+		//没被选中就不能动
 		if(m_ViewportFocused && m_ViewportHovered)
 			m_CameraController.OnUpdate(ts);
+
+		// 重置Stats统计的数据
 		Renderer2D::ResetStats();
 
 		// 绑定帧缓冲
 		m_Framebuffer->Bind();
+		RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
+		RenderCommand::Clear();
 
-		{
-			XW_PROFILE_SCOPE("Renderer Prep");
+		Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-			RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
-			RenderCommand::Clear();
-		}
-#if 1
-		{
-			static float rotation = 0.f;
-			rotation += ts * 50.f;
+		m_ActiveScene->OnUpdate(ts);
 
-			XW_PROFILE_SCOPE("Renderer Draw");
-			Renderer2D::BeginScene(m_CameraController.GetCamera());
-			Renderer2D::DrawQuad({ -1.0f, -0.5f }, { 0.8f, 0.8f }, { 0.8f, 0.8f, 0.8f , 1.0f });
-			Renderer2D::DrawQuad({ -1.0f, 0.5f }, { 0.5f, 0.75f }, m_SquareColor);
-			Renderer2D::DrawRotatedQuad({ 0.0f, .0f, 0.1f }, { 1.0f, 1.0f }, glm::radians(rotation), m_Texture, 10.0f);
-			Renderer2D::DrawQuad({ .0f, .0f , -0.1f }, { 10.0f, 10.0f }, m_Texture, 1.0f);
-			Renderer2D::EndScene();
+		Renderer2D::EndScene();
 
-			Renderer2D::BeginScene(m_CameraController.GetCamera());
-			for (float y = -5.f; y < 5.0f; y += 0.5f)
-			{
-				for (float x = -5.0f; x < 5.0f; x += 0.5f)
-				{
-					glm::vec4 color = { (x + 5.0f) / 10.0f, 0.3f, (y + 5.0f) / 10.0f, 0.6f };
-					Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, color);
-				}
-			}
-			Renderer2D::EndScene();
-		}
-#endif
 		// 解除帧缓冲绑定
 		m_Framebuffer->Unbind();
 	}
@@ -105,9 +91,9 @@ namespace XuanWu
 			ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
 			ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
 			ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
-
-			char text[100] = "sdffddsff";
-			ImGui::InputText("test", text, IM_ARRAYSIZE(text));
+			
+			auto& squareColor = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
+			ImGui::ColorEdit4(u8"颜色编辑器", &squareColor.x /* glm::value_ptr(squareColor) */);
 		}
 		ImGui::End();
 
@@ -125,11 +111,17 @@ namespace XuanWu
 			if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 			{
 				m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-				m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-				m_CameraController.OnResize(viewportPanelSize.x, viewportPanelSize.y);
+				m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+				m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 			}
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-			ImGui::Image((void*)textureID, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+		}
+		ImGui::End();
+		ImGui::Begin("DepthTexture");
+		{
+			uint32_t textureID = m_Framebuffer->GetDepthAttachmentRendererID();
+			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();

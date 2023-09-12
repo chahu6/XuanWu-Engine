@@ -32,6 +32,10 @@ namespace XuanWu
 
 		Ref<XuanWu::Framebuffer> m_Framebuffer;
 		OrthographicCameraController m_CameraController;
+
+		Ref<Scene> m_ActiveScene;
+
+		entt::entity m_SquareEntity;
 	};
 }
 

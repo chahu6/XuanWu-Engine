@@ -8,6 +8,8 @@
 #include "XuanWu/ImGui/ImGuiLayer.h"
 
 #include "XuanWu/Core/Timestep.h"
+#include "XuanWu/Scene/Scene.h"
+#include "XuanWu/Scene/Components.h"
 
 #include "XuanWu/Render/OrthographicCameraController.h"
 

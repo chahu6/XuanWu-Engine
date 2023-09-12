@@ -1,7 +1,6 @@
 #pragma once
 
-#include "xwpch.h"
-
+//#include "xwpch.h"
 #include "XuanWu/Core/Core.h"
 #include "XuanWu/Events/Event.h"
 
