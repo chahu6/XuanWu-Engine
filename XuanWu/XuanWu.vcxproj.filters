@@ -1426,6 +1426,7 @@
     <ClInclude Include="src\XuanWu\Scene\Components.h" />
     <ClInclude Include="src\XuanWu\Scene\Entity.h" />
     <ClInclude Include="src\XuanWu\Render\Camera.h" />
+    <ClInclude Include="src\XuanWu\Render\SceneCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1523,5 +1524,6 @@
     </ClCompile>
     <ClCompile Include="src\XuanWu\Scene\Scene.cpp" />
     <ClCompile Include="src\XuanWu\Scene\Entity.cpp" />
+    <ClCompile Include="src\XuanWu\Render\SceneCamera.cpp" />
   </ItemGroup>
 </Project>

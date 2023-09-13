@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "XuanWu/Render/Camera.h"
+#include "XuanWu/Render/SceneCamera.h"
 
 namespace XuanWu
 {
@@ -40,12 +40,11 @@ namespace XuanWu
 
 	struct CameraComponent
 	{
-		Camera camera;
+		SceneCamera Camera;
 		bool Primary = true;
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(const glm::mat4& projection)
-			:camera(projection) {}
 	};
 }

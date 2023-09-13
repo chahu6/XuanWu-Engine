@@ -32,9 +32,11 @@ namespace XuanWu
 		m_SquareEntity.AddComponent<SpriteRendererComponent>();
 
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
-		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		m_CameraEntity.AddComponent<CameraComponent>();
+
 		m_SecondCamera = m_ActiveScene->CreateEntity("Second Camera");
-		m_SecondCamera.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		m_SecondCamera.AddComponent<CameraComponent>();
+
 		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
 	}
 
@@ -46,6 +48,15 @@ namespace XuanWu
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		XW_PROFILE_FUNCTION();
+
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && 
+			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		}
 
 		//没被选中就不能动
 		if(m_ViewportFocused && m_ViewportHovered)
@@ -69,6 +80,7 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
+		// 菜单栏
 		if (ImGui::BeginMainMenuBar())
 		{
 			// 添加一个菜单
@@ -105,7 +117,7 @@ namespace XuanWu
 			
 			ImGui::Text(u8"Camera");
 			ImGui::DragFloat3("Camera Transform",
-				glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
+				glm::value_ptr(m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
 			if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
 			{
 				m_CameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
@@ -125,8 +137,6 @@ namespace XuanWu
 			if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 			{
 				m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-				m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-				m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 			}
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
