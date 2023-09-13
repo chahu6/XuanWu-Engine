@@ -175,6 +175,7 @@
     <ClInclude Include="src\XuanWu\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\XuanWu\ImGui\font.h" />
     <ClInclude Include="src\XuanWu\Render\Buffer.h" />
+    <ClInclude Include="src\XuanWu\Render\Camera.h" />
     <ClInclude Include="src\XuanWu\Render\Framebuffer.h" />
     <ClInclude Include="src\XuanWu\Render\GraphicsContext.h" />
     <ClInclude Include="src\XuanWu\Render\OrthographicCamera.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="src\XuanWu\Render\Texture.h" />
     <ClInclude Include="src\XuanWu\Render\VertexArray.h" />
     <ClInclude Include="src\XuanWu\Scene\Components.h" />
+    <ClInclude Include="src\XuanWu\Scene\Entity.h" />
     <ClInclude Include="src\XuanWu\Scene\Scene.h" />
     <ClInclude Include="src\xwpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -630,6 +632,7 @@
     <ClCompile Include="src\XuanWu\Render\SubTexture2D.cpp" />
     <ClCompile Include="src\XuanWu\Render\Texture.cpp" />
     <ClCompile Include="src\XuanWu\Render\VertexArray.cpp" />
+    <ClCompile Include="src\XuanWu\Scene\Entity.cpp" />
     <ClCompile Include="src\XuanWu\Scene\Scene.cpp" />
     <ClCompile Include="src\xwpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

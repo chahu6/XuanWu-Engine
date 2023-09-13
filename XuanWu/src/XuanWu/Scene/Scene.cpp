@@ -1,6 +1,7 @@
 #include "xwpch.h"
 #include "Scene.h"
 #include "glm/glm.hpp"
+#include "Entity.h"
 
 #include "Components.h"
 #include "XuanWu/Render/Renderer2D.h"
@@ -59,12 +60,33 @@ namespace XuanWu
 
 	void Scene::OnUpdate(Timestep ts)
 	{
-		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		Camera* mainCamrea = nullptr;
+		glm::mat4* cameraTransform = nullptr;
 		{
-			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+			auto group = m_Registry.view<TransformComponent, CameraComponent>();
+			for (auto entity : group)
+			{
+				auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+				if (camera.Primary)
+				{
+					mainCamrea = &camera.camera;
+					cameraTransform = &transform.Transform;
+					break;
+				}
+			}
+		}
 
-			Renderer2D::DrawQuad(transform, sprite.Color);
+		if (mainCamrea)
+		{
+			Renderer2D::BeginScene(*mainCamrea, *cameraTransform);
+
+			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			for (auto entity : group)
+			{
+				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				Renderer2D::DrawQuad(transform, sprite.Color);
+			}
+			Renderer2D::EndScene();
 		}
 	}
 
@@ -73,8 +95,12 @@ namespace XuanWu
 
 	}
 
-	entt::entity Scene::CreateEntity()
+	Entity Scene::CreateEntity(const std::string_view name)
 	{
-		return m_Registry.create();
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? "Entity" : name;
+		return entity;
 	}
 }

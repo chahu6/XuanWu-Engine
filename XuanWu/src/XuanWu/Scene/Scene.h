@@ -8,10 +8,11 @@ namespace XuanWu
 	class Scene
 	{
 	public:
+		friend class Entity;
 		Scene();
 		~Scene();
 
-		entt::entity CreateEntity();
+		Entity CreateEntity(const std::string_view name = "");
 
 		void OnUpdate(Timestep ts);
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <XuanWu.h>
+#include "XuanWu/Scene/Entity.h"
 
 namespace XuanWu
 {
@@ -35,7 +36,10 @@ namespace XuanWu
 
 		Ref<Scene> m_ActiveScene;
 
-		entt::entity m_SquareEntity;
+		Entity m_SquareEntity;
+		Entity m_CameraEntity;
+		Entity m_SecondCamera;
+		bool m_PrimaryCamera = false;
 	};
 }
 

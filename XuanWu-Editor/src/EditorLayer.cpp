@@ -27,10 +27,15 @@ namespace XuanWu
 		m_CameraController.SetZoomLevel(4.5f);
 
 		m_ActiveScene = CreateRef<Scene>();
-		auto square = m_ActiveScene->CreateEntity();
-		m_ActiveScene->Reg().emplace<TransformComponent>(square);
-		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square);
-		m_SquareEntity = square;
+
+		m_SquareEntity = m_ActiveScene->CreateEntity(u8"方块");
+		m_SquareEntity.AddComponent<SpriteRendererComponent>();
+
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		m_SecondCamera = m_ActiveScene->CreateEntity("Second Camera");
+		m_SecondCamera.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
 	}
 
 	void EditorLayer::OnDetach()
@@ -54,11 +59,7 @@ namespace XuanWu
 		RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
 		RenderCommand::Clear();
 
-		Renderer2D::BeginScene(m_CameraController.GetCamera());
-
 		m_ActiveScene->OnUpdate(ts);
-
-		Renderer2D::EndScene();
 
 		// 解除帧缓冲绑定
 		m_Framebuffer->Unbind();
@@ -92,20 +93,33 @@ namespace XuanWu
 			ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
 			ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
 			
-			auto& squareColor = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
-			ImGui::ColorEdit4(u8"颜色编辑器", &squareColor.x /* glm::value_ptr(squareColor) */);
+			if (m_SquareEntity)
+			{
+				ImGui::Separator();
+				auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+				auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
+				ImGui::Text(tag.c_str());
+				ImGui::ColorEdit4(u8"颜色编辑器", &squareColor.x /* glm::value_ptr(squareColor) */);
+				ImGui::Separator();
+			}
+			
+			ImGui::Text(u8"Camera");
+			ImGui::DragFloat3("Camera Transform",
+				glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
+			if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
+			{
+				m_CameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+				m_SecondCamera.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+			}
 		}
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
 		{
-			m_ViewportFocused = ImGui::IsWindowFocused();
-			m_ViewportHovered = ImGui::IsWindowHovered();
+			m_ViewportFocused = ImGui::IsWindowFocused();//  聚焦为true
+			m_ViewportHovered = ImGui::IsWindowHovered();// 悬停为true
 			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-
-			//XW_CORE_WARN("Focused: {0}", m_ViewportFocused);
-			//XW_CORE_WARN("Hovered: {0}", m_ViewportHovered);
 
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 			if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
