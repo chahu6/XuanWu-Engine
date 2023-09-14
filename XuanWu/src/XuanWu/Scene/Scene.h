@@ -9,6 +9,7 @@ namespace XuanWu
 	{
 	public:
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 		Scene();
 		~Scene();
 

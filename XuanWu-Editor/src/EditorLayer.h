@@ -1,6 +1,7 @@
 #pragma once
 #include <XuanWu.h>
 #include "XuanWu/Scene/Entity.h"
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace XuanWu
 {
@@ -33,6 +34,7 @@ namespace XuanWu
 		OrthographicCameraController m_CameraController;
 
 		Ref<Scene> m_ActiveScene;
+		SceneHierarchyPanel m_SceneHierarchyPanel;
 
 		Entity m_SquareEntity;
 		Entity m_CameraEntity;

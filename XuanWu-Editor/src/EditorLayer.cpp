@@ -53,8 +53,6 @@ namespace XuanWu
 
 			virtual void OnUpdate(Timestep ts) override
 			{
-				XW_CORE_WARN("Timestep: {0}", (float)1/ts);
-
 				auto& transform = GetComponent<TransformComponent>().Transform;
 
 				float speed = 5.0f;
@@ -71,6 +69,8 @@ namespace XuanWu
 
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -112,6 +112,9 @@ namespace XuanWu
 	void EditorLayer::OnImGuiRender()
 	{
 		XW_PROFILE_FUNCTION();
+
+		//≥°æ∞√Ê∞Â‰÷»æ
+		m_SceneHierarchyPanel.OnImGuiRender();
 
 		// ≤Àµ•¿∏
 		if (ImGui::BeginMainMenuBar())

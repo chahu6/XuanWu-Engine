@@ -40,6 +40,8 @@ namespace XuanWu
 		}
 
 		operator bool() const { return m_EntityHandle != entt::null; }
+		bool operator==(const Entity& other) { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
+		bool operator!=(const Entity& other) { return !(*this == other); }
 	private:
 		entt::entity m_EntityHandle{ entt::null }; //entt的实体ID是从0开始的，所以不能初始化为0
 		Scene* m_Scene = nullptr;
