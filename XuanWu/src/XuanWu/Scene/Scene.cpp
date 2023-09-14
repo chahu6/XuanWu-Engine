@@ -10,48 +10,10 @@ namespace XuanWu
 {
 	Scene::Scene()
 	{
-#if ENTT_EMPLACE_TEST
-		struct TransformComponent
-		{
-			glm::mat4 Transform;
+	}
 
-			TransformComponent() = default;
-			TransformComponent(const TransformComponent&) = default;
-			TransformComponent(const glm::mat4& transform)
-				:Transform(transform){}
-			operator glm::mat4& () { return Transform; }
-			operator const glm::mat4& () const { return Transform; }
-		};
-
-		struct MeshComponent{
-			glm::mat4 Transform;
-		};
-
-		TransformComponent transform;
-
-		// 1、创建一个实体，返回uint32_t
-		entt::entity entity = m_Registry.create();
-
-		m_Registry.emplace<TransformComponent>(entity, glm::mat4(1.0f));
-
-		if(m_Registry.any_of<TransformComponent>(entity))
-			TransformComponent& t = m_Registry.get<TransformComponent>(entity);
-
-		auto view = m_Registry.view<TransformComponent>();
-		for (auto entity : view)
-		{
-			TransformComponent& transform1 = m_Registry.get<TransformComponent>(entity);
-			TransformComponent& transform2 = view.get<TransformComponent>(entity);
-		}
-
-		auto group = m_Registry.group<TransformComponent>(entt::get<MeshComponent>);
-		for (auto entity : group) {
-			auto[transfrom3, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-			//Renderer::Submit(mesh, transform);
-		}
-
-		m_Registry.on_construct<TransformComponent>().connect<&OnTransformConstruct>();
-#endif
+	Scene::~Scene()
+	{
 	}
 
 	Entity Scene::CreateEntity(const std::string_view name)
@@ -71,13 +33,13 @@ namespace XuanWu
 			{
 				if (!nsc.Instance) {
 					// 实例化CameraController
-					nsc.InstantiateFunction();
+					nsc.Instance = nsc.InstantiateScript();
 					nsc.Instance->m_Entity = Entity{ entity, this };
 					// 执行CameraController脚本的OnCreate函数
-					nsc.OnCreateFunction(nsc.Instance);
+					nsc.Instance->OnCreate();
 				}
 
-				nsc.OnUpdateFunction(nsc.Instance, ts);
+				nsc.Instance->OnUpdate(ts);
 			});
 		}
 
@@ -87,7 +49,7 @@ namespace XuanWu
 			auto view = m_Registry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
 			{
-				auto const& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				auto[transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 				if (camera.Primary)
 				{
 					mainCamrea = &camera.Camera;
@@ -104,7 +66,7 @@ namespace XuanWu
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
-				auto const&[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 				Renderer2D::DrawQuad(transform, sprite.Color);
 			}
 			Renderer2D::EndScene();
@@ -125,9 +87,5 @@ namespace XuanWu
 				cameraComponent.Camera.SetViewportSize(width, height);
 			}
 		}
-	}
-
-	Scene::~Scene()
-	{
 	}
 }
