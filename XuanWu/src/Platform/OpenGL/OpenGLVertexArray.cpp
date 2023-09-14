@@ -73,7 +73,7 @@ namespace XuanWu {
 				ShaderDataTypeToOpenGLBaseType(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
-				(void*)element.Offset);
+				(const void*)element.Offset);
 			index++;
 		}
 		m_VertexBuffers.push_back(vertexBuffer);

@@ -1427,6 +1427,7 @@
     <ClInclude Include="src\XuanWu\Scene\Entity.h" />
     <ClInclude Include="src\XuanWu\Render\Camera.h" />
     <ClInclude Include="src\XuanWu\Render\SceneCamera.h" />
+    <ClInclude Include="src\XuanWu\Scene\ScriptableEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">

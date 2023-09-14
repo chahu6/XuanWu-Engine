@@ -36,8 +36,39 @@ namespace XuanWu
 
 		m_SecondCamera = m_ActiveScene->CreateEntity("Second Camera");
 		m_SecondCamera.AddComponent<CameraComponent>();
-
 		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
+
+		class CameraController : public ScriptableEntity
+		{
+		public:
+			void OnCreate()
+			{
+
+			}
+
+			void OnDestroy()
+			{
+			}
+
+			void OnUpdate(Timestep ts)
+			{
+				XW_CORE_WARN("Timestep: {0}", (float)1/ts);
+
+				auto& transform = GetComponent<TransformComponent>().Transform;
+
+				float speed = 5.0f;
+				if (Input::IsKeyPressed(XW_KEY_W))
+					transform[3][1] += speed * ts;
+				else if (Input::IsKeyPressed(XW_KEY_S))
+					transform[3][1] -= speed * ts;
+				if (Input::IsKeyPressed(XW_KEY_A))
+					transform[3][0] -= speed * ts;
+				else if (Input::IsKeyPressed(XW_KEY_D))
+					transform[3][0] += speed * ts;
+			}
+		};
+
+		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
 
 	void EditorLayer::OnDetach()

@@ -192,6 +192,7 @@
     <ClInclude Include="src\XuanWu\Scene\Components.h" />
     <ClInclude Include="src\XuanWu\Scene\Entity.h" />
     <ClInclude Include="src\XuanWu\Scene\Scene.h" />
+    <ClInclude Include="src\XuanWu\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\xwpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />

@@ -65,13 +65,29 @@ namespace XuanWu
 
 	void Scene::OnUpdate(Timestep ts)
 	{
+		{
+			//  [=]是隐式值捕获，捕获ts
+			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) 
+			{
+				if (!nsc.Instance) {
+					// 实例化CameraController
+					nsc.InstantiateFunction();
+					nsc.Instance->m_Entity = Entity{ entity, this };
+					// 执行CameraController脚本的OnCreate函数
+					nsc.OnCreateFunction(nsc.Instance);
+				}
+
+				nsc.OnUpdateFunction(nsc.Instance, ts);
+			});
+		}
+
 		Camera* mainCamrea = nullptr;
 		glm::mat4* cameraTransform = nullptr;
 		{
 			auto view = m_Registry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
 			{
-				auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				auto const& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 				if (camera.Primary)
 				{
 					mainCamrea = &camera.Camera;
@@ -88,7 +104,7 @@ namespace XuanWu
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto const&[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 				Renderer2D::DrawQuad(transform, sprite.Color);
 			}
 			Renderer2D::EndScene();
