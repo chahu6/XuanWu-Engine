@@ -14,7 +14,9 @@ namespace XuanWu
 		void SetContext(const Ref<Scene>& context);
 
 		void OnImGuiRender();
+
 		void DrawEntityNode(Entity entity);
+		void DrawComponents(Entity entity);
 	private:
 		Ref<Scene> m_Context;
 

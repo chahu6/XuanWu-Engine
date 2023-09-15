@@ -31,12 +31,12 @@ namespace XuanWu
 		m_SquareEntity = m_ActiveScene->CreateEntity(u8"方块");
 		m_SquareEntity.AddComponent<SpriteRendererComponent>();
 
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
-		m_CameraEntity.AddComponent<CameraComponent>();
-
-		m_SecondCamera = m_ActiveScene->CreateEntity("Second Camera");
+		m_SecondCamera = m_ActiveScene->CreateEntity(u8"摄像机二");
 		m_SecondCamera.AddComponent<CameraComponent>();
 		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
+
+		m_CameraEntity = m_ActiveScene->CreateEntity(u8"摄像机");
+		m_CameraEntity.AddComponent<CameraComponent>();
 
 		class CameraController : public ScriptableEntity
 		{
@@ -151,7 +151,7 @@ namespace XuanWu
 				ImGui::Separator();
 			}
 			
-			ImGui::Text(u8"Camera");
+			ImGui::Text(u8"%s", m_SecondCamera.GetComponent<TagComponent>().Tag.c_str());
 			ImGui::DragFloat3("Camera Transform",
 				glm::value_ptr(m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
 			if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
