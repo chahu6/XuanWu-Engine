@@ -28,8 +28,11 @@ namespace XuanWu
 
 		m_ActiveScene = CreateRef<Scene>();
 
-		m_SquareEntity = m_ActiveScene->CreateEntity(u8"方块");
-		m_SquareEntity.AddComponent<SpriteRendererComponent>();
+		m_SquareEntity = m_ActiveScene->CreateEntity(u8"蓝方块");
+		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(0.f, 0.f, 1.0f, 1.0f));
+
+		m_RedSquare = m_ActiveScene->CreateEntity(u8"红方块");
+		m_RedSquare.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.f, 1.f));
 
 		m_SecondCamera = m_ActiveScene->CreateEntity(u8"摄像机二");
 		m_SecondCamera.AddComponent<CameraComponent>();

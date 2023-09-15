@@ -37,6 +37,8 @@ namespace XuanWu
 		SceneHierarchyPanel m_SceneHierarchyPanel;
 
 		Entity m_SquareEntity;
+		Entity m_RedSquare;
+
 		Entity m_CameraEntity;
 		Entity m_SecondCamera;
 		bool m_PrimaryCamera = false;

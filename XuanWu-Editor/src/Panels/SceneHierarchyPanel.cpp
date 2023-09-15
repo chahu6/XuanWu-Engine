@@ -28,7 +28,9 @@ namespace XuanWu
 
 			// 点击空白区域，取消选中
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+			{
 				m_SelectionContext = {};
+			}
 		}
 		ImGui::End();
 
@@ -84,6 +86,82 @@ namespace XuanWu
 				auto& transform = entity.GetComponent<TransformComponent>().Transform;
 				ImGui::DragFloat3("Position", glm::value_ptr(transform[3]), 0.1f);
 				// 展开树节点
+				ImGui::TreePop();
+			}
+		}
+
+		if (entity.HasComponent<CameraComponent>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+			{
+				auto& cameraComponent = entity.GetComponent<CameraComponent>();
+				auto& camera = cameraComponent.Camera;
+
+				ImGui::Checkbox("Primary", &cameraComponent.Primary);
+
+				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+				const char* currentProjectionTypeString = projectionTypeStrings[(uint8_t)camera.GetProjectionType()];
+				if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						bool bIsSelect = currentProjectionTypeString == projectionTypeStrings[i];
+						if (ImGui::Selectable(projectionTypeStrings[i], bIsSelect))
+						{
+							currentProjectionTypeString = projectionTypeStrings[i];
+
+							camera.SetProjectionType((SceneCamera::ProjectionType)i);
+						}
+						if (bIsSelect)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+				{
+					float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
+					if (ImGui::DragFloat(u8"视场角", &verticalFov))
+					{
+						camera.SetPerspectiveVerticalFOV(glm::radians(verticalFov));
+					}
+
+					float perNear = camera.GetPerspectiveNear();
+					if (ImGui::DragFloat("Near", &perNear))
+					{
+						camera.SetPerspectiveNear(perNear);
+					}
+
+					float perFar = camera.GetPerspectiveFar();
+					if (ImGui::DragFloat("Far", &perFar))
+					{
+						camera.SetPerspectiveFar(perFar);
+					}
+				}
+				else
+				{
+					float orthoSize = camera.GetOrthographicSize();
+					if (ImGui::DragFloat("Size", &orthoSize))
+					{
+						camera.SetOrthographicSize(orthoSize);
+					}
+
+					float orthoNear = camera.GetOrthographicNear();
+					if (ImGui::DragFloat("Near", &orthoNear))
+					{
+						camera.SetOrthographicNear(orthoNear);
+					}
+
+					float orthoFar = camera.GetOrthographicFar();
+					if (ImGui::DragFloat("Far", &orthoFar))
+					{
+						camera.SetOrthographicFar(orthoFar);
+					}
+
+					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
+				}
 				ImGui::TreePop();
 			}
 		}
