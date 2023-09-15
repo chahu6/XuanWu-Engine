@@ -65,36 +65,29 @@ namespace XuanWu
 
 	void SceneHierarchyPanel::DrawComponents(Entity entity)
 	{
-		if (entity.HasComponent<TagComponent>())
-		{
-			auto& tag = entity.GetComponent<TagComponent>().Tag;
-
-			char buffer[256];
-			memset(buffer, 0, sizeof(buffer));
-
-			strcpy(buffer, tag.c_str());
-			if (ImGui::InputText(u8"名称", buffer, sizeof(buffer)))
+		DrawComponent<TagComponent>("Tag", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
 			{
-				tag = std::string(buffer);
-			}
-		}
+				auto& tag = selected.GetComponent<TagComponent>().Tag;
 
-		if (entity.HasComponent<TransformComponent>())
-		{
-			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Tranform"))
+				char buffer[256];
+				memset(buffer, 0, sizeof(buffer));
+
+				strcpy(buffer, tag.c_str());
+				if (ImGui::InputText(u8"名称", buffer, sizeof(buffer)))
+				{
+					tag = std::string(buffer);
+				}
+			});
+
+		DrawComponent<TransformComponent>("Tranform", ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
 			{
-				auto& transform = entity.GetComponent<TransformComponent>().Transform;
+				auto& transform = selected.GetComponent<TransformComponent>().Transform;
 				ImGui::DragFloat3("Position", glm::value_ptr(transform[3]), 0.1f);
-				// 展开树节点
-				ImGui::TreePop();
-			}
-		}
+			});
 
-		if (entity.HasComponent<CameraComponent>())
-		{
-			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+		DrawComponent<CameraComponent>("Camera", ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
 			{
-				auto& cameraComponent = entity.GetComponent<CameraComponent>();
+				auto& cameraComponent = selected.GetComponent<CameraComponent>();
 				auto& camera = cameraComponent.Camera;
 
 				ImGui::Checkbox("Primary", &cameraComponent.Primary);
@@ -162,8 +155,13 @@ namespace XuanWu
 
 					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
 				}
-				ImGui::TreePop();
-			}
-		}
+			});
+
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
+			{
+				auto& sprite = selected.GetComponent<SpriteRendererComponent>();
+				
+				ImGui::DragFloat4(u8"颜色", glm::value_ptr(sprite.Color), 0.01f);
+			});
 	}
 }

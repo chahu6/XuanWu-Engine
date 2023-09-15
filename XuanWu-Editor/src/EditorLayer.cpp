@@ -143,25 +143,6 @@ namespace XuanWu
 			ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
 			ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
 			ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
-			
-			if (m_SquareEntity)
-			{
-				ImGui::Separator();
-				auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-				auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
-				ImGui::Text(tag.c_str());
-				ImGui::ColorEdit4(u8"颜色编辑器", &squareColor.x /* glm::value_ptr(squareColor) */);
-				ImGui::Separator();
-			}
-			
-			ImGui::Text(u8"%s", m_SecondCamera.GetComponent<TagComponent>().Tag.c_str());
-			ImGui::DragFloat3("Camera Transform",
-				glm::value_ptr(m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
-			if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
-			{
-				m_CameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-				m_SecondCamera.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-			}
 		}
 		ImGui::End();
 
