@@ -8,7 +8,7 @@ namespace XuanWu
 	class SceneHierarchyPanel
 	{
 	public:
-		using DrawComponentFunc = void(*)(Ref<Scene>& context, Entity selected, bool bIsOpen);
+		using DrawComponentFunc = void(*)(Ref<Scene>& context, Entity selected);
 
 		SceneHierarchyPanel() = default;
 		SceneHierarchyPanel(const Ref<Scene>& context);
@@ -21,19 +21,43 @@ namespace XuanWu
 		void DrawComponents(Entity entity);
 
 		template<typename T>
-		void DrawComponent(std::string_view name, char flags, DrawComponentFunc func)
+		void DrawComponent(std::string_view name, Entity entity, char flags, DrawComponentFunc func)
 		{
 			if (m_SelectionContext.HasComponent<T>())
 			{
+				ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 				bool bIsOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.data());
 
-				func(m_Context, m_SelectionContext, bIsOpen);
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+				float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+				ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+				if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
+				{
+					ImGui::OpenPopup(TXT("ComponentSettings"));
+				}
+				ImGui::PopStyleVar();
+
+				bool removeComponent = false;
+				if (ImGui::BeginPopup(TXT("ComponentSettings")))
+				{
+					if (ImGui::MenuItem(TXT("ÒÆ³ý×é¼þ")))
+						removeComponent = true;
+
+					ImGui::EndPopup();
+				}
 
 				if (bIsOpen)
 				{
+					func(m_Context, m_SelectionContext);
+
 					ImGui::TreePop();
 				}
 				ImGui::Separator();
+
+				if (removeComponent)
+				{
+					entity.RemoveComponent<T>();
+				}
 			}
 		}
 
