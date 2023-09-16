@@ -23,6 +23,7 @@ namespace XuanWu
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
+		// X
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.8f, 0.1f, 0.15f, 1.0f});
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
@@ -79,7 +80,7 @@ namespace XuanWu
 
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
-		ImGui::Begin(u8"场景面板");
+		ImGui::Begin(TXT("场景面板"));
 		{
 			m_Context->m_Registry.each([&](auto entityID)
 			{
@@ -89,17 +90,42 @@ namespace XuanWu
 
 			// 点击空白区域，取消选中
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-			{
 				m_SelectionContext = {};
+
+			//  ImGuiPopupFlags_NoOpenOverItems 不加这个Flags，右键选项还是创建实体 For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space
+			if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+			{
+				if (ImGui::MenuItem(TXT("创建空实体")))
+				{
+					m_Context->CreateEntity(TXT("Empty Entity"));
+				}
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::End();
 
-		ImGui::Begin(u8"属性面板");
+		ImGui::Begin(TXT("属性面板"));
 		{
 			if (m_SelectionContext)
 			{
 				DrawComponents(m_SelectionContext);
+			}
+
+			if (ImGui::Button(TXT("添加组件")))
+				ImGui::OpenPopup(TXT("AddComponent"));
+			if (ImGui::BeginPopup(TXT("AddComponent")))
+			{
+				if (ImGui::MenuItem(TXT("Camera")))
+				{
+					m_SelectionContext.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem(TXT("Sprite Renderer")))
+				{
+					m_SelectionContext.AddComponent<SpriteRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::End();
@@ -118,113 +144,158 @@ namespace XuanWu
 			m_SelectionContext = entity;
 		}
 
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem(TXT("删除实体")))
+				entityDeleted = true;
+			ImGui::EndPopup();
+		}
+
 		if (opened)
 		{
 			ImGui::TreePop();
 		}
+
+		if (entityDeleted)
+			m_Context->DestroyEntity(entity);
 	}
 
 	void SceneHierarchyPanel::DrawComponents(Entity entity)
 	{
-		DrawComponent<TagComponent>("Tag", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
+
+		DrawComponent<TagComponent>(TXT("Tag"), treeNodeFlags, [](Ref<Scene>& context, Entity selected, bool bIsOpen)
 			{
-				auto& tag = selected.GetComponent<TagComponent>().Tag;
-
-				char buffer[256];
-				memset(buffer, 0, sizeof(buffer));
-
-				strcpy(buffer, tag.c_str());
-				if (ImGui::InputText(u8"名称", buffer, sizeof(buffer)))
+				if (bIsOpen)
 				{
-					tag = std::string(buffer);
+					auto& tag = selected.GetComponent<TagComponent>().Tag;
+
+					char buffer[256];
+					memset(buffer, 0, sizeof(buffer));
+
+					strcpy(buffer, tag.c_str());
+					if (ImGui::InputText(u8"名称", buffer, sizeof(buffer)))
+					{
+						tag = std::string(buffer);
+					}
 				}
 			});
 
-		DrawComponent<TransformComponent>("Tranform", ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
+		DrawComponent<TransformComponent>(TXT("Tranform"), treeNodeFlags, [](Ref<Scene>& context, Entity selected, bool bIsOpen)
 			{
-				auto& tc = selected.GetComponent<TransformComponent>();
-				DrawVec3Control("Translation", tc.Translation);
-				DrawVec3Control("Rotation", tc.Rotation);
-				DrawVec3Control("Scale", tc.Scale, 1.0f);
+				if (bIsOpen)
+				{
+					auto& tc = selected.GetComponent<TransformComponent>();
+					DrawVec3Control(TXT("Translation"), tc.Translation);
+					DrawVec3Control(TXT("Rotation"), tc.Rotation);
+					DrawVec3Control(TXT("Scale"), tc.Scale, 1.0f);
+				}
 			});
 
-		DrawComponent<CameraComponent>("Camera", ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
+		DrawComponent<CameraComponent>(TXT("Camera"), treeNodeFlags, [](Ref<Scene>& context, Entity selected, bool bIsOpen)
 			{
-				auto& cameraComponent = selected.GetComponent<CameraComponent>();
-				auto& camera = cameraComponent.Camera;
-
-				ImGui::Checkbox("Primary", &cameraComponent.Primary);
-
-				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-				const char* currentProjectionTypeString = projectionTypeStrings[(uint8_t)camera.GetProjectionType()];
-				if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+				if (bIsOpen)
 				{
-					for (int i = 0; i < 2; i++)
+					auto& cameraComponent = selected.GetComponent<CameraComponent>();
+					auto& camera = cameraComponent.Camera;
+
+					ImGui::Checkbox("Primary", &cameraComponent.Primary);
+
+					const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+					const char* currentProjectionTypeString = projectionTypeStrings[(uint8_t)camera.GetProjectionType()];
+					if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 					{
-						bool bIsSelect = currentProjectionTypeString == projectionTypeStrings[i];
-						if (ImGui::Selectable(projectionTypeStrings[i], bIsSelect))
+						for (int i = 0; i < 2; i++)
 						{
-							currentProjectionTypeString = projectionTypeStrings[i];
+							bool bIsSelect = currentProjectionTypeString == projectionTypeStrings[i];
+							if (ImGui::Selectable(projectionTypeStrings[i], bIsSelect))
+							{
+								currentProjectionTypeString = projectionTypeStrings[i];
 
-							camera.SetProjectionType((SceneCamera::ProjectionType)i);
+								camera.SetProjectionType((SceneCamera::ProjectionType)i);
+							}
+							if (bIsSelect)
+							{
+								ImGui::SetItemDefaultFocus();
+							}
 						}
-						if (bIsSelect)
+						ImGui::EndCombo();
+					}
+
+					if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+					{
+						float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
+						if (ImGui::DragFloat(u8"视场角", &verticalFov))
 						{
-							ImGui::SetItemDefaultFocus();
+							camera.SetPerspectiveVerticalFOV(glm::radians(verticalFov));
+						}
+
+						float perNear = camera.GetPerspectiveNear();
+						if (ImGui::DragFloat("Near", &perNear))
+						{
+							camera.SetPerspectiveNear(perNear);
+						}
+
+						float perFar = camera.GetPerspectiveFar();
+						if (ImGui::DragFloat("Far", &perFar))
+						{
+							camera.SetPerspectiveFar(perFar);
 						}
 					}
-					ImGui::EndCombo();
-				}
-
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-				{
-					float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
-					if (ImGui::DragFloat(u8"视场角", &verticalFov))
+					else
 					{
-						camera.SetPerspectiveVerticalFOV(glm::radians(verticalFov));
-					}
+						float orthoSize = camera.GetOrthographicSize();
+						if (ImGui::DragFloat("Size", &orthoSize))
+						{
+							camera.SetOrthographicSize(orthoSize);
+						}
 
-					float perNear = camera.GetPerspectiveNear();
-					if (ImGui::DragFloat("Near", &perNear))
-					{
-						camera.SetPerspectiveNear(perNear);
-					}
+						float orthoNear = camera.GetOrthographicNear();
+						if (ImGui::DragFloat("Near", &orthoNear))
+						{
+							camera.SetOrthographicNear(orthoNear);
+						}
 
-					float perFar = camera.GetPerspectiveFar();
-					if (ImGui::DragFloat("Far", &perFar))
-					{
-						camera.SetPerspectiveFar(perFar);
-					}
-				}
-				else
-				{
-					float orthoSize = camera.GetOrthographicSize();
-					if (ImGui::DragFloat("Size", &orthoSize))
-					{
-						camera.SetOrthographicSize(orthoSize);
-					}
+						float orthoFar = camera.GetOrthographicFar();
+						if (ImGui::DragFloat("Far", &orthoFar))
+						{
+							camera.SetOrthographicFar(orthoFar);
+						}
 
-					float orthoNear = camera.GetOrthographicNear();
-					if (ImGui::DragFloat("Near", &orthoNear))
-					{
-						camera.SetOrthographicNear(orthoNear);
+						ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
 					}
-
-					float orthoFar = camera.GetOrthographicFar();
-					if (ImGui::DragFloat("Far", &orthoFar))
-					{
-						camera.SetOrthographicFar(orthoFar);
-					}
-
-					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
 				}
 			});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", ImGuiTreeNodeFlags_DefaultOpen, [](Ref<Scene>& context, Entity selected)
+		DrawComponent<SpriteRendererComponent>(TXT("Sprite Renderer"), treeNodeFlags, [](Ref<Scene>& context, Entity selected, bool bIsOpen)
 			{
-				auto& sprite = selected.GetComponent<SpriteRendererComponent>();
-				
-				ImGui::DragFloat4(u8"颜色", glm::value_ptr(sprite.Color), 0.01f);
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+				ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+				if (ImGui::Button("+", ImVec2{ 20, 20 }))
+				{
+					ImGui::OpenPopup(TXT("ComponentSettings"));
+				}
+				ImGui::PopStyleVar();
+
+				bool removeComponent = false;
+				if (ImGui::BeginPopup(TXT("ComponentSettings")))
+				{
+					if (ImGui::MenuItem(TXT("移除组件")))
+						removeComponent = true;
+
+					ImGui::EndPopup();
+				}
+
+				if (bIsOpen)
+				{
+					auto& sprite = selected.GetComponent<SpriteRendererComponent>();
+
+					ImGui::DragFloat4(TXT("颜色"), glm::value_ptr(sprite.Color), 0.01f);
+				}
+
+				if (removeComponent)
+					selected.RemoveComponent<SpriteRendererComponent>();
 			});
 	}
 }

@@ -8,7 +8,7 @@ namespace XuanWu
 	class SceneHierarchyPanel
 	{
 	public:
-		using DrawComponentFunc = void(*)(Ref<Scene>& context, Entity selected);
+		using DrawComponentFunc = void(*)(Ref<Scene>& context, Entity selected, bool bIsOpen);
 
 		SceneHierarchyPanel() = default;
 		SceneHierarchyPanel(const Ref<Scene>& context);
@@ -25,12 +25,15 @@ namespace XuanWu
 		{
 			if (m_SelectionContext.HasComponent<T>())
 			{
-				if (ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.data()))
+				bool bIsOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.data());
+
+				func(m_Context, m_SelectionContext, bIsOpen);
+
+				if (bIsOpen)
 				{
-					func(m_Context, m_SelectionContext);
 					ImGui::TreePop();
-					ImGui::Separator();
 				}
+				ImGui::Separator();
 			}
 		}
 

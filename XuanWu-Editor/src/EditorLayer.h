@@ -31,7 +31,6 @@ namespace XuanWu
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 
 		Ref<XuanWu::Framebuffer> m_Framebuffer;
-		OrthographicCameraController m_CameraController;
 
 		Ref<Scene> m_ActiveScene;
 		SceneHierarchyPanel m_SceneHierarchyPanel;

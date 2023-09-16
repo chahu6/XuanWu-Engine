@@ -7,3 +7,5 @@
 	#error "x86 Builds are not supported!"
 	#endif
 #endif
+
+#define TXT(x) u8 ## x

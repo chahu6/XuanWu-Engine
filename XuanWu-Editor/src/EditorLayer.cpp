@@ -8,7 +8,7 @@
 namespace XuanWu
 {
 	EditorLayer::EditorLayer()
-		:Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, false)
+		:Layer("EditorLayer")
 	{
 	}
 
@@ -23,8 +23,6 @@ namespace XuanWu
 		spec.Width = 1280;
 		spec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(spec);
-
-		m_CameraController.SetZoomLevel(4.5f);
 
 		m_ActiveScene = CreateRef<Scene>();
 
@@ -90,13 +88,8 @@ namespace XuanWu
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
 		{
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
-
-		//没被选中就不能动
-		if(m_ViewportFocused && m_ViewportHovered)
-			m_CameraController.OnUpdate(ts);
 
 		// 重置Stats统计的数据
 		Renderer2D::ResetStats();
@@ -175,8 +168,6 @@ namespace XuanWu
 	{
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
-
-		m_CameraController.OnEvent(event);
 	}
 
 	bool EditorLayer::OnWindowResized(WindowResizeEvent& event)
