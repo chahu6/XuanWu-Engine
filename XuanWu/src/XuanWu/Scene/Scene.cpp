@@ -89,9 +89,14 @@ namespace XuanWu
 			auto& cameraComponent = view.get<CameraComponent>(entity);
 			if (!cameraComponent.FixedAspectRatio)
 			{
-				cameraComponent.Camera.SetViewportSize(width, height);
+				cameraComponent.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 			}
 		}
+	}
+
+	void Scene::SetFilepath(const std::string_view filepath)
+	{
+		m_Filepath = filepath;
 	}
 
 	template<typename T>

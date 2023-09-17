@@ -21,6 +21,7 @@ namespace XuanWu
 		void OnUpdate(Timestep ts);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
+		void SetFilepath(const std::string_view filepath);
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
@@ -28,7 +29,10 @@ namespace XuanWu
 		entt::registry m_Registry;
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+
+		std::string m_Filepath;
 	public:
 		inline entt::registry& Reg() { return m_Registry; }
+		inline std::string& GetFilepath() { return m_Filepath; }
 	};
 }

@@ -7,6 +7,8 @@ namespace XuanWu
 	class Serializer
 	{
 	public:
+		virtual void SetContext(Ref<Scene>& context) = 0;
+
 		virtual void Serialize(const std::string_view filepath) = 0;
 		virtual void SerializeRuntime(const std::string_view filepath) = 0;
 

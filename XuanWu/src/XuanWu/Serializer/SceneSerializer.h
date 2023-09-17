@@ -8,6 +8,8 @@ namespace XuanWu
 	public:
 		SceneSerializer(Ref<Scene>& scene);
 
+		virtual void SetContext(Ref<Scene>& context) override;
+
 		virtual void Serialize(const std::string_view filepath) override;
 		virtual void SerializeRuntime(const std::string_view filepath) override;
 

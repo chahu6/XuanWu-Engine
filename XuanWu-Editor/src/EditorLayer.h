@@ -18,8 +18,14 @@ namespace XuanWu
 		virtual void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& event) override;
+
 	protected:
 		bool OnWindowResized(WindowResizeEvent& event);
+		bool OnKeyPressed(KeyPressedEvent& event);
+
+		void NewScene();
+		void OpenScene();
+		void SaveScene();
 	private:
 		Ref<Texture2D> m_Texture;
 		Ref<Texture2D> m_SpriteTexture;

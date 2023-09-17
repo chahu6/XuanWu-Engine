@@ -195,6 +195,7 @@
     <ClInclude Include="src\XuanWu\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\XuanWu\Serializer\SceneSerializer.h" />
     <ClInclude Include="src\XuanWu\Serializer\Serializer.h" />
+    <ClInclude Include="src\XuanWu\Utils\PlatformUtils.h" />
     <ClInclude Include="src\xwpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -614,6 +615,7 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowPlatformUtils.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\XuanWu\Camera\PerspectiveCamera.cpp" />

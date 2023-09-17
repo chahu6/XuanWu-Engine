@@ -1,9 +1,9 @@
-#include "xwpch.h"
+ï»¿#include "xwpch.h"
 #include "SceneSerializer.h"
 #include "XuanWu/Scene/Entity.h"
 #include "XuanWu/Components/Components.h"
 
-// ±ØĞëÌí¼ÓµÄºê£¬²»È»Á´½Ó²»ÁË
+// å¿…é¡»æ·»åŠ çš„å®ï¼Œä¸ç„¶é“¾æ¥ä¸äº†
 #define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
 
@@ -125,6 +125,11 @@ namespace XuanWu
 	{
 	}
 
+	void SceneSerializer::SetContext(Ref<Scene>& context)
+	{
+		m_Scene = context;
+	}
+
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out << YAML::BeginMap;
@@ -215,7 +220,7 @@ namespace XuanWu
 
 	void SceneSerializer::SerializeRuntime(const std::string_view filepath)
 	{
-		XW_CORE_ASSERT(false, "Ã»ÓĞÊµÏÖ");
+		XW_CORE_ASSERT(false, "æ²¡æœ‰å®ç°");
 	}
 
 	bool SceneSerializer::Deserialize(const std::string_view filepath)
@@ -229,7 +234,7 @@ namespace XuanWu
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		XW_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+		XW_CORE_TRACE("Deserializing scene {0}", sceneName);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -290,7 +295,7 @@ namespace XuanWu
 
 	bool SceneSerializer::DeserializeRuntime(const std::string_view filepath)
 	{
-		XW_CORE_ASSERT(false, "Ã»ÓĞÊµÏÖ");
+		XW_CORE_ASSERT(false, "æ²¡æœ‰å®ç°");
 
 		return false;
 	}

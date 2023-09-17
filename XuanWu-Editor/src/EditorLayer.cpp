@@ -5,6 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "XuanWu/Render/Renderer2D.h"
 
+#include "XuanWu/Utils/PlatformUtils.h"
+
 namespace XuanWu
 {
 	EditorLayer::EditorLayer()
@@ -124,20 +126,18 @@ namespace XuanWu
 			if (ImGui::BeginMenu(TXT("File")))
 			{
 				// Ìí¼Ó²Ëµ¥Ïî
-				if (ImGui::MenuItem(TXT("Open Level")))
-				{
-					m_Serializer->Deserialize("assets/scenes/Example.xw");
-				}
+				if (ImGui::MenuItem(TXT("New", "Ctrl+N")))
+					NewScene();
 
-				if (ImGui::MenuItem(TXT("Save Level")))
-				{
-					m_Serializer->Serialize("assets/scenes/Example.xw");
-				}
+				if (ImGui::MenuItem(TXT("Open Level", "Ctrl+O")))
+					OpenScene();
+
+				if (ImGui::MenuItem(TXT("Save Level", "Ctrl+S")))
+					SaveScene();
 
 				if (ImGui::MenuItem(TXT("Exit")))
-				{
 					Application::Get().Close();
-				}
+
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -179,10 +179,43 @@ namespace XuanWu
 		ImGui::PopStyleVar();
 	}
 
-	void EditorLayer::OnEvent(Event& event)
+	void EditorLayer::NewScene()
 	{
-		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
+		m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+		m_Serializer->SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string filepath = FileDialogs::OpenFile(L"XuanWu Scene (*.xw)\0*.xw\0");
+		if (!filepath.empty())
+		{
+			NewScene();
+
+			m_Serializer->Deserialize(filepath);
+
+			m_ActiveScene->SetFilepath(filepath);
+		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		if (m_ActiveScene->GetFilepath().empty())
+		{
+			std::string filepath = FileDialogs::SaveFile(L"XuanWu Scene (*.xw)\0*.xw\0");
+			if (!filepath.empty())
+			{
+				m_Serializer->Serialize(filepath);
+				m_ActiveScene->SetFilepath(filepath);
+			}
+		}
+		else
+		{
+			m_Serializer->Serialize(m_ActiveScene->GetFilepath());
+		}
 	}
 
 	bool EditorLayer::OnWindowResized(WindowResizeEvent& event)
@@ -190,5 +223,48 @@ namespace XuanWu
 		m_ViewportSize = { event.GetWidth(), event.GetHeight() };
 
 		return false;
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
+	{
+		if(event.GetRepeatCount() > 0)
+			return false;
+
+		bool control = Input::IsKeyPressed(XW_KEY_LEFT_CONTROL) || Input::IsKeyPressed(XW_KEY_RIGHT_CONTROL);
+		bool shift = Input::IsKeyPressed(XW_KEY_LEFT_SHIFT) || Input::IsKeyPressed(XW_KEY_RIGHT_SHIFT);
+
+		switch (event.GetKeyCode())
+		{
+			case Key::N:
+			{
+				if (control)
+					NewScene();
+
+				break;
+			}
+
+			case Key::O:
+			{
+				if (control)
+					OpenScene();
+
+				break;
+			}
+
+			case Key::S:
+			{
+				if (control)
+					SaveScene();
+
+				break;
+			}
+		}
+	}
+
+	void EditorLayer::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
+		dispatcher.Dispatch<KeyPressedEvent>(XW_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 	}
 }
