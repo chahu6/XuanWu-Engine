@@ -9,7 +9,7 @@
 
 #include "XuanWu/Core/Timestep.h"
 #include "XuanWu/Scene/Scene.h"
-#include "XuanWu/Scene/Components.h"
+#include "XuanWu/Components/Components.h"
 #include "XuanWu/Scene/ScriptableEntity.h"
 
 #include "XuanWu/Render/OrthographicCameraController.h"

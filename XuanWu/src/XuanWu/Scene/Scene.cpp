@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include "Entity.h"
 
-#include "Components.h"
+#include "XuanWu/Components/Components.h"
 #include "XuanWu/Render/Renderer2D.h"
 
 namespace XuanWu

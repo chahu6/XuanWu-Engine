@@ -1,7 +1,7 @@
 #include "xwpch.h"
 #include "SceneHierarchyPanel.h"
 #include <imgui/imgui.h>
-#include "XuanWu/Scene/Components.h"
+#include "XuanWu/Components/Components.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui_internal.h>
 

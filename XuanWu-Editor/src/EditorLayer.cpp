@@ -1,7 +1,7 @@
 #include "xwpch.h"
 #include "EditorLayer.h"
 
-#include "imgui/imgui.h"
+#include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "XuanWu/Render/Renderer2D.h"
 
@@ -26,17 +26,18 @@ namespace XuanWu
 
 		m_ActiveScene = CreateRef<Scene>();
 
-		m_SquareEntity = m_ActiveScene->CreateEntity(u8"蓝方块");
+#if 0
+		m_SquareEntity = m_ActiveScene->CreateEntity(TXT("蓝方块"));
 		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(0.f, 0.f, 1.0f, 1.0f));
 
-		m_RedSquare = m_ActiveScene->CreateEntity(u8"红方块");
+		m_RedSquare = m_ActiveScene->CreateEntity(TXT("红方块"));
 		m_RedSquare.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.f, 1.f));
 
-		m_SecondCamera = m_ActiveScene->CreateEntity(u8"摄像机二");
+		m_SecondCamera = m_ActiveScene->CreateEntity(TXT("摄像机二"));
 		m_SecondCamera.AddComponent<CameraComponent>();
 		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
 
-		m_CameraEntity = m_ActiveScene->CreateEntity(u8"摄像机");
+		m_CameraEntity = m_ActiveScene->CreateEntity(TXT("摄像机"));
 		m_CameraEntity.AddComponent<CameraComponent>();
 
 		class CameraController : public ScriptableEntity
@@ -71,7 +72,11 @@ namespace XuanWu
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
+#endif
+
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+		m_Serializer = Serializer::Create(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -116,10 +121,20 @@ namespace XuanWu
 		if (ImGui::BeginMainMenuBar())
 		{
 			// 添加一个菜单
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu(TXT("File")))
 			{
 				// 添加菜单项
-				if (ImGui::MenuItem("Exit"))
+				if (ImGui::MenuItem(TXT("Open Level")))
+				{
+					m_Serializer->Deserialize("assets/scenes/Example.xw");
+				}
+
+				if (ImGui::MenuItem(TXT("Save Level")))
+				{
+					m_Serializer->Serialize("assets/scenes/Example.xw");
+				}
+
+				if (ImGui::MenuItem(TXT("Exit")))
 				{
 					Application::Get().Close();
 				}
@@ -128,19 +143,19 @@ namespace XuanWu
 			ImGui::EndMainMenuBar();
 		}
 
-		ImGui::Begin("Settings");
+		ImGui::Begin(TXT("Settings"));
 		{
 			auto stats = Renderer2D::GetStats();
-			ImGui::Text("Renderer2D Stats: ");
-			ImGui::Text(u8"绘制次数：%d", stats.DrawCalls);
-			ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
-			ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
-			ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
+			ImGui::Text(TXT("Renderer2D Stats: "));
+			ImGui::Text(TXT("绘制次数：%d"), stats.DrawCalls);
+			ImGui::Text(TXT("四边形数量：%d"), stats.QuadCount);
+			ImGui::Text(TXT("顶点数量：%d"), stats.GetTotalVertexCount());
+			ImGui::Text(TXT("索引数量：%d"), stats.GetTotalIndexCount());
 		}
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		ImGui::Begin("Viewport");
+		ImGui::Begin(TXT("Viewport"));
 		{
 			m_ViewportFocused = ImGui::IsWindowFocused();//  聚焦为true
 			m_ViewportHovered = ImGui::IsWindowHovered();// 悬停为true
@@ -155,7 +170,7 @@ namespace XuanWu
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 		}
 		ImGui::End();
-		ImGui::Begin("DepthTexture");
+		ImGui::Begin(TXT("DepthTexture"));
 		{
 			uint32_t textureID = m_Framebuffer->GetDepthAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));

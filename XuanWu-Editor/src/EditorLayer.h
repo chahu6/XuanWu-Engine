@@ -2,6 +2,7 @@
 #include <XuanWu.h>
 #include "XuanWu/Scene/Entity.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "XuanWu/Serializer/Serializer.h"
 
 namespace XuanWu
 {
@@ -33,6 +34,7 @@ namespace XuanWu
 		Ref<XuanWu::Framebuffer> m_Framebuffer;
 
 		Ref<Scene> m_ActiveScene;
+		Ref<Serializer> m_Serializer;
 		SceneHierarchyPanel m_SceneHierarchyPanel;
 
 		Entity m_SquareEntity;

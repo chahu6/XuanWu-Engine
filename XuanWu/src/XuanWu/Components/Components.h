@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "XuanWu/Render/SceneCamera.h"
-#include "ScriptableEntity.h"
+#include "XuanWu/Scene/ScriptableEntity.h"
 #include "XuanWu/Core/Timestep.h"
 #include <glm/gtc/matrix_transform.hpp>
 

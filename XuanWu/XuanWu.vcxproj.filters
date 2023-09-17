@@ -19,6 +19,9 @@
     <Filter Include="src\XuanWu\Camera">
       <UniqueIdentifier>{9C0C7526-0823-73BC-519A-FEDDBDEF4344}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\XuanWu\Components">
+      <UniqueIdentifier>{39CFD5E4-A53B-91DF-6E2F-293DDA5AB347}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\XuanWu\Core">
       <UniqueIdentifier>{7C43D698-E8CE-435D-F1DF-C6515DEA9F5D}</UniqueIdentifier>
     </Filter>
@@ -33,6 +36,12 @@
     </Filter>
     <Filter Include="src\XuanWu\Render">
       <UniqueIdentifier>{9356BB49-FF6C-B9DF-48E4-4401B4398A67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XuanWu\Scene">
+      <UniqueIdentifier>{C170B9B4-AD69-D806-D69B-BD8BC2F3B712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XuanWu\Serializer">
+      <UniqueIdentifier>{2DEF49FA-995B-05F5-624F-9D52CE7A275D}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -92,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="src\XuanWu\Camera\PerspectiveCameraController.h">
       <Filter>src\XuanWu\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Components\Components.h">
+      <Filter>src\XuanWu\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\XuanWu\Core\Application.h">
       <Filter>src\XuanWu\Core</Filter>
@@ -156,6 +168,9 @@
     <ClInclude Include="src\XuanWu\Render\Buffer.h">
       <Filter>src\XuanWu\Render</Filter>
     </ClInclude>
+    <ClInclude Include="src\XuanWu\Render\Camera.h">
+      <Filter>src\XuanWu\Render</Filter>
+    </ClInclude>
     <ClInclude Include="src\XuanWu\Render\Framebuffer.h">
       <Filter>src\XuanWu\Render</Filter>
     </ClInclude>
@@ -180,6 +195,9 @@
     <ClInclude Include="src\XuanWu\Render\RendererAPI.h">
       <Filter>src\XuanWu\Render</Filter>
     </ClInclude>
+    <ClInclude Include="src\XuanWu\Render\SceneCamera.h">
+      <Filter>src\XuanWu\Render</Filter>
+    </ClInclude>
     <ClInclude Include="src\XuanWu\Render\Shader.h">
       <Filter>src\XuanWu\Render</Filter>
     </ClInclude>
@@ -191,6 +209,21 @@
     </ClInclude>
     <ClInclude Include="src\XuanWu\Render\VertexArray.h">
       <Filter>src\XuanWu\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Scene\Entity.h">
+      <Filter>src\XuanWu\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Scene\Scene.h">
+      <Filter>src\XuanWu\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Scene\ScriptableEntity.h">
+      <Filter>src\XuanWu\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Serializer\SceneSerializer.h">
+      <Filter>src\XuanWu\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Serializer\Serializer.h">
+      <Filter>src\XuanWu\Serializer</Filter>
     </ClInclude>
     <ClInclude Include="src\xwpch.h">
       <Filter>src</Filter>
@@ -1422,12 +1455,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\XuanWu\Scene\Scene.h" />
-    <ClInclude Include="src\XuanWu\Scene\Components.h" />
-    <ClInclude Include="src\XuanWu\Scene\Entity.h" />
-    <ClInclude Include="src\XuanWu\Render\Camera.h" />
-    <ClInclude Include="src\XuanWu\Render\SceneCamera.h" />
-    <ClInclude Include="src\XuanWu\Scene\ScriptableEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1505,6 +1532,9 @@
     <ClCompile Include="src\XuanWu\Render\RendererAPI.cpp">
       <Filter>src\XuanWu\Render</Filter>
     </ClCompile>
+    <ClCompile Include="src\XuanWu\Render\SceneCamera.cpp">
+      <Filter>src\XuanWu\Render</Filter>
+    </ClCompile>
     <ClCompile Include="src\XuanWu\Render\Shader.cpp">
       <Filter>src\XuanWu\Render</Filter>
     </ClCompile>
@@ -1517,14 +1547,20 @@
     <ClCompile Include="src\XuanWu\Render\VertexArray.cpp">
       <Filter>src\XuanWu\Render</Filter>
     </ClCompile>
+    <ClCompile Include="src\XuanWu\Scene\Entity.cpp">
+      <Filter>src\XuanWu\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XuanWu\Scene\Scene.cpp">
+      <Filter>src\XuanWu\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XuanWu\Serializer\SceneSerializer.cpp">
+      <Filter>src\XuanWu\Serializer</Filter>
+    </ClCompile>
     <ClCompile Include="src\xwpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\XuanWu\Scene\Scene.cpp" />
-    <ClCompile Include="src\XuanWu\Scene\Entity.cpp" />
-    <ClCompile Include="src\XuanWu\Render\SceneCamera.cpp" />
   </ItemGroup>
 </Project>
