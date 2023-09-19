@@ -207,7 +207,9 @@ namespace XuanWu
 		{
 			auto& tc = selected.GetComponent<TransformComponent>();
 			DrawVec3Control(TXT("Translation"), tc.Translation);
-			DrawVec3Control(TXT("Rotation"), tc.Rotation);
+			glm::vec3 rotation = glm::degrees(tc.Rotation);
+			DrawVec3Control(TXT("Rotation"), rotation);
+			tc.Rotation = glm::radians(rotation);
 			DrawVec3Control(TXT("Scale"), tc.Scale, 1.0f);
 		});
 

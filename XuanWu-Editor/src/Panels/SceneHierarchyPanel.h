@@ -65,5 +65,8 @@ namespace XuanWu
 		Ref<Scene> m_Context;
 
 		Entity m_SelectionContext;
+
+	public:
+		inline Entity GetSelectedEntity() { return m_SelectionContext; }
 	};
 }

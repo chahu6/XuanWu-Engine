@@ -43,8 +43,14 @@
     <Filter Include="src\XuanWu\Serializer">
       <UniqueIdentifier>{2DEF49FA-995B-05F5-624F-9D52CE7A275D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\XuanWu\Utils">
+      <UniqueIdentifier>{0405E7B4-F0FD-0507-1930-EB8B0588E512}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\ImGuizmo">
+      <UniqueIdentifier>{73BF7F4C-DF4A-ED10-E85B-700554664911}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\glm">
       <UniqueIdentifier>{829FC5A8-6E57-07F6-D75E-E051C335A2E6}</UniqueIdentifier>
@@ -225,8 +231,14 @@
     <ClInclude Include="src\XuanWu\Serializer\Serializer.h">
       <Filter>src\XuanWu\Serializer</Filter>
     </ClInclude>
+    <ClInclude Include="src\XuanWu\Utils\PlatformUtils.h">
+      <Filter>src\XuanWu\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\xwpch.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
+      <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
       <Filter>vendor\glm\glm</Filter>
@@ -1455,7 +1467,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\XuanWu\Utils\PlatformUtils.h" />
+    <ClInclude Include="src\XuanWu\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1478,6 +1490,9 @@
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowPlatformUtils.cpp">
+      <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
@@ -1560,9 +1575,12 @@
     <ClCompile Include="src\xwpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <Filter>vendor\ImGuizmo</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WindowPlatformUtils.cpp" />
+    <ClCompile Include="src\XuanWu\Math\Math.cpp" />
   </ItemGroup>
 </Project>

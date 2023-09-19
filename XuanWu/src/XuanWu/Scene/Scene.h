@@ -12,6 +12,7 @@ namespace XuanWu
 	public:
 		friend class Entity;
 		friend class SceneHierarchyPanel;
+
 		Scene();
 		~Scene();
 
@@ -22,6 +23,8 @@ namespace XuanWu
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 		void SetFilepath(const std::string_view filepath);
+
+		Entity GetPrimaryCameraEntity();
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

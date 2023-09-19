@@ -19,7 +19,8 @@ project "XuanWu-Editor"
 		"%{wks.location}/XuanWu/src",
 		"%{wks.location}/XuanWu/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

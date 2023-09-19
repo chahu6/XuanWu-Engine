@@ -9,6 +9,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <ImGuizmo.h>
 #include "font.h"
 
 
@@ -107,6 +108,7 @@ namespace XuanWu {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 
 		// 限定最小宽度
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -126,9 +128,8 @@ namespace XuanWu {
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		// Rendering
-		ImGui::Render();
+		ImGui::Render(); // 自动调用 ImGui::EndFrame();，无需手动调用
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 
 		//更新和渲染额外的平台窗口
 		//(平台函数可能会改变当前的OpenGL上下文，所以我们保存/恢复它，以便更容易地将此代码粘贴到其他地方。

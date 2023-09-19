@@ -19,6 +19,7 @@ IncludeDir["glm"] = "%{wks.location}/XuanWu/vendor/glm"
 IncludeDir["stb_image"] = "%{wks.location}/XuanWu/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/XuanWu/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/XuanWu/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "%{wks.location}/XuanWu/vendor/ImGuizmo"
 
 group "Dependencies"
 	include "XuanWu/vendor/GLFW"

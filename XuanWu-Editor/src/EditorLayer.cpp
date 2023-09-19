@@ -6,6 +6,8 @@
 #include "XuanWu/Render/Renderer2D.h"
 
 #include "XuanWu/Utils/PlatformUtils.h"
+#include <ImGuizmo.h>
+#include "XuanWu/Math/Math.h"
 
 namespace XuanWu
 {
@@ -159,7 +161,7 @@ namespace XuanWu
 		{
 			m_ViewportFocused = ImGui::IsWindowFocused();//  聚焦为true
 			m_ViewportHovered = ImGui::IsWindowHovered();// 悬停为true
-			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
 
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 			if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
@@ -168,14 +170,56 @@ namespace XuanWu
 			}
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+
+			// Gizmos
+			Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+			if (selectedEntity)
+			{
+				ImGuizmo::SetOrthographic(false);
+				ImGuizmo::SetDrawlist();
+				float windowWidth = ImGui::GetWindowWidth(); // 获取 当前的 窗口宽度
+				float windowHeight = ImGui::GetWindowHeight();
+				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+				auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+				const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+				const glm::mat4& cameraProjection = camera.GetProjection();
+				glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+				auto& tc = selectedEntity.GetComponent<TransformComponent>();
+				glm::mat4 transform = tc.GetTransform();
+
+				bool snap = Input::IsKeyPressed(Key::LEFT_CONTROL);
+				float snapValue = 0.05f;
+				if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+					snapValue = 45.0f;
+
+				float snapValues[3] = { snapValue, snapValue, snapValue };
+
+				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+					(ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+					nullptr, snap ? snapValues : nullptr);
+
+				if (ImGuizmo::IsUsing())
+				{
+					glm::vec3 Translation, Rotation, Scale;
+					Math::DecomponseTrasnform(transform, Translation, Rotation, Scale);
+
+					tc.Translation = Translation;
+					tc.Rotation = Rotation;
+					tc.Scale = Scale;
+				}
+			}
+
 		}
 		ImGui::End();
-		ImGui::Begin(TXT("DepthTexture"));
+
+		/*ImGui::Begin(TXT("DepthTexture"));
 		{
 			uint32_t textureID = m_Framebuffer->GetDepthAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 		}
-		ImGui::End();
+		ImGui::End();*/
 		ImGui::PopStyleVar();
 	}
 
@@ -258,7 +302,19 @@ namespace XuanWu
 
 				break;
 			}
+
+			case Key::W:
+				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			case Key::E:
+				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+				break;
+			case Key::R:
+				m_GizmoType = ImGuizmo::OPERATION::SCALE;
+				break;
 		}
+
+		return false;
 	}
 
 	void EditorLayer::OnEvent(Event& event)
