@@ -30,6 +30,8 @@ namespace XuanWu
 
 		m_ActiveScene = CreateRef<Scene>();
 
+		m_EditorCamera = EditorCamera(45.0f, 1.778f);
+
 #if 0
 		m_SquareEntity = m_ActiveScene->CreateEntity(TXT("蓝方块"));
 		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(0.f, 0.f, 1.0f, 1.0f));
@@ -92,12 +94,15 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
+		m_EditorCamera.OnUpdate(ts);
+
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && 
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
 		{
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 		}
 
 		// 重置Stats统计的数据
@@ -108,7 +113,7 @@ namespace XuanWu
 		RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
 		RenderCommand::Clear();
 
-		m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
 		// 解除帧缓冲绑定
 		m_Framebuffer->Unbind();
@@ -161,7 +166,7 @@ namespace XuanWu
 		{
 			m_ViewportFocused = ImGui::IsWindowFocused();//  聚焦为true
 			m_ViewportHovered = ImGui::IsWindowHovered();// 悬停为true
-			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
+			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered); // 聚焦有点毛病，
 
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 			if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
@@ -181,15 +186,20 @@ namespace XuanWu
 				float windowHeight = ImGui::GetWindowHeight();
 				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-				auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+				// Editor 时
+				const glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+				const glm::mat4 cameraProjection = m_EditorCamera.GetProjection();
+
+				// Runtime 时
+				/*auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
 				const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
 				const glm::mat4& cameraProjection = camera.GetProjection();
-				glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+				glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());*/
 
 				auto& tc = selectedEntity.GetComponent<TransformComponent>();
 				glm::mat4 transform = tc.GetTransform();
 
-				bool snap = Input::IsKeyPressed(Key::LEFT_CONTROL);
+				bool snap = Input::IsKeyPressed(Key::LeftControl);
 				float snapValue = 0.05f;
 				if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
 					snapValue = 45.0f;
@@ -274,8 +284,8 @@ namespace XuanWu
 		if(event.GetRepeatCount() > 0)
 			return false;
 
-		bool control = Input::IsKeyPressed(XW_KEY_LEFT_CONTROL) || Input::IsKeyPressed(XW_KEY_RIGHT_CONTROL);
-		bool shift = Input::IsKeyPressed(XW_KEY_LEFT_SHIFT) || Input::IsKeyPressed(XW_KEY_RIGHT_SHIFT);
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
 
 		switch (event.GetKeyCode())
 		{
@@ -319,6 +329,8 @@ namespace XuanWu
 
 	void EditorLayer::OnEvent(Event& event)
 	{
+		m_EditorCamera.OnEvent(event);
+
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
 		dispatcher.Dispatch<KeyPressedEvent>(XW_BIND_EVENT_FN(EditorLayer::OnKeyPressed));

@@ -45,7 +45,7 @@ namespace XuanWu {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(XW_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(Application::OnWindowResize));
-		if (XuanWu::Input::IsKeyPressed(XW_KEY_ESCAPE))
+		if (XuanWu::Input::IsKeyPressed(Key::Escape))
 			m_Running = false;
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)

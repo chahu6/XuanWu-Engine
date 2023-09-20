@@ -2,6 +2,7 @@
 
 #include <entt.hpp>
 #include "XuanWu/Core/Timestep.h"
+#include "XuanWu/Render/EditorCamera.h"
 
 namespace XuanWu
 {
@@ -19,7 +20,8 @@ namespace XuanWu
 		Entity CreateEntity(const std::string_view name = "");
 		void DestroyEntity(Entity entity);
 
-		void OnUpdate(Timestep ts);
+		void OnUpdateRuntime(Timestep ts);
+		void OnUpdateEditor(Timestep ts, const EditorCamera& camera);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 		void SetFilepath(const std::string_view filepath);

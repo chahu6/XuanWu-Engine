@@ -157,6 +157,7 @@
     <ClInclude Include="src\XuanWu\Components\Components.h" />
     <ClInclude Include="src\XuanWu\Core\Application.h" />
     <ClInclude Include="src\XuanWu\Core\Core.h" />
+    <ClInclude Include="src\XuanWu\Core\CursorCode.h" />
     <ClInclude Include="src\XuanWu\Core\EntryPoint.h" />
     <ClInclude Include="src\XuanWu\Core\Input.h" />
     <ClInclude Include="src\XuanWu\Core\KeyCode.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="src\XuanWu\Math\Math.h" />
     <ClInclude Include="src\XuanWu\Render\Buffer.h" />
     <ClInclude Include="src\XuanWu\Render\Camera.h" />
+    <ClInclude Include="src\XuanWu\Render\EditorCamera.h" />
     <ClInclude Include="src\XuanWu\Render\Framebuffer.h" />
     <ClInclude Include="src\XuanWu\Render\GraphicsContext.h" />
     <ClInclude Include="src\XuanWu\Render\OrthographicCamera.h" />
@@ -630,6 +632,7 @@
     <ClCompile Include="src\XuanWu\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\XuanWu\Math\Math.cpp" />
     <ClCompile Include="src\XuanWu\Render\Buffer.cpp" />
+    <ClCompile Include="src\XuanWu\Render\EditorCamera.cpp" />
     <ClCompile Include="src\XuanWu\Render\Framebuffer.cpp" />
     <ClCompile Include="src\XuanWu\Render\OrthographicCamera.cpp" />
     <ClCompile Include="src\XuanWu\Render\OrthographicCameraController.cpp" />

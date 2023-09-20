@@ -44,4 +44,10 @@ namespace XuanWu {
 
 		return y;
 	}
+	
+	void Input::SetCursorMode(int mode)
+	{
+		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		glfwSetInputMode(window, GLFW_CURSOR, mode);
+	}
 }

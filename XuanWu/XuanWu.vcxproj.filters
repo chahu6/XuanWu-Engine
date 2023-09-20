@@ -1468,6 +1468,8 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\XuanWu\Math\Math.h" />
+    <ClInclude Include="src\XuanWu\Render\EditorCamera.h" />
+    <ClInclude Include="src\XuanWu\Core\CursorCode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1582,5 +1584,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\XuanWu\Math\Math.cpp" />
+    <ClCompile Include="src\XuanWu\Render\EditorCamera.cpp" />
   </ItemGroup>
 </Project>

@@ -15,20 +15,20 @@ namespace XuanWu {
 	{
 		XW_PROFILE_FUNCTION();
 
-		if (XuanWu::Input::IsKeyPressed(XW_KEY_W))
+		if (XuanWu::Input::IsKeyPressed(Key::W))
 			m_CameraPosition.y += m_CameraTranslationSpeed * ts;
-		else if (XuanWu::Input::IsKeyPressed(XW_KEY_S))
+		else if (XuanWu::Input::IsKeyPressed(Key::S))
 			m_CameraPosition.y -= m_CameraTranslationSpeed * ts;
-		if (XuanWu::Input::IsKeyPressed(XW_KEY_A))
+		if (XuanWu::Input::IsKeyPressed(Key::A))
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
-		else if (XuanWu::Input::IsKeyPressed(XW_KEY_D))
+		else if (XuanWu::Input::IsKeyPressed(Key::D))
 			m_CameraPosition.x += m_CameraTranslationSpeed * ts;
 
 		if (m_Rotation)
 		{
-			if (Input::IsKeyPressed(XW_KEY_Q))
+			if (Input::IsKeyPressed(Key::Q))
 				m_CameraRotation += m_CameraRotationSpeed * ts;
-			else if (Input::IsKeyPressed(XW_KEY_E))
+			else if (Input::IsKeyPressed(Key::E))
 				m_CameraRotation -= m_CameraRotationSpeed * ts;
 
 			m_Camera.SetRotation(m_CameraRotation);

@@ -6,7 +6,7 @@ layout(location = 3) in float a_TexIndex;
 layout(location = 4) in float a_TillingFactor;
 
 uniform mat4 u_ViewProjection;
-uniform mat4 u_Model;
+uniform mat4 u_Model; // 没什么用了，a_Position已经乘以Model矩阵了
 
 out vec4 v_Color;
 out vec2 v_TexCoord;

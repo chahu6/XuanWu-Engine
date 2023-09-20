@@ -44,17 +44,17 @@ namespace XuanWu {
 	void PerspectiveCamera::ProcessKeyboard(Timestep deltaTime)
 	{
 		float velocity = MovementSpeed * deltaTime;
-		if (Input::IsKeyPressed(XW_KEY_W))
+		if (Input::IsKeyPressed(Key::W))
 			Position += Front * velocity;
-		else if (Input::IsKeyPressed(XW_KEY_S))
+		else if (Input::IsKeyPressed(Key::S))
 			Position -= Front * velocity;
-		if (Input::IsKeyPressed(XW_KEY_A))
+		if (Input::IsKeyPressed(Key::A))
 			Position -= Right * velocity;
-		else if (Input::IsKeyPressed(XW_KEY_D))
+		else if (Input::IsKeyPressed(Key::D))
 			Position += Right * velocity;
-		if (Input::IsKeyPressed(XW_KEY_Q))
+		if (Input::IsKeyPressed(Key::Q))
 			Position -= WorldUp * velocity;
-		else if (Input::IsKeyPressed(XW_KEY_E))
+		else if (Input::IsKeyPressed(Key::E))
 			Position += WorldUp * velocity;
 	}
 
