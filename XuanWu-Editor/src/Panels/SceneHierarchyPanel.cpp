@@ -152,7 +152,11 @@ namespace XuanWu
 		}
 
 		if (entityDeleted)
+		{
 			m_Context->DestroyEntity(entity);
+			if (entity == m_SelectionContext)
+				m_SelectionContext = {};
+		}
 	}
 
 	void SceneHierarchyPanel::DrawComponents(Entity entity)

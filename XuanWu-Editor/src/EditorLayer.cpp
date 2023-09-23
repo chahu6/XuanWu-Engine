@@ -24,6 +24,7 @@ namespace XuanWu
 		m_SpriteTexture = Texture2D::Create("assets/games/RPGpack_sheet_2X.png");
 
 		FramebufferSpecification spec;
+		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
 		spec.Width = 1280;
 		spec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(spec);
@@ -313,15 +314,24 @@ namespace XuanWu
 				break;
 			}
 
-			case Key::W:
-				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-				break;
-			case Key::E:
-				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-				break;
-			case Key::R:
-				m_GizmoType = ImGuizmo::OPERATION::SCALE;
-				break;
+			default:
+			{
+				if (!m_EditorCamera.IsMoved())
+				{
+					switch (event.GetKeyCode())
+					{
+						case Key::W:
+							m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+							break;
+						case Key::E:
+							m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+							break;
+						case Key::R:
+							m_GizmoType = ImGuizmo::OPERATION::SCALE;
+							break;
+					}
+				}
+			}
 		}
 
 		return false;

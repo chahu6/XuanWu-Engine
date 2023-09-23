@@ -150,7 +150,7 @@ namespace XuanWu
 			bIsMoved = true;
 			lastX = Input::GetMouseX();
 			lastY = Input::GetMouseY();
-
+			
 			Input::SetCursorMode(Cursor::CursorDisabled);
 		}
 

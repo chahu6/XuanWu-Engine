@@ -71,6 +71,7 @@ namespace XuanWu
 		float lastY = 0.0f;
 		bool bIsMoved = false;
 	public:
+		inline bool IsMoved() { return bIsMoved; }
 		inline glm::mat4 GetViewMatrix() { return m_ViewMatrix; };
 		inline glm::mat4 GetViewProjection() const { return m_Projection * m_ViewMatrix; }
 	};
