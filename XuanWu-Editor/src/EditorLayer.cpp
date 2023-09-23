@@ -24,7 +24,7 @@ namespace XuanWu
 		m_SpriteTexture = Texture2D::Create("assets/games/RPGpack_sheet_2X.png");
 
 		FramebufferSpecification spec;
-		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		spec.Width = 1280;
 		spec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(spec);
@@ -116,6 +116,22 @@ namespace XuanWu
 
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBound[0].x;
+		my -= m_ViewportBound[0].y;
+
+		glm::vec2 viewportSize = m_ViewportBound[1] - m_ViewportBound[0];
+
+		//XW_CORE_WARN("Bouns = {0}, {1}", m_ViewportBound[0].x, m_ViewportBound[0].y);
+		int mouseX = static_cast<int>(mx);
+		int mouseY = static_cast<int>(my);
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX <= static_cast<int>(viewportSize.x) && mouseY <= static_cast<int>(viewportSize.y))
+		{
+			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+			XW_CORE_WARN("pixelData = {0}", pixelData);
+		}
+
 		// 解除帧缓冲绑定
 		m_Framebuffer->Unbind();
 	}
@@ -151,6 +167,7 @@ namespace XuanWu
 			ImGui::EndMainMenuBar();
 		}
 
+
 		ImGui::Begin(TXT("Settings"));
 		{
 			auto stats = Renderer2D::GetStats();
@@ -161,10 +178,13 @@ namespace XuanWu
 			ImGui::Text(TXT("索引数量：%d"), stats.GetTotalIndexCount());
 		}
 		ImGui::End();
-
+		
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin(TXT("Viewport"));
 		{
+			// 必须放在这，下面的代码有可能影响了他，反正放下面数值就不对了
+			ImVec2 viewportOffset = ImGui::GetCursorPos();
+
 			m_ViewportFocused = ImGui::IsWindowFocused();//  聚焦为true
 			m_ViewportHovered = ImGui::IsWindowHovered();// 悬停为true
 			Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered); // 聚焦有点毛病，
@@ -176,6 +196,15 @@ namespace XuanWu
 			}
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+
+			ImVec2 windowSize = ImGui::GetWindowSize();
+			ImVec2 minBound = ImGui::GetWindowPos();
+			minBound.x += viewportOffset.x;
+			minBound.y += viewportOffset.y;
+
+			ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+			m_ViewportBound[0] = { minBound.x, minBound.y };
+			m_ViewportBound[1] = { maxBound.x, maxBound.y };
 
 			// Gizmos
 			Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
@@ -224,6 +253,7 @@ namespace XuanWu
 
 		}
 		ImGui::End();
+
 
 		/*ImGui::Begin(TXT("DepthTexture"));
 		{

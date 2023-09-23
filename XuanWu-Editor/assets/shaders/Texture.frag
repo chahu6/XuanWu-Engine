@@ -1,6 +1,6 @@
 #version 330 core
 layout(location = 0)out vec4 FragColor;
-layout(location = 1)out vec4 FragColor2;
+layout(location = 1)out int FragColor2;
 
 in vec4 v_Color;
 in vec2 v_TexCoord;
@@ -53,5 +53,5 @@ void main()
 	}
 
 	FragColor = texColor;
-	FragColor2 = vec4(0.0, 1.0, 0.0, 1.0);
+	FragColor2 = 50;
 }

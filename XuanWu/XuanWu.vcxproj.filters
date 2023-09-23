@@ -34,6 +34,9 @@
     <Filter Include="src\XuanWu\ImGui">
       <UniqueIdentifier>{CE7809B4-BA71-2806-E3A3-0D8BCFFB0712}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\XuanWu\Math">
+      <UniqueIdentifier>{FD83DB98-690F-495D-7220-CC51DE2AA55D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\XuanWu\Render">
       <UniqueIdentifier>{9356BB49-FF6C-B9DF-48E4-4401B4398A67}</UniqueIdentifier>
     </Filter>
@@ -117,6 +120,9 @@
     <ClInclude Include="src\XuanWu\Core\Core.h">
       <Filter>src\XuanWu\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\XuanWu\Core\CursorCode.h">
+      <Filter>src\XuanWu\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\XuanWu\Core\EntryPoint.h">
       <Filter>src\XuanWu\Core</Filter>
     </ClInclude>
@@ -171,10 +177,16 @@
     <ClInclude Include="src\XuanWu\ImGui\font.h">
       <Filter>src\XuanWu\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\XuanWu\Math\Math.h">
+      <Filter>src\XuanWu\Math</Filter>
+    </ClInclude>
     <ClInclude Include="src\XuanWu\Render\Buffer.h">
       <Filter>src\XuanWu\Render</Filter>
     </ClInclude>
     <ClInclude Include="src\XuanWu\Render\Camera.h">
+      <Filter>src\XuanWu\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XuanWu\Render\EditorCamera.h">
       <Filter>src\XuanWu\Render</Filter>
     </ClInclude>
     <ClInclude Include="src\XuanWu\Render\Framebuffer.h">
@@ -1467,9 +1479,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\XuanWu\Math\Math.h" />
-    <ClInclude Include="src\XuanWu\Render\EditorCamera.h" />
-    <ClInclude Include="src\XuanWu\Core\CursorCode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1526,7 +1535,13 @@
     <ClCompile Include="src\XuanWu\ImGui\ImGuiLayer.cpp">
       <Filter>src\XuanWu\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="src\XuanWu\Math\Math.cpp">
+      <Filter>src\XuanWu\Math</Filter>
+    </ClCompile>
     <ClCompile Include="src\XuanWu\Render\Buffer.cpp">
+      <Filter>src\XuanWu\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XuanWu\Render\EditorCamera.cpp">
       <Filter>src\XuanWu\Render</Filter>
     </ClCompile>
     <ClCompile Include="src\XuanWu\Render\Framebuffer.cpp">
@@ -1583,7 +1598,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\XuanWu\Math\Math.cpp" />
-    <ClCompile Include="src\XuanWu\Render\EditorCamera.cpp" />
   </ItemGroup>
 </Project>

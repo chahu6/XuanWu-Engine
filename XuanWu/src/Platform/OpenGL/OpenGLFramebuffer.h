@@ -12,8 +12,9 @@ namespace XuanWu
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 		virtual void Resize(uint32_t width, uint32_t height) override;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 
-		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { XW_CORE_ASSERT(index < m_ColorAttachments.size(), "超出最大数组最大范围"); return m_ColorAttachments[index]; }
+		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { XW_CORE_ASSERT(index < 0 || index < m_ColorAttachments.size(), "超出最大数组最大范围"); return m_ColorAttachments[index]; }
 		virtual uint32_t GetDepthAttachmentRendererID() const override { return m_DepthAttachment; }
 
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }

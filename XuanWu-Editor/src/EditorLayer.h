@@ -39,6 +39,7 @@ namespace XuanWu
 		char m_GizmoType = 7;
 
 		Ref<XuanWu::Framebuffer> m_Framebuffer;
+		glm::vec2 m_ViewportBound[2];
 
 		Ref<Scene> m_ActiveScene;
 		Ref<Serializer> m_Serializer;
