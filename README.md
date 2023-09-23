@@ -6,8 +6,9 @@ XuanWu Engine
 ### 环境
 
 	1. C++17
-	1. glfw
-	1. glad
+	2. glfw
+	3. glad
+	4. VS2022
 
 ### 构建
 

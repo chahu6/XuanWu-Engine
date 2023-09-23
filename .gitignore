@@ -2,9 +2,9 @@
 .vs/
 bin/
 bin-int/
-!*.exe
 
 # Files
 *.user
 *.vcxproj
 *.filters
+!*.exe
