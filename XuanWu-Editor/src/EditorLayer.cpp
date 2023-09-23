@@ -114,6 +114,9 @@ namespace XuanWu
 		RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
 		RenderCommand::Clear();
 
+		// 用-1填冲帧缓冲的第二个颜色缓冲区
+		m_Framebuffer->ClearAttachment(1, -1);
+
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
 		auto [mx, my] = ImGui::GetMousePos();
@@ -128,6 +131,7 @@ namespace XuanWu
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX <= static_cast<int>(viewportSize.x) && mouseY <= static_cast<int>(viewportSize.y))
 		{
+			// @ 读取第几个帧缓冲的位置的值
 			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
 			XW_CORE_WARN("pixelData = {0}", pixelData);
 		}
@@ -194,7 +198,9 @@ namespace XuanWu
 			{
 				m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 			}
-			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+
+			// 渲染的哪个帧缓冲区
+			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 
 			ImVec2 windowSize = ImGui::GetWindowSize();

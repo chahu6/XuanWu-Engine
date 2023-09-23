@@ -69,6 +69,20 @@ namespace XuanWu
 
             return false;
         }
+
+        static GLenum FramebufferTextureFormatToGLenum(FramebufferTextureFormat format)
+        {
+            switch (format)
+            {
+                case XuanWu::FramebufferTextureFormat::RGBA8:
+                    return GL_RGBA8;
+                case XuanWu::FramebufferTextureFormat::RED_INTEGER:
+                    return GL_RED_INTEGER;
+            }
+
+            XW_CORE_ASSERT(false, "不支持");
+            return 0;
+        }
     }
     
 
@@ -193,5 +207,14 @@ namespace XuanWu
         glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 
         return pixelData;
+    }
+
+    void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+    {
+        XW_CORE_ASSERT(attachmentIndex >= 0 && attachmentIndex < m_ColorAttachments.size(), "越界");
+
+        auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
+
+        glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::FramebufferTextureFormatToGLenum(spec.TextureFormat), GL_INT, &value);
     }
 }
