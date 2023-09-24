@@ -136,7 +136,6 @@ namespace XuanWu
 			// @TDOD 读取第几个帧缓冲的位置的值
 			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{ (entt::entity)pixelData, m_ActiveScene.get() };
-			XW_CORE_WARN("{0}", pixelData);
 		}
 
 		// 解除帧缓冲绑定

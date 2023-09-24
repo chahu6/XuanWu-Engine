@@ -90,7 +90,7 @@ namespace XuanWu
 
 	void SceneHierarchyPanel::SetSelectedEntity(const Entity& entity)
 	{
-		m_SelectionContext = selected;
+		m_SelectionContext = entity;
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender()
