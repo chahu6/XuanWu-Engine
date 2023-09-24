@@ -88,6 +88,11 @@ namespace XuanWu
 		m_SelectionContext = {};
 	}
 
+	void SceneHierarchyPanel::SetSelectedEntity(const Entity& entity)
+	{
+		m_SelectionContext = selected;
+	}
+
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
 		ImGui::Begin(TXT("³¡¾°Ãæ°å"));

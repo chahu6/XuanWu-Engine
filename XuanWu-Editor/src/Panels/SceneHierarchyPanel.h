@@ -14,6 +14,7 @@ namespace XuanWu
 		SceneHierarchyPanel(const Ref<Scene>& context);
 
 		void SetContext(const Ref<Scene>& context);
+		void SetSelectedEntity(const Entity& entity);
 
 		void OnImGuiRender();
 

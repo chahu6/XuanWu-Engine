@@ -120,7 +120,6 @@ namespace XuanWu
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
 		auto [mx, my] = ImGui::GetMousePos();
-
 		mx -= m_ViewportBound[0].x;
 		my -= m_ViewportBound[0].y;
 
@@ -134,9 +133,10 @@ namespace XuanWu
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX <= static_cast<int>(viewportSize.x) && mouseY <= static_cast<int>(viewportSize.y))
 		{
-			// @ 读取第几个帧缓冲的位置的值
+			// @TDOD 读取第几个帧缓冲的位置的值
 			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-			XW_CORE_WARN("pixelData = {0}", pixelData);
+			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{ (entt::entity)pixelData, m_ActiveScene.get() };
+			XW_CORE_WARN("{0}", pixelData);
 		}
 
 		// 解除帧缓冲绑定
@@ -385,6 +385,19 @@ namespace XuanWu
 		return false;
 	}
 
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& event)
+	{
+		if (event.GetMouseButton() == Mouse::ButtonLeft)
+		{
+			if (m_ViewportHovered && !ImGuizmo::IsOver())
+			{
+				m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+			}
+		}
+
+		return false;
+	}
+
 	void EditorLayer::OnEvent(Event& event)
 	{
 		m_EditorCamera.OnEvent(event);
@@ -392,5 +405,6 @@ namespace XuanWu
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
 		dispatcher.Dispatch<KeyPressedEvent>(XW_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(XW_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 }
