@@ -120,12 +120,15 @@ namespace XuanWu
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
 		auto [mx, my] = ImGui::GetMousePos();
+
 		mx -= m_ViewportBound[0].x;
 		my -= m_ViewportBound[0].y;
 
 		glm::vec2 viewportSize = m_ViewportBound[1] - m_ViewportBound[0];
 
-		//XW_CORE_WARN("Bouns = {0}, {1}", m_ViewportBound[0].x, m_ViewportBound[0].y);
+		// 反转Y轴，使得左下角为(0, 0)点
+		my = viewportSize.y - my;
+
 		int mouseX = static_cast<int>(mx);
 		int mouseY = static_cast<int>(my);
 
@@ -186,8 +189,26 @@ namespace XuanWu
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin(TXT("Viewport"));
 		{
+			// 也可以，但是有更好的
+			ImVec2 windowSize = ImGui::GetWindowSize();
+			ImVec2 minBound = ImGui::GetWindowPos();
 			// 必须放在这，下面的代码有可能影响了他，反正放下面数值就不对了
 			ImVec2 viewportOffset = ImGui::GetCursorPos();
+
+			minBound.x += viewportOffset.x;
+			minBound.y += viewportOffset.y;
+			windowSize.y -= viewportOffset.y;
+
+			ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+			m_ViewportBound[0] = { minBound.x, minBound.y };
+			m_ViewportBound[1] = { maxBound.x, maxBound.y };
+
+			// GetWindowContentRegionMin() 是以自己窗口内容的左上角为起点(0, 0) 反正我不会弄，后面再说吧
+		/*	ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
+			ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+			m_ViewportBound[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+			m_ViewportBound[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+			*/
 
 			m_ViewportFocused = ImGui::IsWindowFocused();//  聚焦为true
 			m_ViewportHovered = ImGui::IsWindowHovered();// 悬停为true
@@ -202,15 +223,6 @@ namespace XuanWu
 			// 渲染的哪个帧缓冲区
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
-
-			ImVec2 windowSize = ImGui::GetWindowSize();
-			ImVec2 minBound = ImGui::GetWindowPos();
-			minBound.x += viewportOffset.x;
-			minBound.y += viewportOffset.y;
-
-			ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-			m_ViewportBound[0] = { minBound.x, minBound.y };
-			m_ViewportBound[1] = { maxBound.x, maxBound.y };
 
 			// Gizmos
 			Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();

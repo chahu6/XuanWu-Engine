@@ -17,6 +17,9 @@ namespace XuanWu {
 		// @TODO: color, texid
 		float TexIndex;
 		float TilingFactor;
+
+		// only-Editor
+		int EntityID;
 	};
 
 	struct Renderer2DData
@@ -53,11 +56,13 @@ namespace XuanWu {
 
 		s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
 		s_Data.QuadVertexBuffer->SetLayout({
-			{ShaderDataType::Float3, "a_Position"},
-			{ShaderDataType::Float4, "a_Color"},
-			{ShaderDataType::Float2, "a_TexCoord"},
-			{ShaderDataType::Float, "a_TexIndex"},
-			{ShaderDataType::Float, "a_TilingFactor"}
+			{ ShaderDataType::Float3,  "a_Position"		 },
+			{ ShaderDataType::Float4,  "a_Color"		 },
+			{ ShaderDataType::Float2,  "a_TexCoord"		 },
+			{ ShaderDataType::Float,   "a_TexIndex"		 },
+			{ ShaderDataType::Float,   "a_TilingFactor"	 },
+			// only Editor
+			{ ShaderDataType::Int,	   "a_EntityID"		 }
 			});
 
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
@@ -172,6 +177,12 @@ namespace XuanWu {
 		s_Data.Stats.DrawCalls++;
 	}
 
+	// only-Editor
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, int entityID)
+	{
+		DrawQuad(transform, src.Color, entityID);
+	}
+
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
 		DrawQuad({ position.x, position.y, 0.0f }, size, color);
@@ -272,7 +283,7 @@ namespace XuanWu {
 		s_Data.Stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		XW_PROFILE_FUNCTION();
 
@@ -288,6 +299,7 @@ namespace XuanWu {
 		s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[0];
 		s_Data.QuadVertexBufferPtr->TexIndex = TexIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = TilingFactor;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[1];
@@ -295,6 +307,7 @@ namespace XuanWu {
 		s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[1];
 		s_Data.QuadVertexBufferPtr->TexIndex = TexIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = TilingFactor;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[2];
@@ -302,6 +315,7 @@ namespace XuanWu {
 		s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[2];
 		s_Data.QuadVertexBufferPtr->TexIndex = TexIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = TilingFactor;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[3];
@@ -309,6 +323,7 @@ namespace XuanWu {
 		s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[3];
 		s_Data.QuadVertexBufferPtr->TexIndex = TexIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = TilingFactor;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadIndexCount += 6;
@@ -316,7 +331,7 @@ namespace XuanWu {
 		s_Data.Stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		XW_PROFILE_FUNCTION();
 
