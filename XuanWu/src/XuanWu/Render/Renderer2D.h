@@ -56,6 +56,7 @@ namespace XuanWu {
 
 		static Statistics GetStats();
 	private:
+		static void StartBatch();
 		static void FlushAndReset();
 	};
 }
