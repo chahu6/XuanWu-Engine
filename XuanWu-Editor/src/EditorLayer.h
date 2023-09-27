@@ -2,6 +2,7 @@
 #include <XuanWu.h>
 #include "XuanWu/Scene/Entity.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
 #include "XuanWu/Serializer/Serializer.h"
 #include "XuanWu/Render/EditorCamera.h"
 
@@ -27,6 +28,7 @@ namespace XuanWu
 
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 	private:
 		Ref<Texture2D> m_Texture;
@@ -45,7 +47,9 @@ namespace XuanWu
 		Ref<Scene> m_ActiveScene;
 		Ref<Serializer> m_Serializer;
 		EditorCamera m_EditorCamera;
+
 		SceneHierarchyPanel m_SceneHierarchyPanel;
+		ContentBrowserPanel m_ContentBrowserPanel;
 
 		Entity m_SquareEntity;
 		Entity m_RedSquare;

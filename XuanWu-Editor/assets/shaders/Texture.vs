@@ -19,18 +19,21 @@ struct VertexOutput
 {
 	vec4 Color;
 	vec2 TexCoord;
-	float TexIndex;
+	// float TexIndex; //写在这里有问题,会自动插值
 	float TillingFactor;
 };
 
 layout(location = 0) out VertexOutput Output;
+
+layout(location = 3) out flat float v_TexIndex; // 加flat就不会自动插值了
 layout(location = 4) out flat int v_EntityID;
 
 void main()
 {
 	Output.Color = a_Color;
 	Output.TexCoord = a_TexCoord;
-	Output.TexIndex = a_TexIndex;
+	//Output.TexIndex = a_TexIndex;
+	v_TexIndex = a_TexIndex;
 	Output.TillingFactor = a_TillingFactor;
 	v_EntityID = a_EntityID;
 

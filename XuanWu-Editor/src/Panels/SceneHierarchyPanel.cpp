@@ -77,6 +77,11 @@ namespace XuanWu
 		ImGui::PopID();
 	}
 
+	SceneHierarchyPanel::SceneHierarchyPanel()
+	{
+		m_AddTexture = Texture2D::Create("Resources/Icons/Add.png");
+	}
+
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
 	{
 		SetContext(context);
@@ -253,7 +258,7 @@ namespace XuanWu
 			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
 				float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
-				if (ImGui::DragFloat(u8"视场角", &verticalFov))
+				if (ImGui::DragFloat(TXT("视场角"), &verticalFov))
 				{
 					camera.SetPerspectiveVerticalFOV(glm::radians(verticalFov));
 				}
@@ -295,11 +300,30 @@ namespace XuanWu
 				
 		});
 
-		DrawComponent<SpriteRendererComponent>(TXT("Sprite Renderer"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
+		DrawComponent<SpriteRendererComponent>(TXT("Sprite Renderer"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
 		{
 			auto& sprite = selected.GetComponent<SpriteRendererComponent>();
 
 			ImGui::DragFloat4(TXT("颜色"), glm::value_ptr(sprite.Color), 0.01f);
+
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+			ImGui::Text(TXT("纹理："));
+			ImGui::SameLine();
+			ImGui::ImageButton((ImTextureID)(sprite.Texture ? sprite.Texture->GetRendererID() : m_AddTexture->GetRendererID()), ImVec2{74, 74}, {0, 1}, {1, 0});
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					if (path != nullptr)
+					{
+						std::filesystem::path texturePath(path);
+
+						sprite.Texture = Texture2D::Create(texturePath.string());
+					}
+				}
+			}
+			ImGui::PopStyleColor();
 		});
 	}
 }

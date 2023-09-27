@@ -3,6 +3,7 @@
 #include "imgui/imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "XuanWu/Render/Renderer2D.h"
+#include "XuanWu/Core/MouseButtonCode.h"
 
 
 static const uint32_t s_MapWidth = 24;
@@ -100,7 +101,7 @@ void Sandbox2D::OnUpdate(XuanWu::Timestep ts)
 		XuanWu::Renderer2D::EndScene();
 	}
 #endif
-	if (XuanWu::Input::IsMouseButtonPressed(XW_MOUSE_BUTTON_LEFT))
+	if (XuanWu::Input::IsMouseButtonPressed(XuanWu::Mouse::ButtonLeft))
 	{
 		auto [x, y] = XuanWu::Input::GetMousePosition();
 		auto width = XuanWu::Application::Get().GetWindow().GetWidth();
@@ -142,21 +143,6 @@ void Sandbox2D::OnUpdate(XuanWu::Timestep ts)
 void Sandbox2D::OnImGuiRender()
 {
 	XW_PROFILE_FUNCTION();
-
-	ImGui::Begin("Settings");
-	{
-		auto stats = XuanWu::Renderer2D::GetStats();
-		ImGui::Text("Renderer2D Stats: ");
-		ImGui::Text(u8"绘制次数：%d", stats.DrawCalls);
-		ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
-		ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
-		ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
-
-		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-	}
-	ImGui::End();
-
-
 	if (ImGui::BeginMainMenuBar())
 	{
 		// 添加一个菜单
@@ -172,6 +158,19 @@ void Sandbox2D::OnImGuiRender()
 
 		ImGui::EndMainMenuBar();
 	}
+
+	ImGui::Begin("Settings");
+	{
+		auto stats = XuanWu::Renderer2D::GetStats();
+		ImGui::Text("Renderer2D Stats: ");
+		ImGui::Text(u8"绘制次数：%d", stats.DrawCalls);
+		ImGui::Text(u8"四边形数量：%d", stats.QuadCount);
+		ImGui::Text(u8"顶点数量：%d", stats.GetTotalVertexCount());
+		ImGui::Text(u8"索引数量：%d", stats.GetTotalIndexCount());
+
+		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+	}
+	ImGui::End();
 }
 
 void Sandbox2D::OnEvent(XuanWu::Event& event)

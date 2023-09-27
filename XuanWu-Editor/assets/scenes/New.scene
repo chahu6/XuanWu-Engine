@@ -2,13 +2,13 @@ Scene: Untitled
 Entities:
   - Entity: 213232132143
     TagComponent:
-      Tag: Red
+      Tag: Blue
     TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Translation: [-1.30280316, 0, 1.12917888]
+      Rotation: [0.667560875, -0, 0]
+      Scale: [1, 0.999999881, 0.999999881]
     SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
+      Color: [0, 0, 1, 1]
   - Entity: 213232132143
     TagComponent:
       Tag: Camera
@@ -27,3 +27,12 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: 213232132143
+    TagComponent:
+      Tag: Red
+    TransformComponent:
+      Translation: [0, -0.00796508789, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 0, 0, 1]

@@ -148,6 +148,7 @@ namespace XuanWu
 
 		//场景面板渲染
 		m_SceneHierarchyPanel.OnImGuiRender();
+		m_ContentBrowserPanel.OnImGuiRender();
 
 		// 菜单栏
 		if (ImGui::BeginMainMenuBar())
@@ -173,7 +174,7 @@ namespace XuanWu
 			ImGui::EndMainMenuBar();
 		}
 
-
+		// 设置
 		ImGui::Begin(TXT("Settings"));
 		{
 			auto stats = Renderer2D::GetStats();
@@ -185,6 +186,7 @@ namespace XuanWu
 		}
 		ImGui::End();
 		
+		// Viewport
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin(TXT("Viewport"));
 		{
@@ -268,16 +270,21 @@ namespace XuanWu
 				}
 			}
 
+			// 接收拖拽的负载
+			if (ImGui::BeginDragDropTarget())
+			{
+				// 因为接收内容可能为空，需要if判断 。 CONTENT_BROWSER_ITEM：拖动携带的内容
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path directory(path);
+					if(path != nullptr && directory.extension().string() == ".scene")
+						OpenScene(directory);
+				}
+			}
 		}
 		ImGui::End();
 
-
-		/*ImGui::Begin(TXT("DepthTexture"));
-		{
-			uint32_t textureID = m_Framebuffer->GetDepthAttachmentRendererID();
-			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
-		}
-		ImGui::End();*/
 		ImGui::PopStyleVar();
 	}
 
@@ -292,22 +299,28 @@ namespace XuanWu
 
 	void EditorLayer::OpenScene()
 	{
-		std::string filepath = FileDialogs::OpenFile(L"XuanWu Scene (*.xw)\0*.xw\0");
+		std::string filepath = FileDialogs::OpenFile(L"XuanWu Scene (*.scene)\0*.scene\0");
 		if (!filepath.empty())
 		{
-			NewScene();
-
-			m_Serializer->Deserialize(filepath);
-
-			m_ActiveScene->SetFilepath(filepath);
+			OpenScene(filepath);
 		}
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		NewScene();
+
+		m_Serializer->Deserialize(path.string());
+
+		m_ActiveScene->SetFilepath(path.string());
 	}
 
 	void EditorLayer::SaveScene()
 	{
 		if (m_ActiveScene->GetFilepath().empty())
 		{
-			std::string filepath = FileDialogs::SaveFile(L"XuanWu Scene (*.xw)\0*.xw\0");
+			std::string filepath = FileDialogs::SaveFile(L"XuanWu Scene (*.scene)\0*.scene\0");
+			filepath += ".scene";
 			if (!filepath.empty())
 			{
 				m_Serializer->Serialize(filepath);
@@ -399,6 +412,9 @@ namespace XuanWu
 
 	void EditorLayer::OnEvent(Event& event)
 	{
+		// 内容浏览器Ctrl + 鼠标滚动 调整图片大小
+		m_ContentBrowserPanel.OnEvent(event); // @TODO 测试，因为Viewport失去焦点，所以捕获了鼠标和键盘事件，所以他也不行了，只能Viewport获取焦点，他才能执行到，以后再修复吧
+
 		m_EditorCamera.OnEvent(event);
 
 		EventDispatcher dispatcher(event);

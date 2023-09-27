@@ -5,11 +5,13 @@ layout(location = 1)out int FragColor2;
 struct VertexOutput {
 	vec4 Color;
 	vec2 TexCoord;
-	float TexIndex;
+	// float TexIndex; 写在这里有问题,会自动插值
 	float TillingFactor;
 };
 
 layout(location = 0) in VertexOutput Input;
+
+layout(location = 3) in flat float v_TexIndex; // 加flat就不会自动插值了
 layout(location = 4) in flat int v_EntityID; // 4 是因为TilingFactor 是3
 
 layout(binding = 0) uniform sampler2D u_Textures[32];
@@ -21,7 +23,8 @@ void main()
 
 	//兼容AMD卡的写法
 	vec4 texColor = Input.Color;
-	switch(int(Input.TexIndex))
+	//switch(int(Input.TexIndex))
+	switch(int(v_TexIndex))
 	{
 		case 0:  texColor *= texture(u_Textures[0],  Input.TexCoord * Input.TillingFactor); break;
 		case 1:  texColor *= texture(u_Textures[1],  Input.TexCoord * Input.TillingFactor); break;

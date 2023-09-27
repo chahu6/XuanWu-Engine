@@ -2,15 +2,17 @@
 
 #include "XuanWu/Scene/Scene.h"
 #include "XuanWu/Scene/Entity.h"
+#include "XuanWu/Render/Texture.h"
 
 namespace XuanWu
 {
 	class SceneHierarchyPanel
 	{
 	public:
-		using DrawComponentFunc = void(*)(Ref<Scene>& context, Entity selected);
+		//using DrawComponentFunc = void(*)(Ref<Scene>& context, Entity selected); // 这个指针无法接收[this](Ref<Scene>&, Entity){}这个加了个this的lambda表达式，所以换了
+		using DrawComponentFunc = std::function<void(Ref<Scene>&, Entity)>;
 
-		SceneHierarchyPanel() = default;
+		SceneHierarchyPanel();
 		SceneHierarchyPanel(const Ref<Scene>& context);
 
 		void SetContext(const Ref<Scene>& context);
@@ -66,6 +68,8 @@ namespace XuanWu
 		Ref<Scene> m_Context;
 
 		Entity m_SelectionContext;
+
+		Ref<Texture2D> m_AddTexture;
 
 	public:
 		inline Entity GetSelectedEntity() { return m_SelectionContext; }
