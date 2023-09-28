@@ -203,7 +203,7 @@ namespace XuanWu
 
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 
-        int pixelData = 0;
+        int pixelData = -1;
         glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 
         return pixelData;

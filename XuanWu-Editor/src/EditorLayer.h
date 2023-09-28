@@ -21,7 +21,7 @@ namespace XuanWu
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& event) override;
 
-	protected:
+	private:
 		bool OnWindowResized(WindowResizeEvent& event);
 		bool OnKeyPressed(KeyPressedEvent& event);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
@@ -30,12 +30,26 @@ namespace XuanWu
 		void OpenScene();
 		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
+
+		void UI_Toolbar();
+
+		void OnScenePlay();
+		void OnSceneStop();
 	private:
-		Ref<Texture2D> m_Texture;
+		/*Ref<Texture2D> m_Texture;
 		Ref<Texture2D> m_SpriteTexture;
 		Ref<SubTexture2D> m_TextureGrass;
+		
+		Entity m_CameraEntity;
+		Entity m_SecondCamera;
+		bool m_PrimaryCamera = false;
 
+		Entity m_SquareEntity;
+		Entity m_RedSquare;
 		glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
+		*/
+
+		// ±ØÐëµÄ
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
@@ -51,14 +65,17 @@ namespace XuanWu
 		SceneHierarchyPanel m_SceneHierarchyPanel;
 		ContentBrowserPanel m_ContentBrowserPanel;
 
-		Entity m_SquareEntity;
-		Entity m_RedSquare;
-
 		Entity m_HoveredEntity;
 
-		Entity m_CameraEntity;
-		Entity m_SecondCamera;
-		bool m_PrimaryCamera = false;
+		Ref<Texture2D> m_IconPlay;
+		Ref<Texture2D> m_IconStop;
+
+		enum class SceneState
+		{
+			Edit = 0,
+			Play = 1
+		};
+		SceneState m_SceneState = SceneState::Edit;
 	};
 }
 

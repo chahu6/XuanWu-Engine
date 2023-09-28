@@ -20,8 +20,11 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
-		m_Texture = Texture2D::Create("assets/textures/Checkerboard.png");
-		m_SpriteTexture = Texture2D::Create("assets/games/RPGpack_sheet_2X.png");
+		/*m_Texture = Texture2D::Create("assets/textures/Checkerboard.png");
+		m_SpriteTexture = Texture2D::Create("assets/games/RPGpack_sheet_2X.png");*/
+
+		m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
+		m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
 
 		FramebufferSpecification spec;
 		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -95,8 +98,6 @@ namespace XuanWu
 	{
 		XW_PROFILE_FUNCTION();
 
-		m_EditorCamera.OnUpdate(ts);
-
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && 
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
@@ -117,7 +118,23 @@ namespace XuanWu
 		// 用-1填冲帧缓冲的第二个颜色缓冲区
 		m_Framebuffer->ClearAttachment(1, -1);
 
-		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+		switch (m_SceneState)
+		{
+			case XuanWu::EditorLayer::SceneState::Edit:
+			{
+				m_EditorCamera.OnUpdate(ts);
+				m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+				break;
+			}
+			case XuanWu::EditorLayer::SceneState::Play:
+			{
+				m_ActiveScene->OnUpdateRuntime(ts);
+				break;
+			}
+			default:
+				XW_CORE_ASSERT(false, "没有这种状态");
+				break;
+		}
 
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_ViewportBound[0].x;
@@ -284,8 +301,9 @@ namespace XuanWu
 			}
 		}
 		ImGui::End();
-
 		ImGui::PopStyleVar();
+
+		UI_Toolbar();
 	}
 
 	void EditorLayer::NewScene()
@@ -331,6 +349,56 @@ namespace XuanWu
 		{
 			m_Serializer->Serialize(m_ActiveScene->GetFilepath());
 		}
+	}
+
+	void EditorLayer::UI_Toolbar()
+	{
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 2 });
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));// item之间的间隔
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0, 0, 0, 0 });
+
+		auto& colors = ImGui::GetStyle().Colors;
+		// 按钮针对hover、click有不同效果
+		const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		{
+			Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
+			float size = ImGui::GetWindowHeight() - 18.0f;
+
+			ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x * 0.5f - (size * 0.5f));
+			if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2{ size, size }, { 0, 1 }, { 1, 0 })) // 64.0f
+			{
+				switch (m_SceneState)
+				{
+					case SceneState::Edit:
+						OnScenePlay();
+						break;
+					case SceneState::Play:
+						OnSceneStop();
+						break;
+					default:
+						XW_CORE_ASSERT(false, "没有这种状态");
+						break;
+				}
+			}
+		}
+		ImGui::End();
+		ImGui::PopStyleColor(3);
+		ImGui::PopStyleVar();
+	}
+
+	void EditorLayer::OnScenePlay()
+	{
+		m_SceneState = SceneState::Play;
+	}
+
+	void EditorLayer::OnSceneStop()
+	{
+		m_SceneState = SceneState::Edit;
 	}
 
 	bool EditorLayer::OnWindowResized(WindowResizeEvent& event)
