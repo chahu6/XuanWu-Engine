@@ -4,7 +4,7 @@
 #include "XuanWu/Components/Components.h"
 
 // 必须添加的宏，不然链接不了
-#define YAML_CPP_STATIC_DEFINE
+#define YAML_CPP_STATIC_DEFINE // 两个都要定义，premake中定义一下，不然他会编译成动态库，带有导入导出的一个符号标记，这里在定义一下，不然还是有动态库的特定符号导入导出
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {

@@ -1,3 +1,5 @@
+include "Dependencies.lua"
+
 workspace "XuanWu"
 	architecture "x64"
 	startproject "XuanWu-Editor"
@@ -9,19 +11,16 @@ workspace "XuanWu"
 		"Dist"
 	}
 
+	-- 多处理器编译是一个可选的优化选项，开启与否需要根据项目实际情况和开发者的需求进行决策。
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/XuanWu/vendor/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/XuanWu/vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/XuanWu/vendor/imgui"
-IncludeDir["glm"] = "%{wks.location}/XuanWu/vendor/glm"
-IncludeDir["stb_image"] = "%{wks.location}/XuanWu/vendor/stb_image"
-IncludeDir["entt"] = "%{wks.location}/XuanWu/vendor/entt/include"
-IncludeDir["yaml_cpp"] = "%{wks.location}/XuanWu/vendor/yaml-cpp/include"
-IncludeDir["ImGuizmo"] = "%{wks.location}/XuanWu/vendor/ImGuizmo"
-
 group "Dependencies"
+	include "XuanWu/vendor/Box2D"
 	include "XuanWu/vendor/GLFW"
 	include "XuanWu/vendor/Glad"
 	include "XuanWu/vendor/imgui"

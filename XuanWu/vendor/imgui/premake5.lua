@@ -2,7 +2,7 @@ project "ImGui"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
-    staticruntime "on"
+    staticruntime "off"
 
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -33,3 +33,4 @@ project "ImGui"
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
+        symbols "off"

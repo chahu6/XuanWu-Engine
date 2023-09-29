@@ -35,6 +35,7 @@ namespace XuanWu
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
+		// scene场景的文件路径
 		std::string m_Filepath;
 	public:
 		inline entt::registry& Reg() { return m_Registry; }
