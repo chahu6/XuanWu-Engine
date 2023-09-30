@@ -4,6 +4,8 @@
 #include "XuanWu/Core/Timestep.h"
 #include "XuanWu/Render/EditorCamera.h"
 
+class b2World;
+
 namespace XuanWu
 {
 	class Entity;
@@ -24,12 +26,17 @@ namespace XuanWu
 		void OnUpdateEditor(Timestep ts, const EditorCamera& camera);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
+		// 点击运行时和结束时运行
+		void OnRuntimeStart();
+		void OnRuntimeStop();
+
 		void SetFilepath(const std::string_view filepath);
 
 		Entity GetPrimaryCameraEntity();
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
+
 	private:
 		entt::registry m_Registry;
 
@@ -37,6 +44,9 @@ namespace XuanWu
 
 		// scene场景的文件路径
 		std::string m_Filepath;
+
+		// 物理世界
+		b2World* m_PhysicsWorld = nullptr;
 	public:
 		inline entt::registry& Reg() { return m_Registry; }
 		inline std::string& GetFilepath() { return m_Filepath; }

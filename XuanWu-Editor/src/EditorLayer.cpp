@@ -152,6 +152,7 @@ namespace XuanWu
 		{
 			// @TDOD 读取第几个帧缓冲的位置的值
 			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+			//XW_CORE_WARN("{0}", pixelData);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{ (entt::entity)pixelData, m_ActiveScene.get() };
 		}
 
@@ -393,11 +394,13 @@ namespace XuanWu
 
 	void EditorLayer::OnScenePlay()
 	{
+		m_ActiveScene->OnRuntimeStart();
 		m_SceneState = SceneState::Play;
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
+		m_ActiveScene->OnRuntimeStop();
 		m_SceneState = SceneState::Edit;
 	}
 

@@ -207,9 +207,22 @@ namespace XuanWu
 				m_SelectionContext.AddComponent<CameraComponent>();
 				ImGui::CloseCurrentPopup();
 			}
+
 			if (ImGui::MenuItem(TXT("Sprite Renderer")))
 			{
 				m_SelectionContext.AddComponent<SpriteRendererComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (ImGui::MenuItem(TXT("Rigidbody 2D")))
+			{
+				m_SelectionContext.AddComponent<Rigidbody2DComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (ImGui::MenuItem(TXT("Collider 2D")))
+			{
+				m_SelectionContext.AddComponent<BoxCollider2DComponent>();
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -324,6 +337,45 @@ namespace XuanWu
 				}
 			}
 			ImGui::PopStyleColor();
+		});
+
+		DrawComponent<Rigidbody2DComponent>(TXT("Rigidbody 2D"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		{
+			auto& rigidbody = selected.GetComponent<Rigidbody2DComponent>();
+			
+			const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
+			const char* currentBodyTypeString = bodyTypeStrings[(int)rigidbody.Type];
+			if (ImGui::BeginCombo(TXT("BodyType"), currentBodyTypeString))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					bool bIsSelect = currentBodyTypeString == bodyTypeStrings[i];
+					if (ImGui::Selectable(bodyTypeStrings[i], bIsSelect))
+					{
+						currentBodyTypeString = bodyTypeStrings[i];
+
+						rigidbody.Type = (Rigidbody2DComponent::BodyType)i;
+					}
+					if (bIsSelect)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::Checkbox(TXT("FixedRotation"), &rigidbody.FixedRotation);
+		});
+
+		DrawComponent<BoxCollider2DComponent>(TXT("Collider 2D"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		{
+			auto& collider = selected.GetComponent<BoxCollider2DComponent>();
+			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset));
+			ImGui::DragFloat2(TXT("Size"), glm::value_ptr(collider.Size));
+			ImGui::DragFloat(TXT("Density"), &collider.Density, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat(TXT("Friction"), &collider.Friction, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat(TXT("Restitution"), &collider.Restitution, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat(TXT("Restitution Threshold"), &collider.RestitutionThreshold, 0.01f, 0.0f);
 		});
 	}
 }
