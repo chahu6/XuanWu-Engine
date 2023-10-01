@@ -1,10 +1,19 @@
 Scene: Untitled
 Entities:
-  - Entity: 213232132143
+  - Entity: 13600133584286982050
+    TagComponent:
+      Tag: wite
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+  - Entity: 734470491072089684
     TagComponent:
       Tag: Block
     TransformComponent:
-      Translation: [0, -1.55913544, 7.4505806e-09]
+      Translation: [0.000463962555, -1.55913544, 7.4505806e-09]
       Rotation: [0, -0, 0]
       Scale: [12.7010412, 1, 1]
     SpriteRendererComponent:
@@ -19,11 +28,11 @@ Entities:
       Friction: 0.5
       Restitution: 0.340000004
       RestitutionThreshold: 0.5
-  - Entity: 213232132143
+  - Entity: 1740022399049692222
     TagComponent:
       Tag: 蓝方块
     TransformComponent:
-      Translation: [-1.40260243, 4.70354223, -3.7252903e-09]
+      Translation: [-1.40260243, 4.70354223, 0]
       Rotation: [0, -0, 0.739172995]
       Scale: [0.99999994, 0.99999994, 1]
     SpriteRendererComponent:
@@ -38,11 +47,11 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 213232132143
+  - Entity: 1432312044630952282
     TagComponent:
       Tag: 红方块
     TransformComponent:
-      Translation: [4.92720366, 4.98046303, 0.0570073649]
+      Translation: [4.92714262, 5.01339197, 0.058533255]
       Rotation: [0, -0, -0.796771646]
       Scale: [0.99999994, 0.99999994, 1]
     SpriteRendererComponent:
@@ -57,7 +66,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 213232132143
+  - Entity: 17719385851905286962
     TagComponent:
       Tag: 摄像机二
     TransformComponent:

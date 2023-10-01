@@ -12,6 +12,8 @@ namespace XuanWu
 		Entity(const Entity&) = default;
 		Entity(entt::entity handle, Scene* scene);
 
+		uint64_t GetUUID();
+
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{

@@ -3,6 +3,7 @@
 #include <entt.hpp>
 #include "XuanWu/Core/Timestep.h"
 #include "XuanWu/Render/EditorCamera.h"
+#include "XuanWu/Core/UUID.h"
 
 class b2World;
 
@@ -20,6 +21,8 @@ namespace XuanWu
 		~Scene();
 
 		Entity CreateEntity(const std::string_view name = "");
+		Entity CreateEntityWithUUID(const UUID& uuid, const std::string_view name = "");
+
 		void DestroyEntity(Entity entity);
 
 		void OnUpdateRuntime(Timestep ts);

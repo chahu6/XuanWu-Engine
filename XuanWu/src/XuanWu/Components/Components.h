@@ -2,16 +2,26 @@
 
 #include <glm/glm.hpp>
 #include "XuanWu/Render/SceneCamera.h"
-#include "XuanWu/Scene/ScriptableEntity.h"
 #include "XuanWu/Core/Timestep.h"
-#include <glm/gtc/matrix_transform.hpp>
 #include "XuanWu/Render/Texture.h"
+#include "XuanWu/Core/UUID.h"
 
 //#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace XuanWu
 {
+	struct IDComponent
+	{
+		UUID ID;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+		IDComponent(const UUID& uuid)
+			:ID(uuid){}
+	};
+
 	struct TagComponent
 	{
 		std::string Tag;
@@ -70,6 +80,8 @@ namespace XuanWu
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 	};
+
+	class ScriptableEntity;
 
 	struct NativeScriptComponent
 	{

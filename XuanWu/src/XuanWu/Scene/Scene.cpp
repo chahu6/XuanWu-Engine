@@ -5,6 +5,7 @@
 
 #include "XuanWu/Components/Components.h"
 #include "XuanWu/Render/Renderer2D.h"
+#include "ScriptableEntity.h"
 
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
@@ -36,7 +37,13 @@ namespace XuanWu
 
 	Entity Scene::CreateEntity(const std::string_view name)
 	{
+		return CreateEntityWithUUID(UUID(), name);
+	}
+
+	Entity Scene::CreateEntityWithUUID(const UUID& uuid, const std::string_view name)
+	{
 		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
@@ -219,6 +226,12 @@ namespace XuanWu
 	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+	{
+
 	}
 
 	template<>

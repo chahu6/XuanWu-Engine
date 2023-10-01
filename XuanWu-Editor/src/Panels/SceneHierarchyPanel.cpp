@@ -202,28 +202,40 @@ namespace XuanWu
 			ImGui::OpenPopup(TXT("AddComponent"));
 		if (ImGui::BeginPopup(TXT("AddComponent")))
 		{
-			if (ImGui::MenuItem(TXT("Camera")))
+			if (!m_SelectionContext.HasComponent<CameraComponent>())
 			{
-				m_SelectionContext.AddComponent<CameraComponent>();
-				ImGui::CloseCurrentPopup();
+				if (ImGui::MenuItem(TXT("Camera")))
+				{
+					m_SelectionContext.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
 			}
 
-			if (ImGui::MenuItem(TXT("Sprite Renderer")))
+			if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
 			{
-				m_SelectionContext.AddComponent<SpriteRendererComponent>();
-				ImGui::CloseCurrentPopup();
+				if (ImGui::MenuItem(TXT("Sprite Renderer")))
+				{
+					m_SelectionContext.AddComponent<SpriteRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
 			}
 
-			if (ImGui::MenuItem(TXT("Rigidbody 2D")))
+			if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
 			{
-				m_SelectionContext.AddComponent<Rigidbody2DComponent>();
-				ImGui::CloseCurrentPopup();
+				if (ImGui::MenuItem(TXT("Rigidbody 2D")))
+				{
+					m_SelectionContext.AddComponent<Rigidbody2DComponent>();
+					ImGui::CloseCurrentPopup();
+				}
 			}
 
-			if (ImGui::MenuItem(TXT("Collider 2D")))
+			if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
 			{
-				m_SelectionContext.AddComponent<BoxCollider2DComponent>();
-				ImGui::CloseCurrentPopup();
+				if (ImGui::MenuItem(TXT("Collider 2D")))
+				{
+					m_SelectionContext.AddComponent<BoxCollider2DComponent>();
+					ImGui::CloseCurrentPopup();
+				}
 			}
 			ImGui::EndPopup();
 		}
