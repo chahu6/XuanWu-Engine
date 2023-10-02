@@ -51,7 +51,7 @@ namespace XuanWu
 		float m_Speed = 8.0f;
 
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
-		glm::vec3 m_Position = { 0.0f,0.0f, 5.0f };
+		glm::vec3 m_Position = { 0.0f,0.0f, 15.0f };
 		glm::vec3 m_FocalPoint = glm::vec3(0.0f);
 
 		glm::vec3 m_Forward = { 0.0f, 0.0f, -1.0f };

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <entt.hpp>
 #include "XuanWu/Core/Timestep.h"
 #include "XuanWu/Render/EditorCamera.h"
@@ -20,6 +19,8 @@ namespace XuanWu
 		Scene();
 		~Scene();
 
+		static Ref<Scene> Copy(Ref<Scene> other);
+
 		Entity CreateEntity(const std::string_view name = "");
 		Entity CreateEntityWithUUID(const UUID& uuid, const std::string_view name = "");
 
@@ -36,6 +37,9 @@ namespace XuanWu
 		void SetFilepath(const std::string_view filepath);
 
 		Entity GetPrimaryCameraEntity();
+
+		//¸´ÖÆEntity
+		void DuplicateEntity(Entity entity);
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

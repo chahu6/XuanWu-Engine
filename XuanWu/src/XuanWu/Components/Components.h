@@ -106,7 +106,7 @@ namespace XuanWu
 		enum class BodyType { Static = 0, Dynamic, Kinematic };
 
 		BodyType Type = BodyType::Static;
-		bool FixedRotation = false;
+		bool FixedRotation = false; // 固定旋转，不让它转
 
 		void* RuntimeBody = nullptr;
 

@@ -102,24 +102,27 @@ namespace XuanWu
 	{
 		ImGui::Begin(TXT("场景面板"));
 		{
-			m_Context->m_Registry.each([&](auto entityID)
+			if (m_Context)
 			{
+				m_Context->m_Registry.each([&](auto entityID)
+				{
 					Entity entity{ entityID, m_Context.get() };
 					DrawEntityNode(entity);
-			});
+				});
 
-			// 点击空白区域，取消选中
-			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-				m_SelectionContext = {};
+				// 点击空白区域，取消选中
+				if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+					m_SelectionContext = {};
 
-			//  ImGuiPopupFlags_NoOpenOverItems 不加这个Flags，右键选项还是创建实体 For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space
-			if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
-			{
-				if (ImGui::MenuItem(TXT("创建空实体")))
+				//  ImGuiPopupFlags_NoOpenOverItems 不加这个Flags，右键选项还是创建实体 For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space
+				if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
 				{
-					m_Context->CreateEntity(TXT("Empty Entity"));
+					if (ImGui::MenuItem(TXT("创建空实体")))
+					{
+						m_Context->CreateEntity(TXT("Empty Entity"));
+					}
+					ImGui::EndPopup();
 				}
-				ImGui::EndPopup();
 			}
 		}
 		ImGui::End();
@@ -343,8 +346,21 @@ namespace XuanWu
 					if (path != nullptr)
 					{
 						std::filesystem::path texturePath(path);
+						std::string type = texturePath.extension().string();
 
-						sprite.Texture = Texture2D::Create(texturePath.string());
+						bool found = false;
+						const char* textureTypes[] = { ".png", ".jpg" };
+						for (size_t i = 0; i < sizeof(textureTypes) / sizeof(textureTypes[0]); i++)
+						{
+							if (type == textureTypes[i])
+							{
+								found = true;
+								break;
+							}
+						}
+
+						if(found)
+							sprite.Texture = Texture2D::Create(texturePath.string());
 					}
 				}
 			}

@@ -2,6 +2,7 @@
 
 #include <entt.hpp>
 #include "Scene.h"
+#include "XuanWu/Components/Components.h"
 
 namespace XuanWu
 {
@@ -12,8 +13,6 @@ namespace XuanWu
 		Entity(const Entity&) = default;
 		Entity(entt::entity handle, Scene* scene);
 
-		uint64_t GetUUID();
-
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
@@ -21,6 +20,14 @@ namespace XuanWu
 			 T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle ,std::forward<Args>(args)...);
 			 m_Scene->OnComponentAdded<T>(*this, component);
 			 return component;
+		}
+
+		template<typename T, typename... Args>
+		T& AddOrReplaceComponent(Args&&... args)
+		{
+			T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			m_Scene->OnComponentAdded<T>(*this, component);
+			return component;
 		}
 
 		template<typename T>
@@ -42,6 +49,9 @@ namespace XuanWu
 			XW_CORE_ASSERT(HasComponent<T>(), "当前实体没有该组件");
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
+
+		uint64_t GetUUID();
+		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
 
 		operator bool() const { return m_EntityHandle != entt::null; }
 		operator entt::entity() const{ return m_EntityHandle; }

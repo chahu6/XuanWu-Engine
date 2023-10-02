@@ -32,9 +32,13 @@ namespace XuanWu
 		spec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(spec);
 
-		m_ActiveScene = CreateRef<Scene>();
+		m_EditorScene = CreateRef<Scene>();
 
 		m_EditorCamera = EditorCamera(45.0f, 1.778f);
+		m_ActiveScene = m_EditorScene;
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+		m_Serializer = Serializer::Create(m_ActiveScene);
 
 #if 0
 		m_SquareEntity = m_ActiveScene->CreateEntity(TXT("蓝方块"));
@@ -84,9 +88,6 @@ namespace XuanWu
 
 #endif
 
-		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-
-		m_Serializer = Serializer::Create(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -137,10 +138,10 @@ namespace XuanWu
 		}
 
 		auto [mx, my] = ImGui::GetMousePos();
-		mx -= m_ViewportBound[0].x;
-		my -= m_ViewportBound[0].y;
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
 
-		glm::vec2 viewportSize = m_ViewportBound[1] - m_ViewportBound[0];
+		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
 
 		// 反转Y轴，使得左下角为(0, 0)点
 		my = viewportSize.y - my;
@@ -219,8 +220,8 @@ namespace XuanWu
 			windowSize.y -= viewportOffset.y;
 
 			ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-			m_ViewportBound[0] = { minBound.x, minBound.y };
-			m_ViewportBound[1] = { maxBound.x, maxBound.y };
+			m_ViewportBounds[0] = { minBound.x, minBound.y };
+			m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
 			// GetWindowContentRegionMin() 是以自己窗口内容的左上角为起点(0, 0) 反正我不会弄，后面再说吧
 		/*	ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
@@ -249,13 +250,15 @@ namespace XuanWu
 			{
 				ImGuizmo::SetOrthographic(false);
 				ImGuizmo::SetDrawlist();
-				float windowWidth = ImGui::GetWindowWidth(); // 获取 当前的 窗口宽度
-				float windowHeight = ImGui::GetWindowHeight();
-				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+				//float windowWidth = ImGui::GetWindowWidth(); // 获取 当前的 窗口宽度
+				//float windowHeight = ImGui::GetWindowHeight();
+				//ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+				ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
+
 
 				// Editor 时
 				const glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
-				const glm::mat4 cameraProjection = m_EditorCamera.GetProjection();
+				const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
 
 				// Runtime 时
 				/*auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
@@ -291,6 +294,9 @@ namespace XuanWu
 			// 接收拖拽的负载
 			if (ImGui::BeginDragDropTarget())
 			{
+				if (m_SceneState == SceneState::Play)
+					OnSceneStop();
+
 				// 因为接收内容可能为空，需要if判断 。 CONTENT_BROWSER_ITEM：拖动携带的内容
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 				{
@@ -309,7 +315,8 @@ namespace XuanWu
 
 	void EditorLayer::NewScene()
 	{
-		m_ActiveScene = CreateRef<Scene>();
+		m_EditorScene = CreateRef<Scene>();
+		m_ActiveScene = m_EditorScene;
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
@@ -350,6 +357,16 @@ namespace XuanWu
 		{
 			m_Serializer->Serialize(m_ActiveScene->GetFilepath());
 		}
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_SceneState != SceneState::Edit) return;
+
+		Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+
+		if (selectedEntity)
+			m_EditorScene->DuplicateEntity(selectedEntity);
 	}
 
 	void EditorLayer::UI_Toolbar()
@@ -394,14 +411,27 @@ namespace XuanWu
 
 	void EditorLayer::OnScenePlay()
 	{
-		m_ActiveScene->OnRuntimeStart();
+		if (!m_EditorScene)
+		{
+			XW_CORE_ASSERT(false, "EditorScene is nullptr");
+			return;
+		}
 		m_SceneState = SceneState::Play;
+
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnRuntimeStart();
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
-		m_ActiveScene->OnRuntimeStop();
 		m_SceneState = SceneState::Edit;
+
+		m_ActiveScene->OnRuntimeStop();
+		m_ActiveScene = m_EditorScene;
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	bool EditorLayer::OnWindowResized(WindowResizeEvent& event)
@@ -428,7 +458,6 @@ namespace XuanWu
 
 				break;
 			}
-
 			case Key::O:
 			{
 				if (control)
@@ -436,7 +465,6 @@ namespace XuanWu
 
 				break;
 			}
-
 			case Key::S:
 			{
 				if (control)
@@ -444,7 +472,13 @@ namespace XuanWu
 
 				break;
 			}
+			case Key::D:
+			{
+				if (control)
+					OnDuplicateEntity();
 
+				break;
+			}
 			default:
 			{
 				if (!m_EditorCamera.IsMoved())

@@ -22,14 +22,16 @@ namespace XuanWu
 		virtual void OnEvent(Event& event) override;
 
 	private:
-		bool OnWindowResized(WindowResizeEvent& event);
 		bool OnKeyPressed(KeyPressedEvent& event);
+		bool OnWindowResized(WindowResizeEvent& event);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
 
 		void NewScene();
 		void OpenScene();
 		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
+
+		void OnDuplicateEntity();
 
 		void UI_Toolbar();
 
@@ -56,9 +58,11 @@ namespace XuanWu
 		char m_GizmoType = 7;
 
 		Ref<XuanWu::Framebuffer> m_Framebuffer;
-		glm::vec2 m_ViewportBound[2]{};
+		glm::vec2 m_ViewportBounds[2]{};
 
 		Ref<Scene> m_ActiveScene;
+		Ref<Scene> m_EditorScene;
+
 		Ref<Serializer> m_Serializer;
 		EditorCamera m_EditorCamera;
 
@@ -70,7 +74,7 @@ namespace XuanWu
 		Ref<Texture2D> m_IconPlay;
 		Ref<Texture2D> m_IconStop;
 
-		enum class SceneState
+		enum class SceneState : uint8_t
 		{
 			Edit = 0,
 			Play = 1
