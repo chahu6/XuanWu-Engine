@@ -45,6 +45,8 @@ namespace XuanWu {
 		XW_PROFILE_FUNCTION();
 
 		glBindVertexArray(m_RenderID);
+		// 我觉得应该在这绑定索引缓冲，但现在只有一个索引缓冲，就没有必要，到时再说吧
+		//m_IndexBuffer->Bind(); // 反正索引缓冲和顶点缓冲一起绑定就没有这么麻烦了
 	}
 
 	void OpenGLVertexArray::Unbind() const
@@ -115,7 +117,7 @@ namespace XuanWu {
 	{
 		XW_PROFILE_FUNCTION();
 
-		glBindVertexArray(m_RenderID);
+		// 绑定索引缓冲
 		indexBuffer->Bind();
 
 		m_IndexBuffer = indexBuffer;

@@ -43,6 +43,9 @@ namespace XuanWu {
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float angle, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float angle, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
+		// Draw Circle
+		static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f, int entityID = -1);
+
 		struct Statistics
 		{
 			uint32_t DrawCalls = 0;
@@ -57,6 +60,6 @@ namespace XuanWu {
 		static Statistics GetStats();
 	private:
 		static void StartBatch();
-		static void FlushAndReset();
+		static void NextBatch();
 	};
 }

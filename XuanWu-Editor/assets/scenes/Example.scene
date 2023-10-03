@@ -8,7 +8,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [12.7010412, 1, 1]
     SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
+      Color: [0.388235301, 0.78039217, 0.435294122, 1]
     Rigidbody2DComponent:
       BodyType: Static
       FixedRotation: false
@@ -49,7 +49,7 @@ Entities:
       Color: [1, 0, 0, 1]
     Rigidbody2DComponent:
       BodyType: Dynamic
-      FixedRotation: true
+      FixedRotation: false
     BoxCollider2DComponent:
       Offset: [0, 0]
       Size: [0.5, 0.5]
@@ -94,3 +94,14 @@ Entities:
       Friction: 0.5
       Restitution: 0.5
       RestitutionThreshold: 0.5
+  - Entity: 14799778714200450166
+    TagComponent:
+      Tag: Circle
+    TransformComponent:
+      Translation: [-2.09439087, 1.48609543, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    CircleRendererComponent:
+      Color: [0.407843143, 0.435294122, 0.670588255, 0.905882359]
+      Thickness: 1
+      Fade: 0.00499999989

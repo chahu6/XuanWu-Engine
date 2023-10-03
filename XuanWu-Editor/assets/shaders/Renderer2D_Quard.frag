@@ -1,6 +1,6 @@
 #version 450 core
-layout(location = 0)out vec4 FragColor;
-layout(location = 1)out int FragColor2;
+layout(location = 0)out vec4 o_Color;
+layout(location = 1)out int o_EntityID;
 
 struct VertexOutput {
 	vec4 Color;
@@ -60,6 +60,6 @@ void main()
 		case 31: texColor *= texture(u_Textures[31], Input.TexCoord * Input.TillingFactor); break;
 	}
 
-	FragColor = texColor;
-	FragColor2 = v_EntityID;
+	o_Color = texColor;
+	o_EntityID = v_EntityID;
 }

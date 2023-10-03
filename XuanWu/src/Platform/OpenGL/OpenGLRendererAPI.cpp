@@ -34,8 +34,7 @@ namespace XuanWu {
 	{
 		// 不知道Cherno为什么要让他等于零时让他等于这个整个的数量，搞不懂
 		//uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-
+		vertexArray->Bind();
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

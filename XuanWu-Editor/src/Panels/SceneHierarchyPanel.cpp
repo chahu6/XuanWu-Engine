@@ -223,6 +223,15 @@ namespace XuanWu
 				}
 			}
 
+			if (!m_SelectionContext.HasComponent<CircleRendererComponent>())
+			{
+				if (ImGui::MenuItem(TXT("Circle Renderer")))
+				{
+					m_SelectionContext.AddComponent<CircleRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
 			{
 				if (ImGui::MenuItem(TXT("Rigidbody 2D")))
@@ -332,7 +341,7 @@ namespace XuanWu
 		{
 			auto& sprite = selected.GetComponent<SpriteRendererComponent>();
 
-			ImGui::DragFloat4(TXT("颜色"), glm::value_ptr(sprite.Color), 0.01f);
+			ImGui::ColorEdit4(TXT("颜色"), glm::value_ptr(sprite.Color));
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			ImGui::Text(TXT("纹理："));
@@ -365,6 +374,15 @@ namespace XuanWu
 				}
 			}
 			ImGui::PopStyleColor();
+		});
+
+		DrawComponent<CircleRendererComponent>(TXT("Circle Renderer"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		{
+			auto& circle = selected.GetComponent<CircleRendererComponent>();
+
+			ImGui::ColorEdit4(TXT("颜色"), glm::value_ptr(circle.Color));
+			ImGui::DragFloat("Thickness", &circle.Thickness, 0.025f, 0.0f, 1.0f);
+			ImGui::DragFloat("Fade", &circle.Fade, 0.00025f, 0.0f, 1.0f);
 		});
 
 		DrawComponent<Rigidbody2DComponent>(TXT("Rigidbody 2D"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)

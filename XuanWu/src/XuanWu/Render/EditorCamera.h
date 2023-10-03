@@ -29,6 +29,7 @@ namespace XuanWu
 		void OnEvent(Event& e);
 
 		void SetViewportSize(float width, float height);
+
 	private:
 		void UpdateProjection();
 		void UpdateVectors();
@@ -43,6 +44,7 @@ namespace XuanWu
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
+
 	private:
 		float m_FOV = 45.0f;
 		float m_AspectRatio = 1.778f;
@@ -66,10 +68,12 @@ namespace XuanWu
 		float m_Sensitivity = 6.0f;
 
 		float m_ViewportWidth = 1600.0f, m_ViewportHeight = 900.0f;
+
 	private:
 		float lastX = 0.0f;
 		float lastY = 0.0f;
 		bool bIsMoved = false;
+
 	public:
 		inline bool IsMoved() { return bIsMoved; }
 		inline glm::mat4 GetViewMatrix() { return m_ViewMatrix; };
