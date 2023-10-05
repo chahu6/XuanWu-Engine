@@ -25,6 +25,7 @@ namespace XuanWu
 
 		m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
 		m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
+		m_IconSimulate = Texture2D::Create("Resources/Icons/SimulateButton.png");
 
 		FramebufferSpecification spec;
 		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -130,6 +131,12 @@ namespace XuanWu
 			case XuanWu::EditorLayer::SceneState::Play:
 			{
 				m_ActiveScene->OnUpdateRuntime(ts);
+				break;
+			}
+			case XuanWu::EditorLayer::SceneState::Simulation:
+			{
+				m_EditorCamera.OnUpdate(ts);
+				m_ActiveScene->OnUpdateSimulation(ts, m_EditorCamera);
 				break;
 			}
 			default:
@@ -304,7 +311,7 @@ namespace XuanWu
 			// 接收拖拽的负载
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (m_SceneState == SceneState::Play)
+				if (m_SceneState == SceneState::Play || m_SceneState == SceneState::Simulation)
 					OnSceneStop();
 
 				// 因为接收内容可能为空，需要if判断 。 CONTENT_BROWSER_ITEM：拖动携带的内容
@@ -394,23 +401,49 @@ namespace XuanWu
 
 		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		{
-			Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
-			float size = ImGui::GetWindowHeight() - 18.0f;
-
-			ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x * 0.5f - (size * 0.5f));
-			if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2{ size, size }, { 0, 1 }, { 1, 0 })) // 64.0f
+			// Play
 			{
-				switch (m_SceneState)
+				Ref<Texture2D> icon = m_SceneState != SceneState::Play ? m_IconPlay : m_IconStop;
+				float size = ImGui::GetWindowHeight() - 18.0f;
+
+				ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x * 0.5f - (size * 0.5f));
+				if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2{ size, size }, { 0, 1 }, { 1, 0 })) // 64.0f
 				{
+					switch (m_SceneState)
+					{
 					case SceneState::Edit:
 						OnScenePlay();
 						break;
+					case SceneState::Simulation:
 					case SceneState::Play:
 						OnSceneStop();
 						break;
 					default:
-						XW_CORE_ASSERT(false, "没有这种状态");
+						XW_CORE_ASSERT(false, "未知状态");
 						break;
+					}
+				}
+			}
+			ImGui::SameLine();
+			// Simulation
+			{
+				Ref<Texture2D> icon = m_SceneState != SceneState::Simulation ? m_IconSimulate : m_IconStop;
+				float size = ImGui::GetWindowHeight() - 18.0f;
+				if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2{ size, size }, { 0, 1 }, { 1, 0 })) // 64.0f
+				{
+					switch (m_SceneState)
+					{
+					case SceneState::Edit:
+						OnSceneSimulate();
+						break;
+					case SceneState::Play:
+					case SceneState::Simulation:
+						OnSceneStop();
+						break;
+					default:
+						XW_CORE_ASSERT(false, "未知状态");
+						break;
+					}
 				}
 			}
 		}
@@ -434,11 +467,29 @@ namespace XuanWu
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
+	void EditorLayer::OnSceneSimulate()
+	{
+		XW_CORE_ASSERT(m_EditorScene, "EditorScene is nullptr");
+
+		m_SceneState = SceneState::Simulation;
+
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnSimulationStart();
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
 	void EditorLayer::OnSceneStop()
 	{
+		XW_CORE_ASSERT(m_SceneState == SceneState::Play || m_SceneState == SceneState::Simulation, "未知状态");
+
+		if (m_SceneState == SceneState::Play)
+			m_ActiveScene->OnRuntimeStop();
+		else if (m_SceneState == SceneState::Simulation)
+			m_ActiveScene->OnSimulationStop();
+			
 		m_SceneState = SceneState::Edit;
 
-		m_ActiveScene->OnRuntimeStop();
 		m_ActiveScene = m_EditorScene;
 
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);

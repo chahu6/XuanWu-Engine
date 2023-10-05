@@ -305,6 +305,7 @@ namespace XuanWu
 			auto& sprite = selected.GetComponent<SpriteRendererComponent>();
 
 			ImGui::ColorEdit4(TXT("颜色"), glm::value_ptr(sprite.Color));
+			ImGui::DragFloat(TXT("平铺因子"), &sprite.TilingFactor, 0.1f);
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			ImGui::Text(TXT("纹理："));
@@ -339,7 +340,7 @@ namespace XuanWu
 			ImGui::PopStyleColor();
 		});
 
-		DrawComponent<CircleRendererComponent>(TXT("Circle Renderer"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		DrawComponent<CircleRendererComponent>(TXT("Circle Renderer"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
 		{
 			auto& circle = selected.GetComponent<CircleRendererComponent>();
 
@@ -348,7 +349,7 @@ namespace XuanWu
 			ImGui::DragFloat("Fade", &circle.Fade, 0.00025f, 0.0f, 1.0f);
 		});
 
-		DrawComponent<Rigidbody2DComponent>(TXT("Rigidbody 2D"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		DrawComponent<Rigidbody2DComponent>(TXT("Rigidbody 2D"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
 		{
 			auto& rigidbody = selected.GetComponent<Rigidbody2DComponent>();
 			
@@ -376,7 +377,7 @@ namespace XuanWu
 			ImGui::Checkbox(TXT("FixedRotation"), &rigidbody.FixedRotation);
 		});
 
-		DrawComponent<BoxCollider2DComponent>(TXT("Box Collider"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		DrawComponent<BoxCollider2DComponent>(TXT("Box Collider"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
 		{
 			auto& collider = selected.GetComponent<BoxCollider2DComponent>();
 			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset), 0.1f);
@@ -387,7 +388,7 @@ namespace XuanWu
 			ImGui::DragFloat(TXT("Restitution Threshold"), &collider.RestitutionThreshold, 0.01f, 0.0f);
 		});
 
-		DrawComponent<CircleCollider2DComponent>(TXT("Circle Collider"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		DrawComponent<CircleCollider2DComponent>(TXT("Circle Collider"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
 		{
 			auto& collider = selected.GetComponent<CircleCollider2DComponent>();
 			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset), 0.1f);

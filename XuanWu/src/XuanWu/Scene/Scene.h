@@ -28,11 +28,16 @@ namespace XuanWu
 
 		void OnUpdateRuntime(Timestep ts);
 		void OnUpdateEditor(Timestep ts, const EditorCamera& camera);
+		void OnUpdateSimulation(Timestep ts, const EditorCamera& camera);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
-		// 点击运行时和结束时运行
+		// 运行时
 		void OnRuntimeStart();
 		void OnRuntimeStop();
+
+		// 物理模拟
+		void OnSimulationStart();
+		void OnSimulationStop();
 
 		void SetFilepath(const std::string_view filepath);
 
@@ -50,6 +55,10 @@ namespace XuanWu
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
 
+		void OnPhysics2DStart();
+		void OnPhysics2DStop();
+
+		void RenderScene(const EditorCamera& camera);
 	private:
 		entt::registry m_Registry;
 

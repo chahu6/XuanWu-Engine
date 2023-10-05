@@ -36,6 +36,7 @@ namespace XuanWu
 		void UI_Toolbar();
 
 		void OnScenePlay();
+		void OnSceneSimulate();
 		void OnSceneStop();
 
 		// ±à¼­Æ÷²ãµÄµ÷ÊÔ
@@ -77,12 +78,14 @@ namespace XuanWu
 		Entity m_HoveredEntity;
 
 		Ref<Texture2D> m_IconPlay;
+		Ref<Texture2D> m_IconSimulate;
 		Ref<Texture2D> m_IconStop;
 
 		enum class SceneState : uint8_t
 		{
 			Edit = 0,
-			Play = 1
+			Play = 1,
+			Simulation = 2
 		};
 		SceneState m_SceneState = SceneState::Edit;
 	};
