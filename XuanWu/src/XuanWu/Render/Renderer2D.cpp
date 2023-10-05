@@ -42,7 +42,7 @@ namespace XuanWu {
 		glm::vec4 Color;
 
 		// only-Editor
-		float EntityID;
+		int EntityID;
 	};
 
 	struct Renderer2DData
@@ -182,10 +182,10 @@ namespace XuanWu {
 		s_Data.CircleShader = Shader::Create("Renderer2D_Circle", "assets/shaders/Renderer2D_Circle.vs", "assets/shaders/Renderer2D_Circle.frag");
 		s_Data.LineShader = Shader::Create("Renderer2D_Line", "assets/shaders/Renderer2D_Line.vs", "assets/shaders/Renderer2D_Line.frag");
 
-		s_Data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f }; // вСоб╫г
+		s_Data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f }; // сроб╫г
+		s_Data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f }; // срио╫г
+		s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f }; // вСио╫г
 	}
 
 	void Renderer2D::Shutdown()
@@ -620,6 +620,7 @@ namespace XuanWu {
 		}
 
 		DrawLine(lineVertices[0], lineVertices[1], color, entityID);
+		DrawLine(lineVertices[1], lineVertices[3], color, entityID);
 		DrawLine(lineVertices[1], lineVertices[2], color, entityID);
 		DrawLine(lineVertices[2], lineVertices[3], color, entityID);
 		DrawLine(lineVertices[3], lineVertices[0], color, entityID);

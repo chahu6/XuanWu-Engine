@@ -379,7 +379,7 @@ namespace XuanWu
 		DrawComponent<BoxCollider2DComponent>(TXT("Box Collider"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
 		{
 			auto& collider = selected.GetComponent<BoxCollider2DComponent>();
-			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset));
+			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset), 0.1f);
 			ImGui::DragFloat2(TXT("Size"), glm::value_ptr(collider.Size));
 			ImGui::DragFloat(TXT("Density"), &collider.Density, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat(TXT("Friction"), &collider.Friction, 0.01f, 0.0f, 1.0f);
@@ -390,7 +390,7 @@ namespace XuanWu
 		DrawComponent<CircleCollider2DComponent>(TXT("Circle Collider"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
 		{
 			auto& collider = selected.GetComponent<CircleCollider2DComponent>();
-			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset));
+			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset), 0.1f);
 			ImGui::DragFloat(TXT("Radius"), &collider.Radius, 0.1f, 0.0f, FLT_MAX);
 			ImGui::DragFloat(TXT("Density"), &collider.Density, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat(TXT("Friction"), &collider.Friction, 0.01f, 0.0f, 1.0f);

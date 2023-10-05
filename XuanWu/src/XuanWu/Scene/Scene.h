@@ -40,6 +40,12 @@ namespace XuanWu
 
 		//¸´ÖÆEntity
 		void DuplicateEntity(Entity entity);
+
+		template<typename... Component>
+		auto GetAllComponentView()
+		{
+			return m_Registry.view<Component...>();
+		}
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

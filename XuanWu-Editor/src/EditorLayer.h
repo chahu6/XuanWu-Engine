@@ -37,6 +37,9 @@ namespace XuanWu
 
 		void OnScenePlay();
 		void OnSceneStop();
+
+		// 编辑器层的调试
+		void OnOverlayRender();
 	private:
 		/*Ref<Texture2D> m_Texture;
 		Ref<Texture2D> m_SpriteTexture;
@@ -53,6 +56,8 @@ namespace XuanWu
 
 		// 必须的
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+
+		bool m_ShowPhysicsColliders = false;
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		char m_GizmoType = 7;

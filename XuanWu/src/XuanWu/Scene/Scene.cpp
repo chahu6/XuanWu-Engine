@@ -188,7 +188,7 @@ namespace XuanWu
 
 		// Physics
 		{
-			const int32_t velocityIterations = 8;
+			const int32_t velocityIterations = 8; // 这些参数应该移到编辑器
 			const int32_t positionIterations = 3;
 			m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 
@@ -279,7 +279,7 @@ namespace XuanWu
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 				// 3、定义包围盒
 				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, {bc2d.Offset.x, bc2d.Offset.y}, 0.0f);
 
 				// 4、定义fixture，fixture包含定义的包围盒
 				b2FixtureDef fixtureDef;
