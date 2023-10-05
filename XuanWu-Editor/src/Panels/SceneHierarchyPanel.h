@@ -64,6 +64,18 @@ namespace XuanWu
 			}
 		}
 
+		template<typename Component>
+		void DisplayAddComponentEntity(const std::string_view name)
+		{
+			if (!m_SelectionContext.HasComponent<Component>())
+			{
+				if (ImGui::MenuItem(name.data()))
+				{
+					m_SelectionContext.AddComponent<Component>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
 	private:
 		Ref<Scene> m_Context;
 

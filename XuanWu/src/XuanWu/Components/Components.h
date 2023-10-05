@@ -144,7 +144,7 @@ namespace XuanWu
 	struct CircleCollider2DComponent
 	{
 		glm::vec2 Offset = { 0.0f, 0.0f };
-		glm::vec2 Size = { 0.5f, 0.5f };
+		float Radius = 0.5f;
 
 		float Density = 1.0f;
 		float Friction = 0.5;

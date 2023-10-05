@@ -205,50 +205,13 @@ namespace XuanWu
 			ImGui::OpenPopup(TXT("AddComponent"));
 		if (ImGui::BeginPopup(TXT("AddComponent")))
 		{
-			if (!m_SelectionContext.HasComponent<CameraComponent>())
-			{
-				if (ImGui::MenuItem(TXT("Camera")))
-				{
-					m_SelectionContext.AddComponent<CameraComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
+			DisplayAddComponentEntity<CameraComponent>("Camera");
+			DisplayAddComponentEntity<SpriteRendererComponent>("Sprite Renderer");
+			DisplayAddComponentEntity<CircleRendererComponent>("Circle Renderer");
+			DisplayAddComponentEntity<Rigidbody2DComponent>("Rigidbody 2D");
+			DisplayAddComponentEntity<BoxCollider2DComponent>("Box Collider");
+			DisplayAddComponentEntity<CircleCollider2DComponent>("Circle Collider");
 
-			if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
-			{
-				if (ImGui::MenuItem(TXT("Sprite Renderer")))
-				{
-					m_SelectionContext.AddComponent<SpriteRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!m_SelectionContext.HasComponent<CircleRendererComponent>())
-			{
-				if (ImGui::MenuItem(TXT("Circle Renderer")))
-				{
-					m_SelectionContext.AddComponent<CircleRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
-			{
-				if (ImGui::MenuItem(TXT("Rigidbody 2D")))
-				{
-					m_SelectionContext.AddComponent<Rigidbody2DComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
-			{
-				if (ImGui::MenuItem(TXT("Collider 2D")))
-				{
-					m_SelectionContext.AddComponent<BoxCollider2DComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
 			ImGui::EndPopup();
 		}
 
@@ -413,7 +376,7 @@ namespace XuanWu
 			ImGui::Checkbox(TXT("FixedRotation"), &rigidbody.FixedRotation);
 		});
 
-		DrawComponent<BoxCollider2DComponent>(TXT("Collider 2D"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		DrawComponent<BoxCollider2DComponent>(TXT("Box Collider"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
 		{
 			auto& collider = selected.GetComponent<BoxCollider2DComponent>();
 			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset));
@@ -422,6 +385,17 @@ namespace XuanWu
 			ImGui::DragFloat(TXT("Friction"), &collider.Friction, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat(TXT("Restitution"), &collider.Restitution, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat(TXT("Restitution Threshold"), &collider.RestitutionThreshold, 0.01f, 0.0f);
+		});
+
+		DrawComponent<CircleCollider2DComponent>(TXT("Circle Collider"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
+		{
+			auto& collider = selected.GetComponent<CircleCollider2DComponent>();
+			ImGui::DragFloat2(TXT("Offset"), glm::value_ptr(collider.Offset));
+			ImGui::DragFloat(TXT("Radius"), &collider.Radius, 0.1f, 0.0f, FLT_MAX);
+			ImGui::DragFloat(TXT("Density"), &collider.Density, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat(TXT("Friction"), &collider.Friction, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat(TXT("Restitution"), &collider.Restitution, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat(TXT("Restitution Threshold"), &collider.RestitutionThreshold, 0.01f, 0.0f, FLT_MAX);
 		});
 	}
 }
