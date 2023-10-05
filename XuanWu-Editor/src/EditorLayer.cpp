@@ -40,55 +40,6 @@ namespace XuanWu
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
 		m_Serializer = Serializer::Create(m_ActiveScene);
-
-#if 0
-		m_SquareEntity = m_ActiveScene->CreateEntity(TXT("蓝方块"));
-		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(0.f, 0.f, 1.0f, 1.0f));
-
-		m_RedSquare = m_ActiveScene->CreateEntity(TXT("红方块"));
-		m_RedSquare.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.f, 1.f));
-
-		m_SecondCamera = m_ActiveScene->CreateEntity(TXT("摄像机二"));
-		m_SecondCamera.AddComponent<CameraComponent>();
-		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
-
-		m_CameraEntity = m_ActiveScene->CreateEntity(TXT("摄像机"));
-		m_CameraEntity.AddComponent<CameraComponent>();
-
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			virtual void OnCreate() override
-			{
-				auto& transform = GetComponent<TransformComponent>().Translation;
-				transform.x = rand() % 10 - 5;
-			}
-
-			virtual void OnDestroy() override
-			{
-			}
-
-			virtual void OnUpdate(Timestep ts) override
-			{
-				auto& transform = GetComponent<TransformComponent>().Translation;
-
-				float speed = 5.0f;
-				if (Input::IsKeyPressed(XW_KEY_W))
-					transform.y += speed * ts;
-				else if (Input::IsKeyPressed(XW_KEY_S))
-					transform.y -= speed * ts;
-				if (Input::IsKeyPressed(XW_KEY_A))
-					transform.x -= speed * ts;
-				else if (Input::IsKeyPressed(XW_KEY_D))
-					transform.x += speed * ts;
-			}
-		};
-
-		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
-#endif
-
 	}
 
 	void EditorLayer::OnDetach()
@@ -272,16 +223,9 @@ namespace XuanWu
 				//ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 				ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
-
 				// Editor 时
 				const glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
 				const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
-
-				// Runtime 时
-				/*auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-				const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-				const glm::mat4& cameraProjection = camera.GetProjection();
-				glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());*/
 
 				auto& tc = selectedEntity.GetComponent<TransformComponent>();
 				glm::mat4 transform = tc.GetTransform();
@@ -561,7 +505,7 @@ namespace XuanWu
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
 	{
-		if(event.GetRepeatCount() > 0)
+		if(event.IsRepeat())
 			return false;
 
 		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);

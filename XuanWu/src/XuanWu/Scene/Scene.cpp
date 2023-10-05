@@ -28,29 +28,48 @@ namespace XuanWu
 		return b2_staticBody;
 	}
 
-	template<typename Component>
+	template<typename... Component>
+	static void CopyComponent(ComponentGroup<Component...>, entt::registry& dest, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+		CopyComponent<Component...>(dest, src, enttMap);
+	}
+
+	template<typename... Component>
 	static void CopyComponent(entt::registry& dest, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
 	{
-		auto& view = src.view<Component>();
-		for (auto e : view)
+		// 折叠表达式
+		([&]()
 		{
-			UUID uuid = src.get<IDComponent>(e).ID;
+			auto& view = src.view<Component>();
+			for (auto e : view)
+			{
+				UUID uuid = src.get<IDComponent>(e).ID;
 
-			entt::entity destEnttID = enttMap.at(uuid);
-			auto& component = src.get<Component>(e);
+				entt::entity destEnttID = enttMap.at(uuid);
+				auto& component = src.get<Component>(e);
 
-			dest.emplace_or_replace<Component>(destEnttID, component);
-		}
+				dest.emplace_or_replace<Component>(destEnttID, component);
+			}
+		}(), ...);
+	}
+
+	template<typename... Component>
+	static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Entity src)
+	{
+		CopyComponentIfExists<Component...>(dst, src);
 	}
 
 	// 为复制实体的辅助方法
-	template<typename Component>
+	template<typename... Component>
 	static void CopyComponentIfExists(Entity dst, Entity src)
 	{
-		if (src.HasComponent<Component>()) 
+		([&]()
 		{
-			dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
-		}
+			if (src.HasComponent<Component>())
+			{
+				dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
+			}
+		}(), ...);
 	}
 
 	Scene::Scene()
@@ -81,14 +100,7 @@ namespace XuanWu
 			enttMap[uuid] = (entt::entity)newEntity;
 		}
 
-		CopyComponent<BoxCollider2DComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<CircleCollider2DComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<CameraComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<CircleRendererComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<NativeScriptComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<Rigidbody2DComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<SpriteRendererComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
-		CopyComponent<TransformComponent>(destSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent(AllComponents{}, destSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -126,14 +138,7 @@ namespace XuanWu
 		Entity newEntity = CreateEntity(name);
 
 		// 2.复制组件
-		CopyComponentIfExists<TransformComponent>(newEntity, entity);
-		CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
-		CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
-		CopyComponentIfExists<CameraComponent>(newEntity, entity);
-		CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
-		CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
-		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
-		CopyComponentIfExists<CircleCollider2DComponent>(newEntity, entity);
+		CopyComponentIfExists(AllComponents{}, newEntity, entity);
 	}
 
 	void Scene::OnPhysics2DStart()
