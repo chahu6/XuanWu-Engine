@@ -125,7 +125,8 @@ private:
 class Sandbox : public XuanWu::Application
 {
 public:
-	Sandbox()
+	Sandbox(const XuanWu::ApplicationSpecification& spec)
+		:Application(spec)
 	{
 		//PushLayer(new ExampleLayer());
 		PushLayer(new Sandbox2D());
@@ -136,7 +137,12 @@ public:
 	}
 };
 
-XuanWu::Application* XuanWu::CreateApplication()
+XuanWu::Application* XuanWu::CreateApplication(XuanWu::ApplicationCommandLineArgs args)
 {
-	return new Sandbox();
+	XuanWu::ApplicationSpecification spec;
+	spec.Name = "Sandbox";
+	spec.WorkingDirectory = "../XuanWu-Editor";
+	spec.CommandLineArgs = args;
+
+	return new Sandbox(spec);
 }

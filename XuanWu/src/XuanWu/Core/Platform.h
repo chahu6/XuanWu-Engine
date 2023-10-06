@@ -7,6 +7,6 @@ namespace XuanWu {
 	class Platform
 	{
 	public:
-		static float GetTime() { return static_cast<float>(glfwGetTime()); }
+		inline static float GetTime() { return static_cast<float>(glfwGetTime()); }
 	};
 }

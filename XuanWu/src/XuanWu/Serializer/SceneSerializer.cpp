@@ -220,6 +220,9 @@ namespace XuanWu
 
 			auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
+			out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;
+			if (spriteRendererComponent.Texture)
+				out << YAML::Key << "TexturePath" << YAML::Value << spriteRendererComponent.Texture->GetPath();
 
 			out << YAML::EndMap;
 		}
@@ -315,8 +318,18 @@ namespace XuanWu
 		std::ifstream stream(filepath.data());
 		std::stringstream strStream;
 		strStream << stream.rdbuf();
+		YAML::Node data;
+		// 防止加载失败
+		try
+		{
+			data = YAML::Load(strStream.str());
+		}
+		catch (const YAML::ParserException& ex)
+		{
+			XW_CORE_ERROR("Failed to deserialize scene '{0}'\n		{1}", filepath.data(), ex.what());
+			return false;
+		}
 
-		YAML::Node data = YAML::Load(strStream.str());
 		if (!data["Scene"])
 			return false;
 
@@ -374,6 +387,16 @@ namespace XuanWu
 				{
 					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+					if(spriteRendererComponent["TilingFactor"])
+						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
+					if (spriteRendererComponent["TexturePath"])
+					{
+						std::string texturePath = spriteRendererComponent["TexturePath"].as<std::string>();
+						//auto path = 
+						std::filesystem::path path = std::filesystem::current_path();
+						path /= texturePath;
+						src.Texture = Texture2D::Create(path.string());
+					}
 				}
 
 				auto circleRendererComponent = entity["CircleRendererComponent"];

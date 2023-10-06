@@ -9,6 +9,7 @@ Entities:
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 0.209999993, 0.560000002, 1]
+      TilingFactor: 1
   - Entity: 1228021037937203439
     TagComponent:
       Tag: red_1
@@ -18,6 +19,8 @@ Entities:
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [0.74000001, 0.74000001, 0.629999995, 1]
+      TilingFactor: 1
+      TexturePath: D:\Test-C++\XuanWu\XuanWu-Editor\assets\textures\ChernoLogo.png
   - Entity: 6873226342148612561
     TagComponent:
       Tag: camera
@@ -41,7 +44,9 @@ Entities:
       Tag: red
     TransformComponent:
       Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 0, 1, 1]
+      TilingFactor: 1
+      TexturePath: assets\textures\ChernoLogo.png

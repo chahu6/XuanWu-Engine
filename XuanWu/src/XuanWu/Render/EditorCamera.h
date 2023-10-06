@@ -78,5 +78,6 @@ namespace XuanWu
 		inline bool IsMoved() { return bIsMoved; }
 		inline glm::mat4 GetViewMatrix() { return m_ViewMatrix; };
 		inline glm::mat4 GetViewProjection() const { return m_Projection * m_ViewMatrix; }
+		inline glm::vec3 GetForward() const { return m_Forward; }
 	};
 }

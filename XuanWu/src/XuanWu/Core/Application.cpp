@@ -1,12 +1,9 @@
 #include "xwpch.h"
 #include "Application.h"
 
-#include "XuanWu/Core/Log.h"
-
 #include "Input.h"
 #include "KeyCode.h"
 #include "XuanWu/Core/Platform.h"
-
 #include "XuanWu/Render/Renderer.h"
 
 namespace XuanWu {
@@ -15,14 +12,19 @@ namespace XuanWu {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application(const std::string& name)
+	Application::Application(const ApplicationSpecification& specification)
+		:m_Specification(specification)
 	{
 		XW_PROFILE_FUNCTION();
 
 		XW_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
+		// 设置工作目录
+		if (!m_Specification.WorkingDirectory.empty())
+			std::filesystem::current_path(m_Specification.WorkingDirectory);
+
+		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(specification.Name)));
 		m_Window->SetEventCallback(XW_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();

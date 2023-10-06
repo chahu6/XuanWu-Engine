@@ -426,6 +426,7 @@ namespace XuanWu {
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -620,7 +621,7 @@ namespace XuanWu {
 		}
 
 		DrawLine(lineVertices[0], lineVertices[1], color, entityID);
-		DrawLine(lineVertices[1], lineVertices[3], color, entityID);
+		//DrawLine(lineVertices[1], lineVertices[3], color, entityID); // 这条线画不画都行，画了更好看
 		DrawLine(lineVertices[1], lineVertices[2], color, entityID);
 		DrawLine(lineVertices[2], lineVertices[3], color, entityID);
 		DrawLine(lineVertices[3], lineVertices[0], color, entityID);

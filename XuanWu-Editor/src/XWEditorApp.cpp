@@ -8,8 +8,8 @@ namespace XuanWu
 	class XuanWuEditor : public Application
 	{
 	public:
-		XuanWuEditor()
-			:Application("XuanWu-Editor")
+		XuanWuEditor(const ApplicationSpecification& spec)
+			:Application(spec)
 		{
 			//PushLayer(new ExampleLayer());
 			PushLayer(new EditorLayer());
@@ -20,8 +20,12 @@ namespace XuanWu
 		}
 	};
 
-	Application* CreateApplication()
+	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new XuanWuEditor();
+		ApplicationSpecification spec;
+		spec.Name = "XuanWu-Editor";
+		spec.CommandLineArgs = args;
+
+		return new XuanWuEditor(spec);
 	}
 }

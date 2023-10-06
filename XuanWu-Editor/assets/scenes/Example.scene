@@ -1,14 +1,15 @@
 Scene: Untitled
 Entities:
-  - Entity: 14221567619608491947
+  - Entity: 734470491072089684
     TagComponent:
-      Tag: Block
+      Tag: Block_2
     TransformComponent:
-      Translation: [-4.06013346, 0.0907840505, 7.4505806e-09]
-      Rotation: [0, -0, -0.717939317]
-      Scale: [12.7010431, 1, 1]
+      Translation: [5.16113567, -0.664912164, 7.4505806e-09]
+      Rotation: [0, -0, 0.60622853]
+      Scale: [12.7010431, 0.999999881, 1]
     SpriteRendererComponent:
       Color: [0.388235301, 0.78039217, 0.435294122, 1]
+      TilingFactor: 1
     Rigidbody2DComponent:
       BodyType: Static
       FixedRotation: false
@@ -18,6 +19,84 @@ Entities:
       Density: 1
       Friction: 0.5
       Restitution: 0.340000004
+      RestitutionThreshold: 0.5
+  - Entity: 1740022399049692222
+    TagComponent:
+      Tag: 蓝方块
+    TransformComponent:
+      Translation: [-0.680882454, 1.63232529, 6.10367642e-05]
+      Rotation: [0, -0, 0.739172995]
+      Scale: [0.99999994, 4.4000001, 1]
+    SpriteRendererComponent:
+      Color: [0, 0, 1, 1]
+      TilingFactor: 1
+    Rigidbody2DComponent:
+      BodyType: Dynamic
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [-2.29999995, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 1432312044630952282
+    TagComponent:
+      Tag: 红方块
+    TransformComponent:
+      Translation: [4.62951851, 5.31786537, 0.0585332513]
+      Rotation: [0, -0, -0.796771646]
+      Scale: [0.99999994, 0.99999994, 1]
+    SpriteRendererComponent:
+      Color: [1, 0, 0, 1]
+      TilingFactor: 1
+    Rigidbody2DComponent:
+      BodyType: Dynamic
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 17719385851905286962
+    TagComponent:
+      Tag: 摄像机二
+    TransformComponent:
+      Translation: [0, 0, 12.7403049]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 13600133584286982050
+    TagComponent:
+      Tag: wite
+    TransformComponent:
+      Translation: [-1.65699601, 4.38708782, -6.10354109e-05]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+      TilingFactor: 1
+    Rigidbody2DComponent:
+      BodyType: Dynamic
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0.5
       RestitutionThreshold: 0.5
   - Entity: 14799778714200450166
     TagComponent:
@@ -40,90 +119,16 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 13600133584286982050
+  - Entity: 14221567619608491947
     TagComponent:
-      Tag: wite
+      Tag: Block
     TransformComponent:
-      Translation: [-2.91764641, 4.3870573, 0]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
-    Rigidbody2DComponent:
-      BodyType: Dynamic
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0.5
-      RestitutionThreshold: 0.5
-  - Entity: 17719385851905286962
-    TagComponent:
-      Tag: 摄像机二
-    TransformComponent:
-      Translation: [0, 0, 12.7403049]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 1432312044630952282
-    TagComponent:
-      Tag: 红方块
-    TransformComponent:
-      Translation: [4.62951851, 5.31786537, 0.0585332513]
-      Rotation: [0, -0, -0.796771646]
-      Scale: [0.99999994, 0.99999994, 1]
-    SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
-    Rigidbody2DComponent:
-      BodyType: Dynamic
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-  - Entity: 1740022399049692222
-    TagComponent:
-      Tag: 蓝方块
-    TransformComponent:
-      Translation: [-1.2211746, 4.57387638, 1.86264515e-09]
-      Rotation: [0, -0, 0.739172995]
-      Scale: [0.99999994, 0.99999994, 1]
-    SpriteRendererComponent:
-      Color: [0, 0, 1, 1]
-    Rigidbody2DComponent:
-      BodyType: Dynamic
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-  - Entity: 734470491072089684
-    TagComponent:
-      Tag: Block_2
-    TransformComponent:
-      Translation: [5.16113567, -0.664912164, 7.4505806e-09]
-      Rotation: [0, -0, 0.60622853]
-      Scale: [12.7010431, 0.999999881, 1]
+      Translation: [-4.06013346, 0.0907840505, 7.4505806e-09]
+      Rotation: [0, -0, -0.717939317]
+      Scale: [12.7010431, 1, 1]
     SpriteRendererComponent:
       Color: [0.388235301, 0.78039217, 0.435294122, 1]
+      TilingFactor: 1
     Rigidbody2DComponent:
       BodyType: Static
       FixedRotation: false

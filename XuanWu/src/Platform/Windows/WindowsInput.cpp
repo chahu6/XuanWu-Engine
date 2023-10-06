@@ -11,7 +11,7 @@ namespace XuanWu {
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		auto status = glfwGetKey(window, keycode);
 
-		return status == GLFW_PRESS;
+		return status == GLFW_PRESS; // GLFW_REPEAT √ª”√
 	}
 
 	bool Input::IsMouseButtonPressed(int button)

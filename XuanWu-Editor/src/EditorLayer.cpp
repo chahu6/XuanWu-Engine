@@ -278,6 +278,7 @@ namespace XuanWu
 	{
 		m_EditorScene = CreateRef<Scene>();
 		m_ActiveScene = m_EditorScene;
+
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
@@ -456,18 +457,21 @@ namespace XuanWu
 
 		if (m_ShowPhysicsColliders)
 		{
+			int sign = Math::Sign(m_EditorCamera.GetForward().z); // 让线框一直面向你，但只限于图形是二维的时候，既Y轴没有旋转，之后在修复吧，这个不行
 			// Draw Box Collider
 			{
 				auto& view = m_ActiveScene->GetAllComponentView<TransformComponent, BoxCollider2DComponent>();
 				for (auto e : view)
 				{
 					auto [tc, bc2d] = view.get<TransformComponent, BoxCollider2DComponent>(e);
-					glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
+					//glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, sign * -0.001f); // 不能直接这样，要分开变换
+
 					glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
 					glm::mat4 rotation = glm::toMat4(glm::quat(tc.Rotation));
 
-					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.Translation)
 						* rotation
+						* glm::translate(glm::mat4(1.0f), glm::vec3(bc2d.Offset, sign * -0.001f))
 						* glm::scale(glm::mat4(1.0f), scale);
 
 					Renderer2D::DrawRect(transform, { 0.0f, 1.0f, 0.0f, 1.0f });
@@ -480,17 +484,26 @@ namespace XuanWu
 				for (auto e : view)
 				{
 					auto [tc, cc2d] = view.get<TransformComponent, CircleCollider2DComponent>(e);
-					glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
+					//glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, sign * -0.001f);
 					glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
 					glm::mat4 rotation = glm::toMat4(glm::quat(tc.Rotation));
 
-					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.Translation)
 						* rotation
+						* glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.Offset, sign * -0.001f))
 						* glm::scale(glm::mat4(1.0f), scale);
 
 					Renderer2D::DrawCircle(transform, { 0.0f, 1.0f, 0.0f, 1.0f }, 0.02f);
 				}
 			}
+		}
+
+		// 绘制选择实体的轮廓
+		if (Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity())
+		{
+			const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
+
+			Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 		}
 
 		Renderer2D::EndScene();
@@ -582,7 +595,8 @@ namespace XuanWu
 		// 内容浏览器Ctrl + 鼠标滚动 调整图片大小
 		m_ContentBrowserPanel.OnEvent(event); // @TODO 测试，因为Viewport失去焦点，所以捕获了鼠标和键盘事件，所以他也不行了，只能Viewport获取焦点，他才能执行到，以后再修复吧
 
-		m_EditorCamera.OnEvent(event);
+		if(m_SceneState != SceneState::Play)
+			m_EditorCamera.OnEvent(event);
 
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowResizeEvent>(XW_BIND_EVENT_FN(EditorLayer::OnWindowResized));
