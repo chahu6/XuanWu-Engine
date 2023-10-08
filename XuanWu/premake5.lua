@@ -40,6 +40,7 @@ project "XuanWu"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.mono}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.yaml_cpp}"
 	}
@@ -51,7 +52,9 @@ project "XuanWu"
 		"Glad",
 		"ImGui",
 		"yaml-cpp",
-		"opengl32.lib"
+		"opengl32.lib",
+
+		"%{Library.mono}"
 	}
 
 	filter "files:vendor/ImGuizmo/**.cpp"
@@ -65,18 +68,26 @@ project "XuanWu"
 			-- "XW_BUILD_DLL"
 		}
 
+		links
+		{
+			"%{Library.WinSock}",
+			"%{Library.WinMM}",
+			"%{Library.WinVersion}",
+			"%{Library.Bcrypt}"
+		}
+
 	filter "configurations:Debug"
 		defines "XW_DEBUG"
 		runtime "Debug"
-		symbols "on"
+		symbols "On"
 
 	filter "configurations:Release"
 		defines "XW_RELEASE"
 		runtime "Release"
-		optimize "on"
+		optimize "On"
 
 	filter "configurations:Dist"
 		defines "XW_DIST"
 		runtime "Release"
-		optimize "on"
-		symbols "off"
+		optimize "On"
+		symbols "Off"

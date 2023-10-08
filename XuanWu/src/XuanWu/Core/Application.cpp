@@ -5,6 +5,7 @@
 #include "KeyCode.h"
 #include "XuanWu/Core/Platform.h"
 #include "XuanWu/Render/Renderer.h"
+#include "XuanWu/Scripting/ScriptEngine.h"
 
 namespace XuanWu {
 
@@ -28,6 +29,7 @@ namespace XuanWu {
 		m_Window->SetEventCallback(XW_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
+		ScriptEngine::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -37,7 +39,8 @@ namespace XuanWu {
 	{
 		XW_PROFILE_FUNCTION();
 
-		Renderer::Shutdown();
+		ScriptEngine::Shutdown(); 
+		Renderer::Shutdown(); // 他应该最后关
 	}
 
 	void Application::OnEvent(Event& e)

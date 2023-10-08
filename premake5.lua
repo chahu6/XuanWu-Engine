@@ -27,6 +27,15 @@ group "Dependencies"
 	include "XuanWu/vendor/yaml-cpp"
 group ""
 
-include "XuanWu"
-include "XuanWu-Editor"
-include "Sandbox"
+group "Core"
+	include "XuanWu"
+	include "XuanWu-ScriptCore"
+group ""
+
+group "Tools"
+	include "XuanWu-Editor"
+group ""
+
+group "Misc"
+	include "Sandbox"
+group ""
