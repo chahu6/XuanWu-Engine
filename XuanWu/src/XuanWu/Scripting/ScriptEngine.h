@@ -5,24 +5,43 @@ extern "C" {
 	typedef struct _MonoClass MonoClass;
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
+	typedef struct _MonoAssembly MonoAssembly;
 }
 
 namespace XuanWu
 {
+	class Scene;
+	class Entity;
+	class Timestep;
+
 	class ScriptEngine
 	{
 		friend class ScriptClass;
+		friend class ScriptGlue;
 	public:
 		static void Init();
 
 		static void Shutdown();
 
+		static void OnRuntimeStart(Scene* scene);
+		static void OnRuntimeStop();
+
+		static bool EntityClassExists(const std::string_view className);
+
+		static void OnCreateEntity(Entity entity);
+		static void OnUpdateEntity(Entity entity, Timestep ts);
+
+		static const std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
+
+		static Scene* GetSceneContext();
 	private:
 		static void InitMono();
 
 		static void ShutdownMono();
 
 		static void LoadAssembly(const std::string_view filepath);
+
+		static void LoadAssemblyClasses(MonoAssembly* assembly);
 
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
 	};
@@ -41,5 +60,22 @@ namespace XuanWu
 		std::string m_ClassNamespace;
 		std::string m_ClassName;
 		MonoClass* m_MonoClass = nullptr;
+	};
+
+	class ScriptInstance
+	{
+	public:
+		ScriptInstance(uint64_t uuid, Ref<ScriptClass> scriptClass);
+
+		void InvokeOnCreate();
+		void InvokeOnUpdate(float ts);
+	private:
+		uint64_t m_EntityUUID;
+		Ref<ScriptClass> m_ScriptClass;
+
+		MonoObject* m_Instance = nullptr;
+		MonoMethod* m_Constructor = nullptr;
+		MonoMethod* m_OnCreateMethod = nullptr;
+		MonoMethod* m_OnUpdateMehtod = nullptr;
 	};
 }

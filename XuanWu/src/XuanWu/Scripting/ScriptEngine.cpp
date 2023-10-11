@@ -1,9 +1,11 @@
 #include "xwpch.h"
 #include "ScriptEngine.h"
+#include "XuanWu/Scene/Scene.h"
+#include "ScriptGlue.h"
+#include "XuanWu/Scene/Entity.h"
+
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
-
-#include "ScriptGlue.h"
 
 namespace XuanWu
 {
@@ -85,6 +87,11 @@ namespace XuanWu
 		MonoImage* CoreAssemblyImage = nullptr;
 
 		ScriptClass EntityClass;
+
+		Scene* SceneContext = nullptr;
+		
+		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
+		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
 	};
 
 	static ScriptEngineData* s_Data = nullptr;
@@ -98,39 +105,12 @@ namespace XuanWu
 
 		// 2、加载c#程序集
 		LoadAssembly("Resources/Scripts/XuanWu-ScriptCore.dll");
-
+		LoadAssemblyClasses(s_Data->CoreAssembly);
 		// 添加内部调用
 		ScriptGlue::RegisterFunctions();
 
 		// 3、创建一个MonoClass类
-		s_Data->EntityClass = ScriptClass("XuanWu", "Main");
-
-		// 4、创建一个Main类构成的mono对象并初始化
-		MonoObject* instance = s_Data->EntityClass.Instantiate();
-
-		// 5.1、调用Main类的函数-无参
-		MonoMethod* printMessageFunc = s_Data->EntityClass.GetMethod("PrintMessage", 0);
-		s_Data->EntityClass.InvokeMethod(instance, printMessageFunc);
-
-		// 5.2、调用Main类的函数-带参
-		MonoMethod* printIntFunc = s_Data->EntityClass.GetMethod("PrintInt", 1);
-		int value = 5;
-		void* param = &value;
-		s_Data->EntityClass.InvokeMethod(instance, printIntFunc, &param);
-
-		MonoMethod* printIntsFunc = s_Data->EntityClass.GetMethod("PrintInts", 2);
-		int x = 6;
-		int y = 9;
-		void* params[] ={
-			&x, &y
-		};
-		s_Data->EntityClass.InvokeMethod(instance, printIntsFunc, params);
-
-		// 5.3、调用带string函数
-		MonoMethod* printCustomMessageFunc = s_Data->EntityClass.GetMethod("PrintCustomMessage", 1);
-		MonoString* str = mono_string_new(s_Data->AppDomain, "Hello World from CPP!!!");
-		void* strParam = str;
-		s_Data->EntityClass.InvokeMethod(instance, printCustomMessageFunc, &strParam);
+		s_Data->EntityClass = ScriptClass("XuanWu", "Entity");
 	}
 
 	void ScriptEngine::Shutdown()
@@ -141,6 +121,19 @@ namespace XuanWu
 			delete s_Data;
 			s_Data = nullptr;
 		}
+	}
+
+	void ScriptEngine::OnRuntimeStart(Scene* scene)
+	{
+		s_Data->SceneContext = scene;
+	}
+
+	void ScriptEngine::OnRuntimeStop()
+	{
+		s_Data->SceneContext = nullptr;
+
+		// 清除有ScriptComponent的Entity和ScriptInstance的映射
+		s_Data->EntityInstances.clear();
 	}
 
 	void ScriptEngine::InitMono()
@@ -180,6 +173,72 @@ namespace XuanWu
 		Utils::PrintAssemblyTypes(s_Data->CoreAssembly); // 打印dll的基本信息
 	}
 
+	// 映射名称和MonoClass*的映射
+	void ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	{
+		// 清除已有的映射
+		s_Data->EntityClasses.clear();
+
+		MonoImage* image = mono_assembly_get_image(assembly);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+		MonoClass* entityClass = mono_class_from_name(image, "XuanWu", "Entity");
+
+		for (int32_t i = 0; i < numTypes; i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+			std::string fullName;
+			if (strlen(nameSpace) != 0)
+				fullName = fmt::format("{0}.{1}", nameSpace, name);
+			else
+				fullName = name;
+
+			MonoClass* monoClass = mono_class_from_name(image, nameSpace, name);
+			if (monoClass == entityClass)
+				continue;
+
+			bool isEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
+			if (isEntity)
+				s_Data->EntityClasses[fullName] = CreateRef<ScriptClass>(nameSpace, name);
+		}
+	}
+
+	bool ScriptEngine::EntityClassExists(const std::string_view className)
+	{
+		return s_Data->EntityClasses.find(className.data()) != s_Data->EntityClasses.end();
+	}
+
+	void ScriptEngine::OnCreateEntity(Entity entity)
+	{
+		auto sc = entity.GetComponent<ScriptComponent>();
+		if (EntityClassExists(sc.ClassName))
+		{
+			Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(entity.GetUUID(), s_Data->EntityClasses[sc.ClassName]);
+			s_Data->EntityInstances[entity.GetUUID()] = instance;
+
+			instance->InvokeOnCreate();
+		}
+	}
+
+	void ScriptEngine::OnUpdateEntity(Entity entity, Timestep ts)
+	{
+		UUID entityUUID = entity.GetUUID();
+		XW_CORE_ASSERT(s_Data->EntityInstances.find(entityUUID) != s_Data->EntityInstances.end(), "map中没有该entity的脚本实例");
+
+		Ref<ScriptInstance> instance = s_Data->EntityInstances[entityUUID];
+		instance->InvokeOnUpdate(ts.GetSeconds());
+	}
+
+	const std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetEntityClasses()
+	{
+		return s_Data->EntityClasses;
+	}
+
 	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)
 	{
 		MonoObject* instance = mono_object_new(s_Data->AppDomain, monoClass);
@@ -189,6 +248,11 @@ namespace XuanWu
 
 		mono_runtime_object_init(instance);
 		return instance;
+	}
+
+	Scene* ScriptEngine::GetSceneContext()
+	{
+		return s_Data->SceneContext;
 	}
 
 	// ScriptClass
@@ -213,5 +277,30 @@ namespace XuanWu
 	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
 	{
 		return mono_runtime_invoke(method, instance, params, nullptr);
+	}
+
+	// ScriptInstance
+	ScriptInstance::ScriptInstance(uint64_t uuid, Ref<ScriptClass> scriptClass)
+		:m_ScriptClass(scriptClass), m_EntityUUID(uuid)
+	{
+		m_Instance = m_ScriptClass->Instantiate();
+
+		m_Constructor = s_Data->EntityClass.GetMethod(".ctor", 1); // 获取父类的有参构造函数
+		m_OnCreateMethod = m_ScriptClass->GetMethod("OnCreate", 0);
+		m_OnUpdateMehtod = m_ScriptClass->GetMethod("OnUpdate", 1);
+
+		void* param = &m_EntityUUID;
+		m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);// 子类实例执行父类构造函数
+	}
+
+	void ScriptInstance::InvokeOnCreate()
+	{
+		m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod);
+	}
+
+	void ScriptInstance::InvokeOnUpdate(float ts)
+	{
+		void* param = &ts;
+		m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMehtod, &param);
 	}
 }

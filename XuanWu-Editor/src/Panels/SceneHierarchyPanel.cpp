@@ -1,7 +1,9 @@
 #include "xwpch.h"
 #include "SceneHierarchyPanel.h"
-#include <imgui/imgui.h>
 #include "XuanWu/Components/Components.h"
+#include "XuanWu/Scripting/ScriptEngine.h"
+
+#include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui_internal.h>
 
@@ -184,7 +186,7 @@ namespace XuanWu
 			{
 				auto& tag = entity.GetComponent<TagComponent>().Tag;
 
-				char buffer[256];
+				static char buffer[256];
 				memset(buffer, 0, sizeof(buffer));
 
 				strcpy(buffer, tag.c_str());
@@ -206,6 +208,7 @@ namespace XuanWu
 		if (ImGui::BeginPopup(TXT("AddComponent")))
 		{
 			DisplayAddComponentEntity<CameraComponent>("Camera");
+			DisplayAddComponentEntity<ScriptComponent>("Script");
 			DisplayAddComponentEntity<SpriteRendererComponent>("Sprite Renderer");
 			DisplayAddComponentEntity<CircleRendererComponent>("Circle Renderer");
 			DisplayAddComponentEntity<Rigidbody2DComponent>("Rigidbody 2D");
@@ -347,6 +350,27 @@ namespace XuanWu
 			ImGui::ColorEdit4(TXT("ÑÕÉ«"), glm::value_ptr(circle.Color));
 			ImGui::DragFloat("Thickness", &circle.Thickness, 0.025f, 0.0f, 1.0f);
 			ImGui::DragFloat("Fade", &circle.Fade, 0.00025f, 0.0f, 1.0f);
+		});
+
+		DrawComponent<ScriptComponent>(TXT("Script"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
+		{
+			auto& script = selected.GetComponent<ScriptComponent>();
+
+			bool bScriptClassExists = ScriptEngine::EntityClassExists(script.ClassName);
+			
+			static char buffer[256];
+			memset(buffer, 0, sizeof(buffer));
+			strcpy(buffer, script.ClassName.c_str());
+			if (!bScriptClassExists)
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
+
+			ImGui::Text(TXT("Ãû³Æ:"));
+			ImGui::SameLine();
+			if (ImGui::InputText(TXT("##Ãû³Æ"), buffer, sizeof(buffer)))
+				script.ClassName = std::string(buffer);
+
+			if (!bScriptClassExists)
+				ImGui::PopStyleColor();
 		});
 
 		DrawComponent<Rigidbody2DComponent>(TXT("Rigidbody 2D"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)

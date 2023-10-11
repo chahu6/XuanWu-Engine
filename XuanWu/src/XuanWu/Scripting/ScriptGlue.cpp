@@ -1,5 +1,11 @@
 #include "xwpch.h"
 #include "ScriptGlue.h"
+#include "XuanWu/Core/UUID.h"
+#include "ScriptEngine.h"
+#include "XuanWu/Scene/Scene.h"
+#include "XuanWu/Scene/Entity.h"
+#include "XuanWu/Core/KeyCode.h"
+#include "XuanWu/Core/Input.h"
 
 #include <glm/glm.hpp>
 #include <mono/metadata/object.h>
@@ -31,10 +37,42 @@ namespace XuanWu
 		return glm::dot(*vec, *vec);
 	}
 
+	static void TransformComponent_GetTranslation(UUID entityID, glm::vec3* outTranslation)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		XW_CORE_ASSERT(scene, "Scene is nullptr");
+
+		Entity entity = scene->GetEntityByUUID(entityID);
+		XW_CORE_ASSERT(entity, "entity is {}");
+
+		*outTranslation = entity.GetComponent<TransformComponent>().Translation;
+	}
+
+	static void TransformComponent_SetTranslation(UUID entityID, glm::vec3* translation)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		XW_CORE_ASSERT(scene, "Scene is nullptr");
+
+		Entity entity = scene->GetEntityByUUID(entityID);
+		XW_CORE_ASSERT(entity, "entity is {}");
+
+		entity.GetComponent<TransformComponent>().Translation = *translation;
+	}
+
+	static bool Input_IsKeyDown(KeyCode keyCode)
+	{
+		return Input::IsKeyPressed(keyCode);
+	}
+
 	void ScriptGlue::RegisterFunctions()
 	{
 		XW_ADD_INTERNAL_CALL(NativeLog);
 		XW_ADD_INTERNAL_CALL(NativeLog_Vector);
 		XW_ADD_INTERNAL_CALL(NativeLog_VectorDot);
+
+		XW_ADD_INTERNAL_CALL(TransformComponent_GetTranslation);
+		XW_ADD_INTERNAL_CALL(TransformComponent_SetTranslation);
+
+		XW_ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}
 }

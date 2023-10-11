@@ -14,6 +14,5 @@ XuanWu Engine
 
 1. premake构建
 
+​		点击 GenerateProjects.bat 脚本即可生成vs项目，在vs中生成项目
 
-
-点击 GenerateProjects.bat 脚本即可生成vs项目，在vs中生成项目

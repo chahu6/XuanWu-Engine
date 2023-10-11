@@ -81,7 +81,6 @@ namespace XuanWu
 		CircleRendererComponent(const CircleRendererComponent&) = default;
 	};
 
-
 	struct CameraComponent
 	{
 		SceneCamera Camera;
@@ -110,6 +109,14 @@ namespace XuanWu
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
 		}
+	};
+
+	struct ScriptComponent
+	{
+		std::string ClassName;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
 	};
 
 	struct Rigidbody2DComponent
@@ -161,5 +168,6 @@ namespace XuanWu
 	struct ComponentGroup{};
 
 	using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent,
-		CameraComponent, NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent>;
+		CameraComponent, ScriptComponent, NativeScriptComponent,
+		Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent>;
 }

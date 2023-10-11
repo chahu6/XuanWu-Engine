@@ -51,6 +51,8 @@ namespace XuanWu
 		{
 			return m_Registry.view<Component...>();
 		}
+
+		Entity GetEntityByUUID(UUID entityID);
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
@@ -61,6 +63,9 @@ namespace XuanWu
 		void RenderScene(const EditorCamera& camera);
 	private:
 		entt::registry m_Registry;
+
+		// 场景的实体
+		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 

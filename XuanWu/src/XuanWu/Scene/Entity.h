@@ -10,6 +10,7 @@ namespace XuanWu
 	{
 	public:
 		Entity() = default;
+		~Entity() = default;
 		Entity(const Entity&) = default;
 		Entity(entt::entity handle, Scene* scene);
 
@@ -50,7 +51,7 @@ namespace XuanWu
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 
-		uint64_t GetUUID();
+		UUID GetUUID();
 		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
 
 		operator bool() const { return m_EntityHandle != entt::null; }

@@ -6,6 +6,7 @@
 #include "XuanWu/Components/Components.h"
 #include "XuanWu/Render/Renderer2D.h"
 #include "ScriptableEntity.h"
+#include "XuanWu/Scripting/ScriptEngine.h"
 
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
@@ -117,6 +118,9 @@ namespace XuanWu
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
+
+		m_EntityMap[uuid] = entity;
+
 		return entity;
 	}
 
@@ -139,6 +143,13 @@ namespace XuanWu
 
 		// 2.复制组件
 		CopyComponentIfExists(AllComponents{}, newEntity, entity);
+	}
+
+	Entity Scene::GetEntityByUUID(UUID entityID)
+	{
+		if (m_EntityMap.find(entityID) == m_EntityMap.end()) return {};
+
+		return { m_EntityMap[entityID], this };
 	}
 
 	void Scene::OnPhysics2DStart()
@@ -236,6 +247,7 @@ namespace XuanWu
 
 	void Scene::DestroyEntity(Entity entity)
 	{
+		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
 	}
 
@@ -274,6 +286,15 @@ namespace XuanWu
 	{
 		// Script
 		{
+			// C#的脚本
+			auto& view = m_Registry.view<ScriptComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				ScriptEngine::OnUpdateEntity(entity, ts);
+			}
+
+			// 本地脚本
 			//  [=]是隐式值捕获，捕获ts
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) 
 			{
@@ -357,11 +378,26 @@ namespace XuanWu
 	void Scene::OnRuntimeStart()
 	{
 		OnPhysics2DStart();
+
+		// Scripting
+		{
+			ScriptEngine::OnRuntimeStart(this);
+			// Instantiate all script entities
+
+			auto& view = m_Registry.view<ScriptComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				ScriptEngine::OnCreateEntity(entity);
+			}
+		}
 	}
 
 	void Scene::OnRuntimeStop()
 	{
 		OnPhysics2DStop();
+
+		ScriptEngine::OnRuntimeStop();
 	}
 
 	void Scene::OnSimulationStart()
@@ -439,6 +475,12 @@ namespace XuanWu
 
 	template<>
 	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 
 	}

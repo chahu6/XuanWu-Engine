@@ -8,7 +8,8 @@ project "XuanWu-ScriptCore"
 
     files
     {
-		"Source/**.cs"
+		"Source/**.cs",
+		"Properties/**.cs"
     }
 
     filter "configurations:Debug"

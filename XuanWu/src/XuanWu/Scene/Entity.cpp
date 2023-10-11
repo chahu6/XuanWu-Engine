@@ -10,10 +10,10 @@ namespace XuanWu
 	{
 	}
 
-	uint64_t Entity::GetUUID()
+	UUID Entity::GetUUID()
 	{
 		XW_CORE_ASSERT(HasComponent<IDComponent>(), "没有该组件");
 
-		return (uint64_t)GetComponent<IDComponent>().ID;
+		return GetComponent<IDComponent>().ID;
 	}
 }
