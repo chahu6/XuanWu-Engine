@@ -6,5 +6,7 @@ namespace XuanWu
 	{
 	public:
 		static void RegisterFunctions();
+
+		static void RegisterComponents();
 	};
 }

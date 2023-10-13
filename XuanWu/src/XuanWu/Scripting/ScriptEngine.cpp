@@ -107,6 +107,7 @@ namespace XuanWu
 		LoadAssembly("Resources/Scripts/XuanWu-ScriptCore.dll");
 		LoadAssemblyClasses(s_Data->CoreAssembly);
 		// 添加内部调用
+		ScriptGlue::RegisterComponents();
 		ScriptGlue::RegisterFunctions();
 
 		// 3、创建一个MonoClass类
@@ -255,6 +256,11 @@ namespace XuanWu
 		return s_Data->SceneContext;
 	}
 
+	MonoImage* ScriptEngine::GetCoreAssemblyImage()
+	{
+		return s_Data->CoreAssemblyImage;
+	}
+
 	// ScriptClass
 	ScriptClass::ScriptClass(const std::string_view classNamespace, const std::string_view className)
 		:m_ClassNamespace(className.data()), m_ClassName(className.data())
@@ -295,11 +301,15 @@ namespace XuanWu
 
 	void ScriptInstance::InvokeOnCreate()
 	{
+		if (!m_OnCreateMethod) return;
+
 		m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod);
 	}
 
 	void ScriptInstance::InvokeOnUpdate(float ts)
 	{
+		if (!m_OnUpdateMehtod) return;
+
 		void* param = &ts;
 		m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMehtod, &param);
 	}

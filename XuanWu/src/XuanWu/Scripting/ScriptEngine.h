@@ -6,6 +6,7 @@ extern "C" {
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoAssembly MonoAssembly;
+	typedef struct _MonoImage MonoImage;
 }
 
 namespace XuanWu
@@ -13,38 +14,6 @@ namespace XuanWu
 	class Scene;
 	class Entity;
 	class Timestep;
-
-	class ScriptEngine
-	{
-		friend class ScriptClass;
-		friend class ScriptGlue;
-	public:
-		static void Init();
-
-		static void Shutdown();
-
-		static void OnRuntimeStart(Scene* scene);
-		static void OnRuntimeStop();
-
-		static bool EntityClassExists(const std::string_view className);
-
-		static void OnCreateEntity(Entity entity);
-		static void OnUpdateEntity(Entity entity, Timestep ts);
-
-		static const std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
-
-		static Scene* GetSceneContext();
-	private:
-		static void InitMono();
-
-		static void ShutdownMono();
-
-		static void LoadAssembly(const std::string_view filepath);
-
-		static void LoadAssemblyClasses(MonoAssembly* assembly);
-
-		static MonoObject* InstantiateClass(MonoClass* monoClass);
-	};
 
 	class ScriptClass
 	{
@@ -55,7 +24,7 @@ namespace XuanWu
 		MonoObject* Instantiate(); // 4.创建一个由MonoClass类构成的mono对象并且初始化
 		MonoMethod* GetMethod(const std::string_view name, int parameterCount);
 		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr);
-		
+
 	private:
 		std::string m_ClassNamespace;
 		std::string m_ClassName;
@@ -77,5 +46,39 @@ namespace XuanWu
 		MonoMethod* m_Constructor = nullptr;
 		MonoMethod* m_OnCreateMethod = nullptr;
 		MonoMethod* m_OnUpdateMehtod = nullptr;
+	};
+
+	class ScriptEngine
+	{
+		friend class ScriptClass;
+		friend class ScriptGlue;
+	public:
+		static void Init();
+
+		static void Shutdown();
+
+		static void OnRuntimeStart(Scene* scene);
+		static void OnRuntimeStop();
+
+		static bool EntityClassExists(const std::string_view className);
+
+		static void OnCreateEntity(Entity entity);
+		static void OnUpdateEntity(Entity entity, Timestep ts);
+
+		static const std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
+
+		static Scene* GetSceneContext();
+
+		static MonoImage* GetCoreAssemblyImage();
+	private:
+		static void InitMono();
+
+		static void ShutdownMono();
+
+		static void LoadAssembly(const std::string_view filepath);
+
+		static void LoadAssemblyClasses(MonoAssembly* assembly);
+
+		static MonoObject* InstantiateClass(MonoClass* monoClass);
 	};
 }

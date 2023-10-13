@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using XuanWu;
 
 public class Player : Entity
 {
+    private TransformComponent m_Transform;
+    private Rigidbody2DComponent m_Rigidbody2D;
+
     public Player()
     {
-        Console.WriteLine($"Contructor");
     }
 
     void OnCreate() 
     {
-        Console.WriteLine($"Player.OnCreate -UUID: {ID}");
+        m_Transform = GetComponent<TransformComponent>();
+        m_Rigidbody2D = GetComponent<Rigidbody2DComponent>();
     }
 
     void OnUpdate(float ts)
     {
-        Console.WriteLine($"OnUpdate- {ts}");
-
-        float speed = 10.0f;
+        float speed = 20.0f;
         Vector3 velocity = Vector3.Zero;
 
         if (Input.IsKeyDown(KeyCode.W))
@@ -34,9 +30,13 @@ public class Player : Entity
         else if (Input.IsKeyDown(KeyCode.D))
             velocity.X = 1.0f;
 
-        velocity *= speed;
-        Vector3 translation = Translation;
+        velocity *= speed * ts;
+
+        if(m_Rigidbody2D != null)
+            m_Rigidbody2D.ApplyLinearImpulseToCenter(velocity.XY);
+
+       /* Vector3 translation = m_Transform.Translation;
         translation += velocity * ts;
-        Translation = translation;
+        m_Transform.Translation = translation;*/
     }
 }

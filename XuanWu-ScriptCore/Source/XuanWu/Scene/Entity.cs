@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XuanWu
 {
@@ -19,17 +15,19 @@ namespace XuanWu
             ID = id;
         }
 
-        public Vector3 Translation 
+        public bool HasComponent<T>() where T : Component, new()
         {
-            get
-            {
-                InternalCalls.TransformComponent_GetTranslation(ID, out Vector3 result);
-                return result;
-            }
-            set
-            {
-                InternalCalls.TransformComponent_SetTranslation(ID, ref value);
-            }
+            Type componentType = typeof(T);
+            return InternalCalls.Entity_HasComponent(ID, componentType);
+        }
+
+        public T GetComponent<T>() where T : Component, new()
+        {
+            if(!HasComponent<T>())
+                return null;
+
+            T component = new T() { entity= this };
+            return component;
         }
     }
 }

@@ -1,5 +1,18 @@
 Scene: Untitled
 Entities:
+  - Entity: 1747527759558796890
+    TagComponent:
+      Tag: greb
+    TransformComponent:
+      Translation: [3.7252903e-09, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    ScriptComponent:
+      ClassName: Player
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+      TilingFactor: 1
+      TexturePath: D:\Test-C++\XuanWu\XuanWu-Editor\assets\textures\Checkerboard.png
   - Entity: 17555138389789801070
     TagComponent:
       Tag: red
@@ -10,15 +23,4 @@ Entities:
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
       TilingFactor: 1
-      TexturePath: assets\textures\ChernoLogo.png
-  - Entity: 1747527759558796890
-    TagComponent:
-      Tag: greb
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
-      TilingFactor: 1
-      TexturePath: assets\textures\Checkerboard.png
+      TexturePath: D:\Test-C++\XuanWu\XuanWu-Editor\assets\textures\ChernoLogo.png

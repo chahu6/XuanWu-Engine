@@ -132,8 +132,8 @@ namespace XuanWu
 	// MSVC编译器下的代码
 	//#define XW_PROFILE_FUNCTION() XW_PROFILE_SCOPE(__FUNCSIG__)
 	#define XW_PROFILE_FUNCTION() 
-#else
-	// Mingw编译器下的代码
+#elif defined(__GNUC__)
+	// gcc或clang编译器下的代码
 	#define XW_PROFILE_FUNCTION() XW_PROFILE_SCOPE(__PRETTY_FUNCTION__)
 #endif
 

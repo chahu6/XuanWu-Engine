@@ -41,7 +41,7 @@ namespace XuanWu
 		// 折叠表达式
 		([&]()
 		{
-			auto& view = src.view<Component>();
+			auto view = src.view<Component>();
 			for (auto e : view)
 			{
 				UUID uuid = src.get<IDComponent>(e).ID;
@@ -156,7 +156,7 @@ namespace XuanWu
 	{
 		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
 
-		auto& view = m_Registry.view<Rigidbody2DComponent>();
+		auto view = m_Registry.view<Rigidbody2DComponent>();
 		for (auto e : view)
 		{
 			Entity entity = { e, this };
@@ -225,7 +225,7 @@ namespace XuanWu
 
 		// Draw Quard
 		{
-			auto& group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
@@ -235,7 +235,7 @@ namespace XuanWu
 
 		// Draw Circle
 		{
-			auto& view = m_Registry.view<TransformComponent, CircleRendererComponent>();
+			auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
 			for (auto entity : view)
 			{
 				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
@@ -264,7 +264,7 @@ namespace XuanWu
 			const int32_t positionIterations = 3;
 			m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 
-			auto& view = m_Registry.view<Rigidbody2DComponent>();
+			auto view = m_Registry.view<Rigidbody2DComponent>();
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
@@ -287,7 +287,7 @@ namespace XuanWu
 		// Script
 		{
 			// C#的脚本
-			auto& view = m_Registry.view<ScriptComponent>();
+			auto view = m_Registry.view<ScriptComponent>();
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
@@ -316,7 +316,7 @@ namespace XuanWu
 			const int32_t positionIterations = 3;
 			m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 
-			auto& view = m_Registry.view<Rigidbody2DComponent>();
+			auto view = m_Registry.view<Rigidbody2DComponent>();
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
@@ -364,7 +364,7 @@ namespace XuanWu
 
 			// Draw Circle
 			{
-				auto& view = m_Registry.view<TransformComponent, CircleRendererComponent>();
+				auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
 				for (auto entity : view)
 				{
 					auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
@@ -384,7 +384,7 @@ namespace XuanWu
 			ScriptEngine::OnRuntimeStart(this);
 			// Instantiate all script entities
 
-			auto& view = m_Registry.view<ScriptComponent>();
+			auto view = m_Registry.view<ScriptComponent>();
 			for (auto e : view)
 			{
 				Entity entity = { e, this };

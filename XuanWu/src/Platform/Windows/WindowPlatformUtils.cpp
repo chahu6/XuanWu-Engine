@@ -18,7 +18,15 @@ namespace XuanWu
 		ofn.lStructSize = sizeof(OPENFILENAME);
 		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow());
 		ofn.hInstance = GetModuleHandle(NULL);
+		// gcc和clang的ofn.lpstrFilter都是LPCSTR(const char*)，只有msvc是LPCWSTR(const wchar_t*)，所以要适配一下
+#ifdef _MSC_VER
 		ofn.lpstrFilter = filter;
+#elif defined(__GNUC__)
+		int bufferSize = wcstombs(nullptr, filter, 0);
+		char* narrowFilter = new char[bufferSize];
+		wcstombs(narrowFilter, filter, bufferSize);
+		ofn.lpstrFilter = narrowFilter;
+#endif
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile) / sizeof(wchar_t);
 		ofn.nFilterIndex = 1; // 设置默认选择第二个文件类型过滤器
@@ -26,8 +34,12 @@ namespace XuanWu
 
 		if (GetSaveFileName(&ofn) == TRUE)
 		{
+#ifdef _MSC_VER
 			std::wstring str = ofn.lpstrFile;
 			return std::string(str.begin(), str.end());
+#elif defined(__GNUC__)
+			return ofn.lpstrFile;
+#endif
 		}
 
 		return std::string();
@@ -42,7 +54,15 @@ namespace XuanWu
 		ofn.lStructSize = sizeof(OPENFILENAME);
 		ofn.hwndOwner = NULL; // glfwGetWin32Window((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow());
 		ofn.hInstance = GetModuleHandle(NULL);
+		// gcc和clang的ofn.lpstrFilter都是LPCSTR(const char*)，只有msvc是LPCWSTR(const wchar_t*)，所以要适配一下
+#ifdef _MSC_VER
 		ofn.lpstrFilter = filter;
+#elif defined(__GNUC__)
+		int bufferSize = wcstombs(nullptr, filter, 0);
+		char* narrowFilter = new char[bufferSize];
+		wcstombs(narrowFilter, filter, bufferSize);
+		ofn.lpstrFilter = narrowFilter;
+#endif
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile) / sizeof(wchar_t);
 		ofn.nFilterIndex = 1; // 设置默认选择第二个文件类型过滤器
@@ -50,8 +70,12 @@ namespace XuanWu
 
 		if (GetOpenFileName(&ofn) == TRUE)
 		{
+#ifdef _MSC_VER
 			std::wstring str = ofn.lpstrFile;
 			return std::string(str.begin(), str.end());
+#elif defined(__GNUC__)
+			return ofn.lpstrFile;
+#endif
 		}
 
 		return std::string();
