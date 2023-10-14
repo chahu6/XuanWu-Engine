@@ -5,7 +5,6 @@ extern "C" {
 	typedef struct _MonoClass MonoClass;
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
-	typedef struct _MonoAssembly MonoAssembly;
 	typedef struct _MonoImage MonoImage;
 }
 
@@ -19,7 +18,7 @@ namespace XuanWu
 	{
 	public:
 		ScriptClass() = default;
-		ScriptClass(const std::string_view classNamespace, const std::string_view className);
+		ScriptClass(const std::string_view classNamespace, const std::string_view className, bool bIsCore = false);
 
 		MonoObject* Instantiate(); // 4.创建一个由MonoClass类构成的mono对象并且初始化
 		MonoMethod* GetMethod(const std::string_view name, int parameterCount);
@@ -75,9 +74,11 @@ namespace XuanWu
 
 		static void ShutdownMono();
 
-		static void LoadAssembly(const std::string_view filepath);
+		static void LoadCoreAssembly(const std::string_view filepath);
 
-		static void LoadAssemblyClasses(MonoAssembly* assembly);
+		static void LoadAppAssembly(const std::string_view filepath);
+
+		static void LoadAssemblyClasses();
 
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
 	};

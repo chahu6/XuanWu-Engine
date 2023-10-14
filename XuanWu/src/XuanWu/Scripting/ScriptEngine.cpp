@@ -83,8 +83,13 @@ namespace XuanWu
 		MonoDomain* RootDomain = nullptr;
 		MonoDomain* AppDomain = nullptr;
 
+		// CoreAssembly
 		MonoAssembly* CoreAssembly = nullptr;
 		MonoImage* CoreAssemblyImage = nullptr;
+
+		// AppAssembly
+		MonoAssembly* AppAssembly = nullptr;
+		MonoImage* AppAssemblyImage = nullptr;
 
 		ScriptClass EntityClass;
 
@@ -104,14 +109,16 @@ namespace XuanWu
 		InitMono();
 
 		// 2、加载c#程序集
-		LoadAssembly("Resources/Scripts/XuanWu-ScriptCore.dll");
-		LoadAssemblyClasses(s_Data->CoreAssembly);
+		LoadCoreAssembly("Resources/Scripts/XuanWu-ScriptCore.dll");
+		LoadAppAssembly("SandboxProject/Assets/Scripts/Binaries/Sandbox.dll");
+		LoadAssemblyClasses();
+
 		// 添加内部调用
 		ScriptGlue::RegisterComponents();
 		ScriptGlue::RegisterFunctions();
 
 		// 3、创建一个MonoClass类
-		s_Data->EntityClass = ScriptClass("XuanWu", "Entity");
+		s_Data->EntityClass = ScriptClass("XuanWu", "Entity", true);
 	}
 
 	void ScriptEngine::Shutdown()
@@ -159,7 +166,7 @@ namespace XuanWu
 		s_Data->RootDomain = nullptr;
 	}
 
-	void ScriptEngine::LoadAssembly(const std::string_view filepath)
+	void ScriptEngine::LoadCoreAssembly(const std::string_view filepath)
 	{
 		// 创建一个应用域
 		s_Data->AppDomain = mono_domain_create_appdomain("XWScriptRuntime", nullptr);
@@ -174,24 +181,31 @@ namespace XuanWu
 		Utils::PrintAssemblyTypes(s_Data->CoreAssembly); // 打印dll的基本信息
 	}
 
+	void ScriptEngine::LoadAppAssembly(const std::string_view filepath)
+	{
+		// 加载C#项目导出的dll
+		s_Data->AppAssembly = Utils::LoadCSharpAssembly(filepath);
+		s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
+		Utils::PrintAssemblyTypes(s_Data->AppAssembly); // 打印dll的基本信息
+	}
+
 	// 映射名称和MonoClass*的映射
-	void ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	void ScriptEngine::LoadAssemblyClasses()
 	{
 		// 清除已有的映射
 		s_Data->EntityClasses.clear();
 
-		MonoImage* image = mono_assembly_get_image(assembly);
-		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_Data->AppAssemblyImage, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
-		MonoClass* entityClass = mono_class_from_name(image, "XuanWu", "Entity");
+		MonoClass* entityClass = mono_class_from_name(s_Data->CoreAssemblyImage, "XuanWu", "Entity");
 
 		for (int32_t i = 0; i < numTypes; i++)
 		{
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string fullName;
 			if (strlen(nameSpace) != 0)
@@ -199,7 +213,7 @@ namespace XuanWu
 			else
 				fullName = name;
 
-			MonoClass* monoClass = mono_class_from_name(image, nameSpace, name);
+			MonoClass* monoClass = mono_class_from_name(s_Data->AppAssemblyImage, nameSpace, name);
 			if (monoClass == entityClass)
 				continue;
 
@@ -219,7 +233,8 @@ namespace XuanWu
 		auto sc = entity.GetComponent<ScriptComponent>();
 		if (EntityClassExists(sc.ClassName))
 		{
-			Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(entity.GetUUID(), s_Data->EntityClasses[sc.ClassName]);
+			auto t = s_Data->EntityClasses[sc.ClassName];
+			Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(entity.GetUUID(), t);
 			s_Data->EntityInstances[entity.GetUUID()] = instance;
 
 			instance->InvokeOnCreate();
@@ -262,10 +277,10 @@ namespace XuanWu
 	}
 
 	// ScriptClass
-	ScriptClass::ScriptClass(const std::string_view classNamespace, const std::string_view className)
+	ScriptClass::ScriptClass(const std::string_view classNamespace, const std::string_view className, bool bIsCore)
 		:m_ClassNamespace(className.data()), m_ClassName(className.data())
 	{
-		m_MonoClass = mono_class_from_name(s_Data->CoreAssemblyImage, classNamespace.data(), className.data());
+		m_MonoClass = mono_class_from_name(bIsCore ? s_Data->CoreAssemblyImage : s_Data->AppAssemblyImage, classNamespace.data(), className.data());
 	}
 
 	MonoObject* ScriptClass::Instantiate()

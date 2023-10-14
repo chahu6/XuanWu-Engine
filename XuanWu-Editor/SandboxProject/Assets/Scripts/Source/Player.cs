@@ -3,7 +3,6 @@ using XuanWu;
 
 public class Player : Entity
 {
-    private TransformComponent m_Transform;
     private Rigidbody2DComponent m_Rigidbody2D;
 
     public Player()
@@ -12,7 +11,6 @@ public class Player : Entity
 
     void OnCreate() 
     {
-        m_Transform = GetComponent<TransformComponent>();
         m_Rigidbody2D = GetComponent<Rigidbody2DComponent>();
     }
 
@@ -34,9 +32,5 @@ public class Player : Entity
 
         if(m_Rigidbody2D != null)
             m_Rigidbody2D.ApplyLinearImpulseToCenter(velocity.XY);
-
-       /* Vector3 translation = m_Transform.Translation;
-        translation += velocity * ts;
-        m_Transform.Translation = translation;*/
     }
 }
