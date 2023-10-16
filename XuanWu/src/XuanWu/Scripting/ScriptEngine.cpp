@@ -6,9 +6,32 @@
 
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
+//#include <mono/metadata/object.h>
+#include <mono/metadata/tabledefs.h>
 
 namespace XuanWu
 {
+	static std::unordered_map<std::string, ScriptFieldType> s_ScriptFieldTypeMap =
+	{
+		{ "System.Single",	ScriptFieldType::Float	 },
+		{ "System.Double",	ScriptFieldType::Double	 },
+		{ "System.Boolean", ScriptFieldType::Bool	 },
+		{ "System.Char",	ScriptFieldType::Char	 },
+		{ "System.Int16",	ScriptFieldType::Short	 },
+		{ "System.Int32",	ScriptFieldType::Int	 },
+		{ "System.Int64",	ScriptFieldType::Long	 },
+		{ "System.Byte",	ScriptFieldType::Byte	 },
+		{ "System.UInt16",	ScriptFieldType::UShort	 },
+		{ "System.UInt32",	ScriptFieldType::UInt	 },
+		{ "System.UInt64",	ScriptFieldType::ULong	 },
+
+		{ "Hazel.Vector2",	ScriptFieldType::Vector2 },
+		{ "Hazel.Vector3",	ScriptFieldType::Vector3 },
+		{ "Hazel.Vector4",	ScriptFieldType::Vector4 },
+
+		{ "Hazel.Entity",	ScriptFieldType::Entity	 }
+	};
+
 	namespace Utils
 	{
 		static char* ReadBytes(const std::string_view filepath, uint32_t* outSize)
@@ -75,6 +98,46 @@ namespace XuanWu
 
 				XW_CORE_TRACE("{0}.{1}", nameSpace, name);
 			}
+		}
+
+		static ScriptFieldType MonoTypeToScriptFieldType(MonoType* type)
+		{
+			std::string typeName = mono_type_get_name(type);
+
+			auto it = s_ScriptFieldTypeMap.find(typeName);
+			if (it == s_ScriptFieldTypeMap.end())
+			{
+				XW_CORE_ERROR("Unknown type: {}", typeName);
+				return ScriptFieldType::None;
+			}
+
+			return it->second;
+		}
+
+		static const char* ScriptFieldTypeToString(ScriptFieldType fieldType)
+		{
+			switch (fieldType)
+			{
+				case ScriptFieldType::None:    return "None";
+				case ScriptFieldType::Float:   return "Float";
+				case ScriptFieldType::Double:  return "Double";
+				case ScriptFieldType::Bool:    return "Bool";
+				case ScriptFieldType::Char:    return "Char";
+				case ScriptFieldType::Byte:    return "Byte";
+				case ScriptFieldType::Short:   return "Short";
+				case ScriptFieldType::Int:     return "Int";
+				case ScriptFieldType::Long:    return "Long";
+				case ScriptFieldType::UByte:   return "UByte";
+				case ScriptFieldType::UShort:  return "UShort";
+				case ScriptFieldType::UInt:    return "UInt";
+				case ScriptFieldType::ULong:   return "ULong";
+				case ScriptFieldType::Vector2: return "Vector2";
+				case ScriptFieldType::Vector3: return "Vector3";
+				case ScriptFieldType::Vector4: return "Vector4";
+				case ScriptFieldType::Entity:  return "Entity";
+			}
+			XW_CORE_ASSERT(false, "Unknown ScriptFieldType");
+			return "None";
 		}
 	}
 
@@ -205,21 +268,45 @@ namespace XuanWu
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
 			const char* nameSpace = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
-			const char* name = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAME]);
+			const char* className = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string fullName;
 			if (strlen(nameSpace) != 0)
-				fullName = fmt::format("{0}.{1}", nameSpace, name);
+				fullName = fmt::format("{0}.{1}", nameSpace, className);
 			else
-				fullName = name;
+				fullName = className;
 
-			MonoClass* monoClass = mono_class_from_name(s_Data->AppAssemblyImage, nameSpace, name);
+			// 加载DLL中的所有C#类
+			MonoClass* monoClass = mono_class_from_name(s_Data->AppAssemblyImage, nameSpace, className);
 			if (monoClass == entityClass)
 				continue;
 
 			bool isEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
-			if (isEntity)
-				s_Data->EntityClasses[fullName] = CreateRef<ScriptClass>(nameSpace, name);
+			if (!isEntity)
+				continue;
+
+			Ref<ScriptClass> scriptClass = CreateRef<ScriptClass>(nameSpace, className);
+			s_Data->EntityClasses[fullName] = scriptClass;
+
+			// 读取脚本类的字段属性
+			int fieldCount = mono_class_num_fields(monoClass);
+			XW_CORE_WARN("{} has {} fields: ", className, fieldCount);
+
+			void* iterator = nullptr;
+
+			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+			{
+				const char* fieldName = mono_field_get_name(field);		// 获取单个属性的名称
+				uint32_t flags = mono_field_get_flags(field);			// 获取单个属性的权限
+				if (flags & FIELD_ATTRIBUTE_PUBLIC)
+				{
+					MonoType* type = mono_field_get_type(field);
+					ScriptFieldType fieldType = Utils::MonoTypeToScriptFieldType(type);
+					XW_CORE_TRACE("{} ({})", fieldName, Utils::ScriptFieldTypeToString(fieldType));
+
+					scriptClass->m_Fields[fieldName] = { fieldType, fieldName, field };
+				}
+			}
 		}
 	}
 
@@ -276,6 +363,11 @@ namespace XuanWu
 		return s_Data->CoreAssemblyImage;
 	}
 
+	Ref<ScriptInstance> ScriptEngine::GetEntityScriptInstance(Entity entity)
+	{
+		return s_Data->EntityInstances[entity.GetUUID()];
+	}
+
 	// ScriptClass
 	ScriptClass::ScriptClass(const std::string_view classNamespace, const std::string_view className, bool bIsCore)
 		:m_ClassNamespace(className.data()), m_ClassName(className.data())
@@ -327,5 +419,29 @@ namespace XuanWu
 
 		void* param = &ts;
 		m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMehtod, &param);
+	}
+
+	bool ScriptInstance::GetFieldValueInternal(const std::string_view name, void* buffer)
+	{
+		const auto& fields = m_ScriptClass->GetFields();
+		auto it = fields.find(name.data());
+		if (it == fields.end())
+			return false;
+
+		const ScriptField& field = it->second;
+		mono_field_get_value(m_Instance, field.ClassField, buffer);
+		return true;
+	}
+
+	bool ScriptInstance::SetFieldValueInternal(const std::string_view name, const void* value)
+	{
+		const auto& fields = m_ScriptClass->GetFields();
+		auto it = fields.find(name.data());
+		if (it == fields.end())
+			return false;
+
+		const ScriptField& field = it->second;
+		mono_field_set_value(m_Instance, field.ClassField, (void*)value);
+		return true;
 	}
 }

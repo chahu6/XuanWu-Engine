@@ -6,6 +6,7 @@ extern "C" {
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoImage MonoImage;
+	typedef struct _MonoClassField MonoClassField;
 }
 
 namespace XuanWu
@@ -14,8 +15,27 @@ namespace XuanWu
 	class Entity;
 	class Timestep;
 
+	enum class ScriptFieldType
+	{
+		None = 0,
+		Float, Double,
+		Bool, Char, Byte, Short, Int, Long,
+		UByte, UShort, UInt, ULong,
+		Vector2, Vector3, Vector4,
+		Entity
+	};
+
+	struct ScriptField
+	{
+		ScriptFieldType Type;
+		std::string Name;
+
+		MonoClassField* ClassField;
+	};
+
 	class ScriptClass
 	{
+		friend class ScriptEngine;
 	public:
 		ScriptClass() = default;
 		ScriptClass(const std::string_view classNamespace, const std::string_view className, bool bIsCore = false);
@@ -24,10 +44,13 @@ namespace XuanWu
 		MonoMethod* GetMethod(const std::string_view name, int parameterCount);
 		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr);
 
+		inline const std::map<std::string, ScriptField>& GetFields() const { return m_Fields; }
 	private:
 		std::string m_ClassNamespace;
 		std::string m_ClassName;
 		MonoClass* m_MonoClass = nullptr;
+
+		std::map<std::string, ScriptField> m_Fields;
 	};
 
 	class ScriptInstance
@@ -37,9 +60,34 @@ namespace XuanWu
 
 		void InvokeOnCreate();
 		void InvokeOnUpdate(float ts);
+
+		Ref<ScriptClass> GetScriptClass() { return m_ScriptClass; }
+
+		template<typename T>
+		T GetFieldValue(const std::string_view field)
+		{
+			bool bSuccess = GetFieldValueInternal(field, s_FieldValueBuffer);
+			if (!bSuccess)
+				return T{};
+			return *(T*)s_FieldValueBuffer;
+		}
+
+		template<typename T>
+		void SetFieldValue(const std::string_view field, T value)
+		{
+			static_assert(sizeof(T) <= 16, "Type too large!");
+
+			SetFieldValueInternal(field, &value);
+		}
+	private:
+		bool GetFieldValueInternal(const std::string_view name, void* buffer);
+		bool SetFieldValueInternal(const std::string_view name, const void* value);
+
 	private:
 		uint64_t m_EntityUUID;
 		Ref<ScriptClass> m_ScriptClass;
+
+		inline static char s_FieldValueBuffer[16];
 
 		MonoObject* m_Instance = nullptr;
 		MonoMethod* m_Constructor = nullptr;
@@ -69,6 +117,8 @@ namespace XuanWu
 		static Scene* GetSceneContext();
 
 		static MonoImage* GetCoreAssemblyImage();
+
+		static Ref<ScriptInstance> GetEntityScriptInstance(Entity entity);
 	private:
 		static void InitMono();
 

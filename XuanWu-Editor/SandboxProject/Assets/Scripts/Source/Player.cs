@@ -5,6 +5,8 @@ public class Player : Entity
 {
     private Rigidbody2DComponent m_Rigidbody2D;
 
+    public float speed = 20.0f;
+
     public Player()
     {
     }
@@ -16,7 +18,6 @@ public class Player : Entity
 
     void OnUpdate(float ts)
     {
-        float speed = 20.0f;
         Vector3 velocity = Vector3.Zero;
 
         if (Input.IsKeyDown(KeyCode.W))

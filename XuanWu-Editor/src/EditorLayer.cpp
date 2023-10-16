@@ -137,13 +137,13 @@ namespace XuanWu
 			if (ImGui::BeginMenu(TXT("File")))
 			{
 				// 添加菜单项
-				if (ImGui::MenuItem(TXT("New", "Ctrl+N")))
+				if (ImGui::MenuItem(TXT("New"), "Ctrl+N"))
 					NewScene();
 
-				if (ImGui::MenuItem(TXT("Open Level", "Ctrl+O")))
+				if (ImGui::MenuItem(TXT("Open Level"), "Ctrl+O"))
 					OpenScene();
 
-				if (ImGui::MenuItem(TXT("Save Level", "Ctrl+S")))
+				if (ImGui::MenuItem(TXT("Save Level"), "Ctrl+S"))
 					SaveScene();
 
 				if (ImGui::MenuItem(TXT("Exit")))
@@ -460,7 +460,7 @@ namespace XuanWu
 			int sign = Math::Sign(m_EditorCamera.GetForward().z); // 让线框一直面向你，但只限于图形是二维的时候，既Y轴没有旋转，之后在修复吧，这个不行
 			// Draw Box Collider
 			{
-				auto& view = m_ActiveScene->GetAllComponentView<TransformComponent, BoxCollider2DComponent>();
+				auto view = m_ActiveScene->GetAllComponentView<TransformComponent, BoxCollider2DComponent>();
 				for (auto e : view)
 				{
 					auto [tc, bc2d] = view.get<TransformComponent, BoxCollider2DComponent>(e);
@@ -480,7 +480,7 @@ namespace XuanWu
 
 			// Draw Circle Collider
 			{
-				auto& view = m_ActiveScene->GetAllComponentView<TransformComponent, CircleCollider2DComponent>();
+				auto view = m_ActiveScene->GetAllComponentView<TransformComponent, CircleCollider2DComponent>();
 				for (auto e : view)
 				{
 					auto [tc, cc2d] = view.get<TransformComponent, CircleCollider2DComponent>(e);

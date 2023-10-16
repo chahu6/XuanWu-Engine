@@ -32,7 +32,7 @@ namespace XuanWu
 				bool bIsOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.data());
 
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
-				float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+				float lineHeight = ImGui::GetCurrentContext()->Font->FontSize + ImGui::GetCurrentContext()->Style.FramePadding.y * 2.0f;
 				ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 				if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
 				{

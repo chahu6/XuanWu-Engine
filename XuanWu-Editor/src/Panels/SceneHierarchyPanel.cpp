@@ -371,6 +371,25 @@ namespace XuanWu
 
 			if (!bScriptClassExists)
 				ImGui::PopStyleColor();
+
+			// @TODO 现在的问题是只能在运行时才能修改，因为只有在运行时s_Data->EntityInstances才有值
+			// C#的脚本属性
+			Ref<ScriptInstance> scriptInstance = ScriptEngine::GetEntityScriptInstance(selected);
+			if (scriptInstance)
+			{
+				const auto& fields = scriptInstance->GetScriptClass()->GetFields();
+				for (const auto& [name, field] : fields)
+				{
+					if(field.Type == ScriptFieldType::Float)
+					{
+						float data = scriptInstance->GetFieldValue<float>(name);
+						if (ImGui::DragFloat(name.c_str(), &data))
+						{
+							scriptInstance->SetFieldValue(name, data);
+						}
+					}
+				}
+			}
 		});
 
 		DrawComponent<Rigidbody2DComponent>(TXT("Rigidbody 2D"), entity, treeNodeFlags, [](Ref<Scene>& context, Entity selected)
