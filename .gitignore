@@ -2,9 +2,11 @@
 .vs/
 bin/
 bin-int/
+Intermediate/
 
 # Files
 *.user
 *.vcxproj*
 *.sln
 *.json
+clangLog.txt

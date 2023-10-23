@@ -1,0 +1,52 @@
+Scene: Untitled
+Entities:
+  - Entity: 13047391028773169052
+    TagComponent:
+      Tag: fix
+    TransformComponent:
+      Translation: [-2.07343006, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 0.209999993, 0.560000002, 1]
+      TilingFactor: 1
+  - Entity: 1228021037937203439
+    TagComponent:
+      Tag: red_1
+    TransformComponent:
+      Translation: [1.71088398, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.74000001, 0.74000001, 0.629999995, 1]
+      TilingFactor: 1
+      TexturePath: D:\Test-C++\XuanWu\XuanWu-Editor\assets\textures\ChernoLogo.png
+  - Entity: 6873226342148612561
+    TagComponent:
+      Tag: camera
+    TransformComponent:
+      Translation: [0, 0, 5.57201529]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 4945987268763877324
+    TagComponent:
+      Tag: red
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 0, 1, 1]
+      TilingFactor: 1
+      TexturePath: assets\textures\ChernoLogo.png
