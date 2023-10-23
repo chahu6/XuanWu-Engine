@@ -1,179 +1,76 @@
-cmake_minimum_required(VERSION 3.4...3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10)
+project(GLFW)
 
-project(GLFW VERSION 3.4.0 LANGUAGES C)
+#启用VS项目文件夹分类
+option(USE_SOLUTION_FOLDERS "启用VS项目文件夹分类" ON)
 
-set(CMAKE_LEGACY_CYGWIN_WIN32 OFF)
+set(
+    SRC ${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3native.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/glfw_config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/context.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/init.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/input.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/monitor.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/vulkan.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/window.c
+)
 
-if (POLICY CMP0054)
-    cmake_policy(SET CMP0054 NEW)
+if(WIN32)
+    set(SRC ${SRC} 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/win32_init.c 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/win32_joystick.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/win32_monitor.c 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/win32_time.c 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/win32_thread.c 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/win32_window.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/wgl_context.c 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/egl_context.c 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/osmesa_context.c
+    )
 endif()
 
-if (POLICY CMP0069)
-    cmake_policy(SET CMP0069 NEW)
+add_library(glfw3 STATIC ${SRC})
+
+if(WIN32)
+    target_compile_definitions(glfw3 PRIVATE _GLFW_WIN32 _CRT_SECURE_NO_WARNINGS)
 endif()
 
-if (POLICY CMP0077)
-    cmake_policy(SET CMP0077 NEW)
-endif()
+if(WIN32)
+    if(MSVC)
+        # 对 AllFile 变量里面的所有文件分类(保留资源管理器的目录结构)
+        foreach(fileItem ${SRC})       
+            # Get the directory of the source file
+            get_filename_component(PARENT_DIR "${fileItem}" DIRECTORY)
+            # message(${PARENT_DIR})
+            # Remove common directory prefix to make the group
+            string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}" "" GROUP "${PARENT_DIR}")
+            # message(${GROUP})
+            # Make sure we are using windows slashes
+            string(REPLACE "/" "\\" GROUP "${GROUP}")
+            # Group into "Source Files" and "Header Files"
+            set(GROUP "${GROUP}")
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    set(GLFW_STANDALONE TRUE)
-endif()
-
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" ${GLFW_STANDALONE})
-option(GLFW_BUILD_TESTS "Build the GLFW test programs" ${GLFW_STANDALONE})
-option(GLFW_BUILD_DOCS "Build the GLFW documentation" ON)
-option(GLFW_INSTALL "Generate installation target" ON)
-
-include(GNUInstallDirs)
-include(CMakeDependentOption)
-
-if (GLFW_USE_OSMESA)
-    message(FATAL_ERROR "GLFW_USE_OSMESA has been removed; set the GLFW_PLATFORM init hint")
-endif()
-
-cmake_dependent_option(GLFW_BUILD_WIN32 "Build support for Win32" ON "WIN32" OFF)
-cmake_dependent_option(GLFW_BUILD_COCOA "Build support for Cocoa" ON "APPLE" OFF)
-cmake_dependent_option(GLFW_BUILD_X11 "Build support for X11" ON "UNIX;NOT APPLE" OFF)
-cmake_dependent_option(GLFW_BUILD_WAYLAND "Build support for Wayland"
-    "${GLFW_USE_WAYLAND}" "UNIX;NOT APPLE" OFF)
-
-cmake_dependent_option(GLFW_USE_HYBRID_HPG "Force use of high-performance GPU on hybrid systems" OFF
-                       "WIN32" OFF)
-cmake_dependent_option(USE_MSVC_RUNTIME_LIBRARY_DLL "Use MSVC runtime library DLL" ON
-                       "MSVC" OFF)
-
-set(GLFW_LIBRARY_TYPE "${GLFW_LIBRARY_TYPE}" CACHE STRING
-    "Library type override for GLFW (SHARED, STATIC, OBJECT, or empty to follow BUILD_SHARED_LIBS)")
-
-if (GLFW_LIBRARY_TYPE)
-    if (GLFW_LIBRARY_TYPE STREQUAL "SHARED")
-        set(GLFW_BUILD_SHARED_LIBRARY TRUE)
-    else()
-        set(GLFW_BUILD_SHARED_LIBRARY FALSE)
-    endif()
-else()
-    set(GLFW_BUILD_SHARED_LIBRARY ${BUILD_SHARED_LIBS})
-endif()
-
-list(APPEND CMAKE_MODULE_PATH "${GLFW_SOURCE_DIR}/CMake/modules")
-
-find_package(Threads REQUIRED)
-
-if (GLFW_BUILD_DOCS)
-    set(DOXYGEN_SKIP_DOT TRUE)
-    find_package(Doxygen)
-endif()
-
-#--------------------------------------------------------------------
-# Report backend selection
-#--------------------------------------------------------------------
-if (GLFW_BUILD_WIN32)
-    message(STATUS "Including Win32 support")
-endif()
-if (GLFW_BUILD_COCOA)
-    message(STATUS "Including Cocoa support")
-endif()
-if (GLFW_BUILD_WAYLAND)
-    message(STATUS "Including Wayland support")
-endif()
-if (GLFW_BUILD_X11)
-    message(STATUS "Including X11 support")
-endif()
-
-#--------------------------------------------------------------------
-# Apply Microsoft C runtime library option
-# This is here because it also applies to tests and examples
-#--------------------------------------------------------------------
-if (MSVC AND NOT USE_MSVC_RUNTIME_LIBRARY_DLL)
-    if (CMAKE_VERSION VERSION_LESS 3.15)
-        foreach (flag CMAKE_C_FLAGS
-                      CMAKE_C_FLAGS_DEBUG
-                      CMAKE_C_FLAGS_RELEASE
-                      CMAKE_C_FLAGS_MINSIZEREL
-                      CMAKE_C_FLAGS_RELWITHDEBINFO)
-
-            if (flag MATCHES "/MD")
-                string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
-            endif()
-            if (flag MATCHES "/MDd")
-                string(REGEX REPLACE "/MDd" "/MTd" ${flag} "${${flag}}")
-            endif()
-
+            source_group("${GROUP}" FILES "${fileItem}")
         endforeach()
-    else()
-        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+        #设置项目位置
+        set_target_properties(glfw3 PROPERTIES FOLDER "Dependencies")
     endif()
 endif()
 
-#--------------------------------------------------------------------
-# Create generated files
-#--------------------------------------------------------------------
-include(CMakePackageConfigHelpers)
+# 配合使用
+# if(USE_SOLUTION_FOLDERS)
+#     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# else()
+#     set_property(GLOBAL PROPERTY USE_FOLDERS OFF)
+# endif()
 
-set(GLFW_CONFIG_PATH "${CMAKE_INSTALL_LIBDIR}/cmake/glfw3")
+# 设置库生成的路径
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
 
-configure_package_config_file(CMake/glfw3Config.cmake.in
-                              src/glfw3Config.cmake
-                              INSTALL_DESTINATION "${GLFW_CONFIG_PATH}"
-                              NO_CHECK_REQUIRED_COMPONENTS_MACRO)
-
-write_basic_package_version_file(src/glfw3ConfigVersion.cmake
-                                 VERSION ${GLFW_VERSION}
-                                 COMPATIBILITY SameMajorVersion)
-
-#--------------------------------------------------------------------
-# Add subdirectories
-#--------------------------------------------------------------------
-add_subdirectory(src)
-
-if (GLFW_BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
-
-if (GLFW_BUILD_TESTS)
-    add_subdirectory(tests)
-endif()
-
-if (DOXYGEN_FOUND AND GLFW_BUILD_DOCS)
-    add_subdirectory(docs)
-endif()
-
-#--------------------------------------------------------------------
-# Install files other than the library
-# The library is installed by src/CMakeLists.txt
-#--------------------------------------------------------------------
-if (GLFW_INSTALL)
-    install(DIRECTORY include/GLFW DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-            FILES_MATCHING PATTERN glfw3.h PATTERN glfw3native.h)
-
-    install(FILES "${GLFW_BINARY_DIR}/src/glfw3Config.cmake"
-                  "${GLFW_BINARY_DIR}/src/glfw3ConfigVersion.cmake"
-            DESTINATION "${GLFW_CONFIG_PATH}")
-
-    install(EXPORT glfwTargets FILE glfw3Targets.cmake
-            EXPORT_LINK_INTERFACE_LIBRARIES
-            DESTINATION "${GLFW_CONFIG_PATH}")
-    install(FILES "${GLFW_BINARY_DIR}/src/glfw3.pc"
-            DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-
-    if (DOXYGEN_FOUND AND GLFW_BUILD_DOCS)
-        install(DIRECTORY "${GLFW_BINARY_DIR}/docs/html"
-                DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-    endif()
-
-    # Only generate this target if no higher-level project already has
-    if (NOT TARGET uninstall)
-        configure_file(CMake/cmake_uninstall.cmake.in
-                       cmake_uninstall.cmake IMMEDIATE @ONLY)
-
-        add_custom_target(uninstall
-                          "${CMAKE_COMMAND}" -P
-                          "${GLFW_BINARY_DIR}/cmake_uninstall.cmake")
-        set_target_properties(uninstall PROPERTIES FOLDER "GLFW3")
-    endif()
-endif()
-
+# 根据构建类型设置编译选项
+target_compile_options(glfw3 PRIVATE
+    $<$<CONFIG:Debug>:-g -O0>
+    $<$<CONFIG:Release>:-O2>
+)
