@@ -14,17 +14,17 @@ project "Parser"
 	if os.istarget("windows") then
 		postbuildcommands {
 			-- 复制DLL文件到输出路径
-			"{COPY} vendor/LLVM/bin/x64/libclang.dll %{cfg.targetdir}"
+			"{COPY} vendor/LLVM/dll/x64/libclang.dll %{cfg.targetdir}"
 		}
 	elseif os.istarget("macosx") then
 		postbuildcommands {
 			-- 复制DLL文件到输出路径
-			"cp vendor/LLVM/bin/macOS/libclang.dylib %{cfg.targetdir}"
+			"cp vendor/LLVM/dll/macOS/libclang.dylib %{cfg.targetdir}"
 		}
 	elseif os.istarget("linux") then
 		postbuildcommands {
 			-- 复制DLL文件到输出路径
-			"cp vendor/LLVM/bin/Linux/libclang.so.12 %{cfg.targetdir}"
+			"cp vendor/LLVM/dll/Linux/libclang.so.12 %{cfg.targetdir}"
 		}
 	end
 
