@@ -4,6 +4,9 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Renderer2D.h"
 
+//≤‚ ‘
+#include "Renderer3D.h"
+
 namespace XuanWu {
 
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
@@ -14,6 +17,9 @@ namespace XuanWu {
 
 		RenderCommand::Init();
 		Renderer2D::Init();
+
+		// ≤‚ ‘
+		Renderer3D::Init();
 	}
 
 	void Renderer::Shutdown()

@@ -7,6 +7,10 @@
 #include "XuanWu/Render/Renderer2D.h"
 #include "ScriptableEntity.h"
 
+// ≤‚ ‘ 3D
+#include "XuanWu/Render/Renderer3D.h"
+#include "XuanWu/3D/Components/SkeletalMeshComponent.h"
+
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_polygon_shape.h>
@@ -232,6 +236,19 @@ namespace XuanWu
 			}
 		}
 		Renderer2D::EndScene();
+
+
+		// ≤‚ ‘ 3D
+		Renderer3D::BeginScene(camera);
+		{
+			auto& view = m_Registry.view<TransformComponent, SkeletalMeshComponent>();
+			for (auto entity : view)
+			{
+				auto [transform, model] = view.get<TransformComponent, SkeletalMeshComponent>(entity);
+				Renderer3D::DrawModel(transform.GetTransform(), transform.Scale, model.GetSkeletalMeshAsset(), static_cast<int>(entity));
+			}
+		}
+		Renderer3D::EndScene();
 	}
 
 	void Scene::DestroyEntity(Entity entity)
@@ -457,6 +474,13 @@ namespace XuanWu
 
 	template<>
 	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
+	{
+
+	}
+
+	// ≤‚ ‘
+	template<>
+	void Scene::OnComponentAdded<SkeletalMeshComponent>(Entity entity, SkeletalMeshComponent& component)
 	{
 
 	}

@@ -14,3 +14,11 @@ IncludeDir["ImGui"] = "%{wks.location}/Engine/Source/XuanWu/vendor/imgui"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Engine/Source/XuanWu/vendor/ImGuizmo"
 IncludeDir["stb_image"] = "%{wks.location}/Engine/Source/XuanWu/vendor/stb_image"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Engine/Source/XuanWu/vendor/yaml-cpp/include"
+IncludeDir["assimp"] = "%{wks.location}/Engine/Source/XuanWu/vendor/assimp/include"
+
+
+LibraryDir = {}
+LibraryDir["assimp"] = "%{wks.location}/Engine/Source/XuanWu/vendor/assimp/lib"
+
+Library = {}
+Library["assimp"] = "%{LibraryDir.assimp}/assimp-vc143-mtd.lib"

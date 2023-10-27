@@ -292,6 +292,9 @@ parser_header.o: D:\Test-C++\XuanWu\Engine\Intermediate\parser_header.h \
   C:\Program\ Files\ (x86)\Windows\ Kits\10\Include\10.0.22621.0\um\imm.h \
   C:\Program\ Files\ (x86)\Windows\ Kits\10\Include\10.0.22621.0\um\ime_cmodes.h \
   GLFW\glfw3.h \
+  D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\3D\Components\SkeletalMeshComponent.h \
+  D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\3D\Model.h \
+  assimp\scene.h assimp\Importer.hpp assimp\postprocess.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Camera\PerspectiveCamera.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Core\Timestep.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Events\MouseEvent.h \
@@ -326,11 +329,13 @@ parser_header.o: D:\Test-C++\XuanWu\Engine\Intermediate\parser_header.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Render\Renderer.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Render\Renderer2D.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Render\SubTexture2D.h \
+  D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Render\Renderer3D.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Scene\Entity.h \
   entt.hpp \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Scene\Scene.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Scene\ScriptableEntity.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Serializer\SceneSerializer.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Serializer\Serializer.h \
+  D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Utils\FStringUtils.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu\Utils\PlatformUtils.h \
   D:\Test-C++\XuanWu\Engine\Source\XuanWu\src\XuanWu.h

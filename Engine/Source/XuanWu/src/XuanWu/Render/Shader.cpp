@@ -11,8 +11,8 @@ namespace XuanWu {
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None: XW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!") return nullptr;
-		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(name, vertexPath, fragmentPath);
+			case RendererAPI::API::None: XW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!") return nullptr;
+			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(name, vertexPath, fragmentPath);
 		}
 
 		XW_CORE_ASSERT(false, "Unknow RendererAPI!")

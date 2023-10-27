@@ -6,6 +6,9 @@
 #include "XuanWu/Serializer/Serializer.h"
 #include "XuanWu/Render/EditorCamera.h"
 
+// ≤‚ ‘
+#include "XuanWu/3D/Model.h"
+
 namespace XuanWu
 {
 	class EditorLayer : public Layer
@@ -54,6 +57,11 @@ namespace XuanWu
 		Entity m_RedSquare;
 		glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 		*/
+		
+		// ≤‚ ‘
+		Model* model = nullptr;
+		Ref<Shader> model_shader;
+
 
 		// ±ÿ–Îµƒ
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };

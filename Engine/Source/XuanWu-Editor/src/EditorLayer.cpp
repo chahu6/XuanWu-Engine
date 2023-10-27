@@ -9,8 +9,19 @@
 #include <ImGuizmo.h>
 #include "XuanWu/Math/Math.h"
 
+// 测试
+#include "XuanWu/3D/Model.h"
+
 namespace XuanWu
 {
+	static constexpr float identityMatrix[16] =
+	{ 
+		1.f, 0.f, 0.f, 0.f,
+		0.f, 1.f, 0.f, 0.f,
+		0.f, 0.f, 1.f, 0.f,
+		0.f, 0.f, 0.f, 1.f 
+	};
+
 	EditorLayer::EditorLayer()
 		:Layer("EditorLayer")
 	{
@@ -111,7 +122,7 @@ namespace XuanWu
 		{
 			// @TDOD 读取第几个帧缓冲的位置的值
 			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-			//XW_CORE_WARN("{0}", pixelData);
+			XW_CORE_WARN("{0}", pixelData);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{ (entt::entity)pixelData, m_ActiveScene.get() };
 		}
 
@@ -177,6 +188,9 @@ namespace XuanWu
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin(TXT("Viewport"));
 		{
+			// 辅助的网格线
+			ImGuizmo::DrawGrid(glm::value_ptr(m_EditorCamera.GetViewMatrix()), glm::value_ptr(m_EditorCamera.GetProjection()), identityMatrix, 100.0f);
+
 			// 也可以，但是有更好的
 			ImVec2 windowSize = ImGui::GetWindowSize();
 			ImVec2 minBound = ImGui::GetWindowPos();
@@ -192,7 +206,8 @@ namespace XuanWu
 			m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
 			// GetWindowContentRegionMin() 是以自己窗口内容的左上角为起点(0, 0) 反正我不会弄，后面再说吧
-		/*	ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
+
+			/*ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
 			ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 			m_ViewportBound[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
 			m_ViewportBound[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
@@ -213,6 +228,7 @@ namespace XuanWu
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 
 			// Gizmos
+			ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y); // 在这DrawGrid才显示，不知道为什么
 			Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
 			if (selectedEntity)
 			{
@@ -221,7 +237,6 @@ namespace XuanWu
 				//float windowWidth = ImGui::GetWindowWidth(); // 获取 当前的 窗口宽度
 				//float windowHeight = ImGui::GetWindowHeight();
 				//ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-				ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
 				// Editor 时
 				const glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();

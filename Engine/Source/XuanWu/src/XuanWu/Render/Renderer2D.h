@@ -8,8 +8,8 @@
 
 #include "XuanWu/Components/Components.h"
 
-namespace XuanWu {
-
+namespace XuanWu 
+{
 	class Renderer2D
 	{
 	public:

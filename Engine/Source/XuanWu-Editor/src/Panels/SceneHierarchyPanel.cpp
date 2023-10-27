@@ -1,7 +1,13 @@
 #include "xwpch.h"
 #include "SceneHierarchyPanel.h"
-#include <imgui/imgui.h>
 #include "XuanWu/Components/Components.h"
+
+//≤‚ ‘
+#include "XuanWu/3D/Components/SkeletalMeshComponent.h"
+#include "XuanWu/3D/Model.h"
+#include "XuanWu/Utils/FStringUtils.h"
+
+#include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui_internal.h>
 
@@ -212,6 +218,9 @@ namespace XuanWu
 			DisplayAddComponentEntity<BoxCollider2DComponent>("Box Collider");
 			DisplayAddComponentEntity<CircleCollider2DComponent>("Circle Collider");
 
+			// ≤‚ ‘
+			DisplayAddComponentEntity<SkeletalMeshComponent>("Mesh");
+
 			ImGui::EndPopup();
 		}
 
@@ -297,7 +306,6 @@ namespace XuanWu
 
 				ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
 			}
-				
 		});
 
 		DrawComponent<SpriteRendererComponent>(TXT("Sprite Renderer"), entity, treeNodeFlags, [this](Ref<Scene>& context, Entity selected)
@@ -397,6 +405,46 @@ namespace XuanWu
 			ImGui::DragFloat(TXT("Friction"), &collider.Friction, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat(TXT("Restitution"), &collider.Restitution, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat(TXT("Restitution Threshold"), &collider.RestitutionThreshold, 0.01f, 0.0f, FLT_MAX);
+		});
+
+		DrawComponent<SkeletalMeshComponent>(TXT("Mesh"), entity, treeNodeFlags, [&](Ref<Scene>& context, Entity selected)
+		{
+			auto& skeletalMesh = selected.GetComponent<SkeletalMeshComponent>();
+
+			ImGui::Text(TXT("¬∑æ∂:"));
+			ImGui::SameLine();
+			ImGui::ImageButton((ImTextureID)(m_AddTexture->GetRendererID()), ImVec2{ 74, 74 }, { 0, 1 }, { 1, 0 });
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					if (path != nullptr)
+					{
+						std::filesystem::path modelPath(path);
+						std::string type = modelPath.extension().string();
+
+						bool found = false;
+						const char* textureTypes[] = { ".obj" };
+						for (size_t i = 0; i < sizeof(textureTypes) / sizeof(textureTypes[0]); i++)
+						{
+							if (type == textureTypes[i])
+							{
+								found = true;
+								break;
+							}
+						}
+
+						if (found)
+						{
+							std::string model_path = modelPath.string();
+							FStringUtils::ReplaceAll(model_path, "\\", "/");
+							Ref<Model> model = CreateRef<Model>(model_path);
+							skeletalMesh.SetSkeletalMeshAsset(model);
+						}
+					}
+				}
+			}
 		});
 	}
 }

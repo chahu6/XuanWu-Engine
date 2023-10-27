@@ -46,7 +46,8 @@ project "XuanWu"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links
@@ -58,7 +59,8 @@ project "XuanWu"
 		"yaml-cpp",
 		"opengl32.lib",
 
-		"PreCompile"
+		"PreCompile",
+		"%{Library.assimp}"
 	}
 
 	filter "files:vendor/ImGuizmo/**.cpp"
