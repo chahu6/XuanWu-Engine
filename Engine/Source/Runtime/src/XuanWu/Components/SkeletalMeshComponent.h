@@ -1,10 +1,11 @@
 #pragma once
+#include "SceneComponent.h"
 
 namespace XuanWu
 {
 	class Model;
 
-	class SkeletalMeshComponent
+	class SkeletalMeshComponent : public SceneComponent
 	{
 	public:
 		SkeletalMeshComponent() = default;

@@ -9,7 +9,7 @@
 
 // ≤‚ ‘ 3D
 #include "XuanWu/Render/Renderer3D.h"
-#include "XuanWu/3D/Components/SkeletalMeshComponent.h"
+#include "XuanWu/Components/SkeletalMeshComponent.h"
 
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
@@ -214,6 +214,7 @@ namespace XuanWu
 
 	void Scene::RenderScene(const EditorCamera& camera)
 	{
+#if 0
 		Renderer2D::BeginScene(camera);
 
 		// Draw Quard
@@ -236,7 +237,7 @@ namespace XuanWu
 			}
 		}
 		Renderer2D::EndScene();
-
+#endif
 
 		// ≤‚ ‘ 3D
 		Renderer3D::BeginScene(camera);
@@ -246,6 +247,11 @@ namespace XuanWu
 			{
 				auto [transform, model] = view.get<TransformComponent, SkeletalMeshComponent>(entity);
 				Renderer3D::DrawModel(transform.GetTransform(), transform.Scale, model.GetSkeletalMeshAsset(), static_cast<int>(entity));
+			}
+
+			for (auto& obj : m_Objects)
+			{
+
 			}
 		}
 		Renderer3D::EndScene();

@@ -32,6 +32,7 @@ project "XuanWu"
 	includedirs
 	{
 		"src",
+		"src/XuanWu",
 		"vendor/spdlog/include",
 
 		-- 引擎内部

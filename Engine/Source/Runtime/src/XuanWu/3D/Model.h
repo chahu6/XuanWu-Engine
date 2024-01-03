@@ -50,13 +50,13 @@ namespace XuanWu
 	private:
 		void LoadModel(const std::string& path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
-		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+		Ref<Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
 		std::vector<Ref<Texture2D>> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 
 	private:
 		std::vector<Ref<Texture2D>> textures_loaded;
 
-		std::vector<Mesh> m_meshes;
+		std::vector<Ref<Mesh>> m_meshes;
 		std::string m_directory;
 	};
 }

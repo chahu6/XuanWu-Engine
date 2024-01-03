@@ -3,7 +3,7 @@
 #include "XuanWu/Components/Components.h"
 
 //≤‚ ‘
-#include "XuanWu/3D/Components/SkeletalMeshComponent.h"
+#include "XuanWu/Components/SkeletalMeshComponent.h"
 #include "XuanWu/3D/Model.h"
 #include "XuanWu/Utils/FStringUtils.h"
 

@@ -15,9 +15,9 @@ project "XuanWu-Editor"
 
 	includedirs
 	{
-		"%{wks.location}/Engine/Source/XuanWu/vendor/spdlog/include",
-		"%{wks.location}/Engine/Source/XuanWu/src",
-		"%{wks.location}/Engine/Source/XuanWu/vendor",
+		"%{wks.location}/Engine/Source/Runtime/vendor/spdlog/include",
+		"%{wks.location}/Engine/Source/Runtime/src",
+		"%{wks.location}/Engine/Source/Runtime/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",

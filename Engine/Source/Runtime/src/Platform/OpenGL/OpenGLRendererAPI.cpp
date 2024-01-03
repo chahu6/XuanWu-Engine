@@ -14,6 +14,11 @@ namespace XuanWu {
 
 		glEnable(GL_DEPTH_TEST);	// 深度测试
 		glEnable(GL_LINE_SMOOTH);	// 将画的线条变的光滑
+
+		glEnable(GL_STENCIL_TEST);  // 模板测试
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	}
 
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
@@ -28,7 +33,7 @@ namespace XuanWu {
 
 	void OpenGLRendererAPI::Clear()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);// 模板测试
 	}
 
 	void OpenGLRendererAPI::SetLineWidth(float width)
@@ -42,11 +47,32 @@ namespace XuanWu {
 		//uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 		vertexArray->Bind();
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+		vertexArray->Unbind();
 	}
 
 	void OpenGLRendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
 	{
 		vertexArray->Bind();
 		glDrawArrays(GL_LINES, 0, vertexCount);
+	}
+
+	void OpenGLRendererAPI::SetStencilFunc(uint32_t func, int ref, uint32_t mask)
+	{
+		glStencilFunc(func, ref, mask);
+	}
+
+	void OpenGLRendererAPI::SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass)
+	{
+		glStencilOp(sfail, dpfail, dppass);
+	}
+
+	void OpenGLRendererAPI::SetStencilMask(uint32_t mask)
+	{
+		glStencilMask(mask);
+	}
+
+	void OpenGLRendererAPI::SetDepthTest(bool enable)
+	{
+		enable ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 	}
 }

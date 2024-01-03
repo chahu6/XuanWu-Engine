@@ -50,7 +50,7 @@ namespace XuanWu
 		auto s = m_meshes.size();
 		for (size_t i = 0; i < m_meshes.size(); ++i)
 		{
-			m_meshes[i].Draw(shader);
+			m_meshes[i]->Draw(shader);
 		}
 	}
 
@@ -82,7 +82,7 @@ namespace XuanWu
 		}
 	}
 
-	Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+	Ref<Mesh> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
@@ -141,7 +141,7 @@ namespace XuanWu
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
 
-		return Mesh(vertices, indices, textures);
+		return CreateRef<Mesh>(vertices, indices, textures);
 	}
 
 	std::vector<Ref<Texture2D>> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)

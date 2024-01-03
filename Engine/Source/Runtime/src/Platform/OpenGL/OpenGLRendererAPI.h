@@ -15,5 +15,11 @@ namespace XuanWu {
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
 		virtual void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount = 0) override;
+
+		// Ä£°å²âÊÔ
+		virtual void SetStencilFunc(uint32_t func, int ref, uint32_t mask) override;
+		virtual void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) override;
+		virtual void SetStencilMask(uint32_t mask) override;
+		virtual void SetDepthTest(bool enable) override;
 	};
 }

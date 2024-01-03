@@ -8,7 +8,7 @@ project "PreCompile"
     -- 在编译之前执行的事件
     prebuildcommands 
     {
-		"%{wks.location}/bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Parser/Parser.exe D:/Test-C++/XuanWu/Engine/Intermediate/precompile.json D:/Test-C++/XuanWu/Engine/Intermediate/parser_header.h D:/Test-C++/XuanWu/Engine/Source/XuanWu/src * XuanWu 0"
+		"%{wks.location}/bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Parser/Parser.exe D:/Test-C++/XuanWu/Engine/Intermediate/precompile.json D:/Test-C++/XuanWu/Engine/Intermediate/parser_header.h D:/Test-C++/XuanWu/Engine/Source/Runtime/src * XuanWu 0"
     }
 
     links

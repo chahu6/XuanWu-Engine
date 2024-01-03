@@ -1,6 +1,5 @@
 #include "xwpch.h"
 #include "SkeletalMeshComponent.h"
-#include "XuanWu/3D/Components/SkeletalMeshComponent.h"
 #include "XuanWu/3D/Model.h"
 
 namespace XuanWu

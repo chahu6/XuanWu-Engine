@@ -43,6 +43,26 @@ namespace XuanWu {
 		{
 			s_RendererAPI->SetLineWidth(width);
 		}
+
+		inline static void SetStencilFunc(uint32_t func, int ref, uint32_t mask)
+		{
+			s_RendererAPI->SetStencilFunc(func, ref, mask);
+		}
+
+		inline static void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass)
+		{
+			s_RendererAPI->SetStencilOp(sfail, dpfail, dppass);
+		}
+
+		inline static void SetStencilMask(uint32_t mask)
+		{
+			s_RendererAPI->SetStencilMask(mask);
+		}
+
+		inline static void SetDepthTest(bool enable)
+		{
+			s_RendererAPI->SetDepthTest(enable);
+		}
 	private:
 		static Scope<RendererAPI> s_RendererAPI;
 	};

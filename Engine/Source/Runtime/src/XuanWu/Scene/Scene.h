@@ -5,6 +5,7 @@
 #include "XuanWu/Core/UUID.h"
 
 class b2World;
+class Actor;
 
 namespace XuanWu
 {
@@ -69,6 +70,11 @@ namespace XuanWu
 
 		// 物理世界
 		b2World* m_PhysicsWorld = nullptr;
+
+
+		// 3D
+		std::vector<Ref<Actor>> m_Objects;
+
 	public:
 		inline entt::registry& Reg() { return m_Registry; }
 		inline std::string& GetFilepath() { return m_Filepath; }

@@ -11,6 +11,7 @@
 
 // 测试
 #include "XuanWu/3D/Model.h"
+#include "XuanWu/Core/StencilCode.h"
 
 namespace XuanWu
 {
@@ -51,6 +52,8 @@ namespace XuanWu
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
 		m_Serializer = Serializer::Create(m_ActiveScene);
+
+		m_ObjectOutlining = Shader::Create("stencil_single_color", "assets/shaders/stencil_single_color.vs", "assets/shaders/stencil_single_color.frag");
 	}
 
 	void EditorLayer::OnDetach()
@@ -76,6 +79,7 @@ namespace XuanWu
 
 		// 绑定帧缓冲
 		m_Framebuffer->Bind();
+
 		RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1.0f });
 		RenderCommand::Clear();
 
@@ -84,26 +88,26 @@ namespace XuanWu
 
 		switch (m_SceneState)
 		{
-			case XuanWu::EditorLayer::SceneState::Edit:
-			{
-				m_EditorCamera.OnUpdate(ts);
-				m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
-				break;
-			}
-			case XuanWu::EditorLayer::SceneState::Play:
-			{
-				m_ActiveScene->OnUpdateRuntime(ts);
-				break;
-			}
-			case XuanWu::EditorLayer::SceneState::Simulation:
-			{
-				m_EditorCamera.OnUpdate(ts);
-				m_ActiveScene->OnUpdateSimulation(ts, m_EditorCamera);
-				break;
-			}
-			default:
-				XW_CORE_ASSERT(false, "没有这种状态");
-				break;
+		case XuanWu::EditorLayer::SceneState::Edit:
+		{
+			m_EditorCamera.OnUpdate(ts);
+			m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+			break;
+		}
+		case XuanWu::EditorLayer::SceneState::Play:
+		{
+			m_ActiveScene->OnUpdateRuntime(ts);
+			break;
+		}
+		case XuanWu::EditorLayer::SceneState::Simulation:
+		{
+			m_EditorCamera.OnUpdate(ts);
+			m_ActiveScene->OnUpdateSimulation(ts, m_EditorCamera);
+			break;
+		}
+		default:
+			XW_CORE_ASSERT(false, "没有这种状态");
+			break;
 		}
 
 		auto [mx, my] = ImGui::GetMousePos();
@@ -189,7 +193,7 @@ namespace XuanWu
 		ImGui::Begin(TXT("Viewport"));
 		{
 			// 辅助的网格线
-			ImGuizmo::DrawGrid(glm::value_ptr(m_EditorCamera.GetViewMatrix()), glm::value_ptr(m_EditorCamera.GetProjection()), identityMatrix, 100.0f);
+			//ImGuizmo::DrawGrid(glm::value_ptr(m_EditorCamera.GetViewMatrix()), glm::value_ptr(m_EditorCamera.GetProjection()), identityMatrix, 100.0f);
 
 			// 也可以，但是有更好的
 			ImVec2 windowSize = ImGui::GetWindowSize();
@@ -226,6 +230,9 @@ namespace XuanWu
 			// 渲染的哪个帧缓冲区
 			uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
 			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+
+			//uint32_t depthID = m_Framebuffer->GetDepthAttachmentRendererID();
+			//ImGui::Image((void*)depthID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2(0, 1), ImVec2(1, 0));
 
 			// Gizmos
 			ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y); // 在这DrawGrid才显示，不知道为什么
@@ -519,6 +526,9 @@ namespace XuanWu
 			const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
 
 			Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+			/*RenderCommand::SetStencilFunc(Stencil::NotEqual, 1, 0xFF);
+			RenderCommand::SetDepthTest(false);
+			m_ObjectOutlining->Bind();*/
 		}
 
 		Renderer2D::EndScene();

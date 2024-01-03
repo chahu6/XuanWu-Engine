@@ -57,11 +57,6 @@ namespace XuanWu
 		Entity m_RedSquare;
 		glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 		*/
-		
-		// ²âÊÔ
-		Model* model = nullptr;
-		Ref<Shader> model_shader;
-
 
 		// ±ØÐëµÄ
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
@@ -88,6 +83,7 @@ namespace XuanWu
 		Ref<Texture2D> m_IconPlay;
 		Ref<Texture2D> m_IconSimulate;
 		Ref<Texture2D> m_IconStop;
+		Ref<Shader> m_ObjectOutlining;
 
 		enum class SceneState : uint8_t
 		{

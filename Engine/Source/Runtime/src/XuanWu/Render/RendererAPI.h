@@ -26,6 +26,12 @@ namespace XuanWu {
 
 		virtual void SetLineWidth(float width) = 0;
 
+		// Ä£°å²âÊÔ
+		virtual void SetStencilFunc(uint32_t func, int ref, uint32_t mask) = 0;
+		virtual void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) = 0;
+		virtual void SetStencilMask(uint32_t mask) = 0;
+		virtual void SetDepthTest(bool enable) = 0;
+
 		static Scope<RendererAPI> Create();
 	private:
 		static API s_API;

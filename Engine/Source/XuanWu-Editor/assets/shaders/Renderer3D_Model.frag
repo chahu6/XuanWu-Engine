@@ -19,8 +19,8 @@ uniform sampler2D specularMap;
 void main()
 {	
 	o_Color = texture(diffuseMap, Input.TexCoords);
-	//o_Color.a = 1.0;
-	o_Color.a = texture(specularMap, Input.TexCoords).r;
-
+	o_Color.a = 1.0;
+	//o_Color.a = texture(specularMap, Input.TexCoords).r;
+	//o_Color = vec4(vec3(gl_FragCoord.z), 1.0);
 	o_EntityID = u_EntityID;
 }
